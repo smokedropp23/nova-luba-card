@@ -684,10 +684,67 @@ var xe = {
 		normal: "300ms",
 		slow: "600ms"
 	}
-};
+}, Ee = {
+	luba1: {
+		id: "luba1",
+		manufacturer: "Mammotion",
+		displayName: "Luba 1",
+		assetFolder: "luba1",
+		defaultImage: "default.webp"
+	},
+	luba2: {
+		id: "luba2",
+		manufacturer: "Mammotion",
+		displayName: "Luba 2",
+		assetFolder: "luba2",
+		defaultImage: "default.webp"
+	},
+	luba3: {
+		id: "luba3",
+		manufacturer: "Mammotion",
+		displayName: "Luba 3 AWD LiDAR",
+		assetFolder: "luba3",
+		defaultImage: "default.webp"
+	},
+	mini1: {
+		id: "mini1",
+		manufacturer: "Mammotion",
+		displayName: "Luba Mini 1",
+		assetFolder: "mini",
+		defaultImage: "mini1-default.webp"
+	},
+	mini2: {
+		id: "mini2",
+		manufacturer: "Mammotion",
+		displayName: "Luba Mini 2",
+		assetFolder: "mini",
+		defaultImage: "mini2-default.webp"
+	},
+	unknown: {
+		id: "unknown",
+		manufacturer: "Mammotion",
+		displayName: "Mammotion Mower",
+		assetFolder: "assets/robot",
+		defaultImage: "fallback.webp"
+	}
+}, De = "/hacsfiles/nova-luba-card/images";
+function Oe(e) {
+	let t = Ee[e];
+	return [
+		De,
+		t.assetFolder,
+		t.defaultImage
+	].join("/");
+}
+//#endregion
+//#region src/helpers/resolve-mower-model.ts
+function ke(e) {
+	let t = e?.trim().toLowerCase().replaceAll("-", " ").replaceAll("_", " ");
+	return t ? t === "luba3" || t.includes("luba 3") ? "luba3" : t === "luba2" || t.includes("luba 2") ? "luba2" : t === "luba1" || t.includes("luba 1") ? "luba1" : t === "mini2" || t.includes("mini 2") ? "mini2" : t === "mini1" || t.includes("mini 1") ? "mini1" : "unknown" : "unknown";
+}
 //#endregion
 //#region src/helpers/resolve-mower-state.ts
-function Ee(e) {
+function Ae(e) {
 	let t = e?.trim().toLowerCase();
 	return !t || t === "unknown" ? "unknown" : t === "unavailable" || t === "offline" ? "offline" : t === "mowing" || t === "mähend" || t === "mowing_task" ? "mowing" : t === "docked" || t === "charging" || t === "idle" ? "docked" : t === "returning" || t === "returning_to_dock" ? "returning" : t === "error" || t === "blocked" ? "error" : "unknown";
 }
@@ -701,7 +758,7 @@ function Q(e, t, n, r) {
 }
 //#endregion
 //#region src/index.ts
-var De = {
+var je = {
 	mowing: "Mäht",
 	docked: "Im Dock",
 	returning: "Rückkehr zur Ladestation",
@@ -814,35 +871,53 @@ var De = {
         0;
     }
 
-    .robot-placeholder {
+    .robot-stage {
       position: relative;
       display: grid;
-      width: min(100%, 620px);
-      min-height: 285px;
+      width: min(100%, 680px);
+      min-height: 300px;
       place-items: center;
-      border: 1px dashed rgba(255, 255, 255, 0.14);
       border-radius: ${a(Z.radius.large)};
       background:
         radial-gradient(
           circle at center,
           var(--nova-state-soft),
-          transparent 58%
+          transparent 62%
         );
     }
 
-    .robot-placeholder::after {
+    .robot-stage::after {
       position: absolute;
-      right: 12%;
-      bottom: 8%;
-      left: 12%;
-      height: 18px;
+      right: 15%;
+      bottom: 7%;
+      left: 15%;
+      height: 20px;
       border-radius: 50%;
-      background: rgba(0, 0, 0, 0.55);
-      filter: blur(14px);
+      background: rgba(0, 0, 0, 0.58);
+      filter: blur(15px);
       content: "";
     }
 
-    .robot-placeholder-content {
+    .robot-image {
+      position: relative;
+      z-index: 1;
+      display: block;
+      width: min(100%, 620px);
+      max-height: 300px;
+      object-fit: contain;
+      filter:
+        drop-shadow(0 22px 24px rgba(0, 0, 0, 0.42))
+        drop-shadow(0 0 24px var(--nova-state-glow));
+      transition:
+        transform ${a(Z.animation.normal)} ease,
+        filter ${a(Z.animation.normal)} ease;
+    }
+
+    .robot-image:hover {
+      transform: translateY(-3px) scale(1.01);
+    }
+
+    .robot-fallback {
       position: relative;
       z-index: 1;
       display: grid;
@@ -852,22 +927,27 @@ var De = {
       text-align: center;
     }
 
-    .robot-symbol {
+    .robot-fallback[hidden] {
+      display: none;
+    }
+
+    .robot-fallback-symbol {
       color: var(--nova-state-color);
       font-size: 56px;
       line-height: 1;
       text-shadow: 0 0 20px var(--nova-state-glow);
     }
 
-    .robot-placeholder-title {
+    .robot-fallback-title {
       color: ${a(Z.colors.textSecondary)};
       font-size: 15px;
       font-weight: 600;
     }
 
-    .robot-placeholder-hint {
-      max-width: 260px;
-      font-size: 12px;
+    .robot-fallback-path {
+      max-width: 320px;
+      overflow-wrap: anywhere;
+      font-size: 11px;
       line-height: 1.5;
     }
 
@@ -914,9 +994,9 @@ var De = {
     .layout-note {
       color: ${a(Z.colors.textMuted)};
       font-size: 11px;
+      letter-spacing: 0.8px;
       text-align: right;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
     }
 
     .entity-error {
@@ -946,8 +1026,12 @@ var De = {
         height: 44px;
       }
 
-      .robot-placeholder {
+      .robot-stage {
         min-height: 230px;
+      }
+
+      .robot-image {
+        max-height: 225px;
       }
 
       .footer {
@@ -969,9 +1053,15 @@ var De = {
 	get mowerState() {
 		if (!(!this.hass || !this.config)) return this.hass.states[this.config.entity];
 	}
+	handleImageError(e) {
+		let t = e.currentTarget;
+		t.style.display = "none";
+		let n = t.nextElementSibling;
+		n && (n.hidden = !1);
+	}
 	render() {
 		if (!this.config) return z;
-		let e = this.mowerState, t = this.config.name ?? "Luba", n = this.config.model ?? "Luba 3 AWD LiDAR";
+		let e = this.mowerState, t = this.config.name ?? "Luba", n = this.config.model ?? "Luba 3 AWD LiDAR", r = ke(n), i = Oe(r);
 		if (!e) {
 			let e = Z.states.error;
 			return L`
@@ -995,12 +1085,12 @@ var De = {
         </ha-card>
       `;
 		}
-		let r = Ee(e.state), i = Z.states[r];
+		let a = Ae(e.state), o = Z.states[a];
 		return L`
       <ha-card style=${X({
-			"--nova-state-color": i.color,
-			"--nova-state-soft": i.soft,
-			"--nova-state-glow": i.glow
+			"--nova-state-color": o.color,
+			"--nova-state-soft": o.soft,
+			"--nova-state-glow": o.glow
 		})}>
         <div class="card-layout">
           <header class="header">
@@ -1021,18 +1111,26 @@ var De = {
           </header>
 
           <main class="hero">
-            <div class="robot-placeholder">
-              <div class="robot-placeholder-content">
-                <div class="robot-symbol">◆</div>
+            <div class="robot-stage">
+              <img
+                class="robot-image"
+                src=${i}
+                alt=${n}
+                loading="eager"
+                @error=${this.handleImageError}
+              />
 
-                <div class="robot-placeholder-title">
-                  Roboterbild
+              <div class="robot-fallback" hidden>
+                <div class="robot-fallback-symbol">
+                  ◆
                 </div>
 
-                <div class="robot-placeholder-hint">
-                  Hier wird im nächsten Schritt das
-                  zum ausgewählten Modell passende
-                  Gerätebild eingebunden.
+                <div class="robot-fallback-title">
+                  Gerätebild konnte nicht geladen werden
+                </div>
+
+                <div class="robot-fallback-path">
+                  ${i}
                 </div>
               </div>
             </div>
@@ -1043,7 +1141,7 @@ var De = {
               <div class="status">
                 <span class="dot"></span>
 
-                <span>${De[r]}</span>
+                <span>${je[a]}</span>
               </div>
 
               <div class="raw-state">
@@ -1052,7 +1150,7 @@ var De = {
             </div>
 
             <div class="layout-note">
-              Layout V1
+              ${r}
             </div>
           </footer>
         </div>

@@ -15,6 +15,8 @@ import {
 import { styleMap } from "lit/directives/style-map.js";
 
 import { theme } from "./constants/theme";
+import { getMowerImage } from "./helpers/get-mower-image";
+import { resolveMowerModel } from "./helpers/resolve-mower-model";
 import { resolveMowerState } from "./helpers/resolve-mower-state";
 
 import type { NovaMowerState } from "./types/mower-state";
@@ -156,35 +158,53 @@ export class NovaLubaCard extends LitElement {
         0;
     }
 
-    .robot-placeholder {
+    .robot-stage {
       position: relative;
       display: grid;
-      width: min(100%, 620px);
-      min-height: 285px;
+      width: min(100%, 680px);
+      min-height: 300px;
       place-items: center;
-      border: 1px dashed rgba(255, 255, 255, 0.14);
       border-radius: ${unsafeCSS(theme.radius.large)};
       background:
         radial-gradient(
           circle at center,
           var(--nova-state-soft),
-          transparent 58%
+          transparent 62%
         );
     }
 
-    .robot-placeholder::after {
+    .robot-stage::after {
       position: absolute;
-      right: 12%;
-      bottom: 8%;
-      left: 12%;
-      height: 18px;
+      right: 15%;
+      bottom: 7%;
+      left: 15%;
+      height: 20px;
       border-radius: 50%;
-      background: rgba(0, 0, 0, 0.55);
-      filter: blur(14px);
+      background: rgba(0, 0, 0, 0.58);
+      filter: blur(15px);
       content: "";
     }
 
-    .robot-placeholder-content {
+    .robot-image {
+      position: relative;
+      z-index: 1;
+      display: block;
+      width: min(100%, 620px);
+      max-height: 300px;
+      object-fit: contain;
+      filter:
+        drop-shadow(0 22px 24px rgba(0, 0, 0, 0.42))
+        drop-shadow(0 0 24px var(--nova-state-glow));
+      transition:
+        transform ${unsafeCSS(theme.animation.normal)} ease,
+        filter ${unsafeCSS(theme.animation.normal)} ease;
+    }
+
+    .robot-image:hover {
+      transform: translateY(-3px) scale(1.01);
+    }
+
+    .robot-fallback {
       position: relative;
       z-index: 1;
       display: grid;
@@ -194,22 +214,27 @@ export class NovaLubaCard extends LitElement {
       text-align: center;
     }
 
-    .robot-symbol {
+    .robot-fallback[hidden] {
+      display: none;
+    }
+
+    .robot-fallback-symbol {
       color: var(--nova-state-color);
       font-size: 56px;
       line-height: 1;
       text-shadow: 0 0 20px var(--nova-state-glow);
     }
 
-    .robot-placeholder-title {
+    .robot-fallback-title {
       color: ${unsafeCSS(theme.colors.textSecondary)};
       font-size: 15px;
       font-weight: 600;
     }
 
-    .robot-placeholder-hint {
-      max-width: 260px;
-      font-size: 12px;
+    .robot-fallback-path {
+      max-width: 320px;
+      overflow-wrap: anywhere;
+      font-size: 11px;
       line-height: 1.5;
     }
 
@@ -256,9 +281,9 @@ export class NovaLubaCard extends LitElement {
     .layout-note {
       color: ${unsafeCSS(theme.colors.textMuted)};
       font-size: 11px;
+      letter-spacing: 0.8px;
       text-align: right;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
     }
 
     .entity-error {
@@ -288,8 +313,12 @@ export class NovaLubaCard extends LitElement {
         height: 44px;
       }
 
-      .robot-placeholder {
+      .robot-stage {
         min-height: 230px;
+      }
+
+      .robot-image {
+        max-height: 225px;
       }
 
       .footer {
@@ -327,6 +356,18 @@ export class NovaLubaCard extends LitElement {
     return this.hass.states[this.config.entity];
   }
 
+  private handleImageError(event: Event): void {
+    const image = event.currentTarget as HTMLImageElement;
+    image.style.display = "none";
+
+    const fallback =
+      image.nextElementSibling as HTMLElement | null;
+
+    if (fallback) {
+      fallback.hidden = false;
+    }
+  }
+
   protected render() {
     if (!this.config) {
       return nothing;
@@ -336,6 +377,9 @@ export class NovaLubaCard extends LitElement {
     const name = this.config.name ?? "Luba";
     const model =
       this.config.model ?? "Luba 3 AWD LiDAR";
+
+    const resolvedModel = resolveMowerModel(model);
+    const mowerImage = getMowerImage(resolvedModel);
 
     if (!mower) {
       const errorTheme = theme.states.error;
@@ -392,18 +436,26 @@ export class NovaLubaCard extends LitElement {
           </header>
 
           <main class="hero">
-            <div class="robot-placeholder">
-              <div class="robot-placeholder-content">
-                <div class="robot-symbol">◆</div>
+            <div class="robot-stage">
+              <img
+                class="robot-image"
+                src=${mowerImage}
+                alt=${model}
+                loading="eager"
+                @error=${this.handleImageError}
+              />
 
-                <div class="robot-placeholder-title">
-                  Roboterbild
+              <div class="robot-fallback" hidden>
+                <div class="robot-fallback-symbol">
+                  ◆
                 </div>
 
-                <div class="robot-placeholder-hint">
-                  Hier wird im nächsten Schritt das
-                  zum ausgewählten Modell passende
-                  Gerätebild eingebunden.
+                <div class="robot-fallback-title">
+                  Gerätebild konnte nicht geladen werden
+                </div>
+
+                <div class="robot-fallback-path">
+                  ${mowerImage}
                 </div>
               </div>
             </div>
@@ -423,7 +475,7 @@ export class NovaLubaCard extends LitElement {
             </div>
 
             <div class="layout-note">
-              Layout V1
+              ${resolvedModel}
             </div>
           </footer>
         </div>
