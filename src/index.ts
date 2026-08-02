@@ -161,27 +161,28 @@ export class NovaLubaCard extends LitElement {
     .robot-stage {
       position: relative;
       display: grid;
-      width: min(100%, 680px);
-      min-height: 300px;
+      width: min(100%, 720px);
+      min-height: 320px;
       place-items: center;
+      overflow: hidden;
       border-radius: ${unsafeCSS(theme.radius.large)};
       background:
         radial-gradient(
-          circle at center,
+          circle at 50% 56%,
           var(--nova-state-soft),
-          transparent 62%
+          transparent 54%
         );
     }
 
     .robot-stage::after {
       position: absolute;
-      right: 15%;
-      bottom: 7%;
-      left: 15%;
-      height: 20px;
+      right: 18%;
+      bottom: 8%;
+      left: 18%;
+      height: 18px;
       border-radius: 50%;
-      background: rgba(0, 0, 0, 0.58);
-      filter: blur(15px);
+      background: rgba(0, 0, 0, 0.48);
+      filter: blur(14px);
       content: "";
     }
 
@@ -189,19 +190,21 @@ export class NovaLubaCard extends LitElement {
       position: relative;
       z-index: 1;
       display: block;
-      width: min(100%, 620px);
-      max-height: 300px;
+      width: min(118%, 700px);
+      max-width: none;
+      max-height: 330px;
       object-fit: contain;
+      transform: translateY(12px) scale(1.12);
       filter:
-        drop-shadow(0 22px 24px rgba(0, 0, 0, 0.42))
-        drop-shadow(0 0 24px var(--nova-state-glow));
+        drop-shadow(0 20px 22px rgba(0, 0, 0, 0.38))
+        drop-shadow(0 0 15px var(--nova-state-glow));
       transition:
         transform ${unsafeCSS(theme.animation.normal)} ease,
         filter ${unsafeCSS(theme.animation.normal)} ease;
     }
 
     .robot-image:hover {
-      transform: translateY(-3px) scale(1.01);
+      transform: translateY(8px) scale(1.15);
     }
 
     .robot-fallback {
@@ -314,11 +317,17 @@ export class NovaLubaCard extends LitElement {
       }
 
       .robot-stage {
-        min-height: 230px;
+        min-height: 245px;
       }
 
       .robot-image {
-        max-height: 225px;
+        width: 118%;
+        max-height: 245px;
+        transform: translateY(8px) scale(1.08);
+      }
+
+      .robot-image:hover {
+        transform: translateY(5px) scale(1.1);
       }
 
       .footer {
@@ -358,6 +367,7 @@ export class NovaLubaCard extends LitElement {
 
   private handleImageError(event: Event): void {
     const image = event.currentTarget as HTMLImageElement;
+
     image.style.display = "none";
 
     const fallback =
@@ -420,11 +430,15 @@ export class NovaLubaCard extends LitElement {
         <div class="card-layout">
           <header class="header">
             <div class="brand">
-              <div class="eyebrow">Nova UI</div>
+              <div class="eyebrow">
+                Nova UI
+              </div>
 
               <h2>${name}</h2>
 
-              <div class="model">${model}</div>
+              <div class="model">
+                ${model}
+              </div>
             </div>
 
             <div
@@ -445,7 +459,10 @@ export class NovaLubaCard extends LitElement {
                 @error=${this.handleImageError}
               />
 
-              <div class="robot-fallback" hidden>
+              <div
+                class="robot-fallback"
+                hidden
+              >
                 <div class="robot-fallback-symbol">
                   ◆
                 </div>
@@ -466,7 +483,9 @@ export class NovaLubaCard extends LitElement {
               <div class="status">
                 <span class="dot"></span>
 
-                <span>${stateLabels[novaState]}</span>
+                <span>
+                  ${stateLabels[novaState]}
+                </span>
               </div>
 
               <div class="raw-state">
