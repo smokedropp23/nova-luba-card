@@ -630,9 +630,9 @@ var X = class extends G {
 
     .overlay {
       position: absolute;
-      z-index: 3;
       top: 50%;
       left: 50%;
+      z-index: 3;
       display: block;
       width: 100%;
       max-width: var(--robot-desktop-max-width);
@@ -751,10 +751,7 @@ var X = class extends G {
         aria-hidden="true"
         style=${J({
 			"--light-color": e.color,
-			"--light-brightness": String(e.brightness),
-			opacity: "1",
-			outline: "3px solid red",
-			background: "rgba(255, 0, 0, 0.15)"
+			"--light-brightness": String(e.brightness)
 		})}
       />
     ` : I;

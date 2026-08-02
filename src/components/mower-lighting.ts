@@ -33,9 +33,9 @@ export class MowerLightingComponent extends LitElement {
 
     .overlay {
       position: absolute;
-      z-index: 3;
       top: 50%;
       left: 50%;
+      z-index: 3;
       display: block;
       width: 100%;
       max-width: var(--robot-desktop-max-width);
@@ -169,11 +169,6 @@ export class MowerLightingComponent extends LitElement {
           "--light-color": layer.color,
           "--light-brightness":
             String(layer.brightness),
-
-          opacity: "1",
-          outline: "3px solid red",
-          background:
-            "rgba(255, 0, 0, 0.15)",
         })}
       />
     `;
