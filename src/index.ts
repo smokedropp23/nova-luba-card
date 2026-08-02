@@ -40,6 +40,7 @@ interface NovaLubaCardConfig {
   entity: string;
   name?: string;
   model?: string;
+  debugLighting?: "off" | "front" | "side" | "all";
 }
 
 const stateLabels: Record<NovaMowerState, string> = {
@@ -445,17 +446,50 @@ const lighting = resolveMowerLighting(novaState);
 const lightingAssets =
   getMowerLightingAssets(resolvedModel);
 
+const debugLighting =
+  this.config.debugLighting ?? "off";
+
 const lightingWithAssets = {
   ...lighting,
 
   front: {
     ...lighting.front,
     asset: lightingAssets.front,
+    visible:
+      debugLighting === "front" ||
+      debugLighting === "all"
+        ? Boolean(lightingAssets.front)
+        : lighting.front.visible,
+    brightness:
+      debugLighting === "front" ||
+      debugLighting === "all"
+        ? 1
+        : lighting.front.brightness,
+    animation:
+      debugLighting === "front" ||
+      debugLighting === "all"
+        ? "none" as const
+        : lighting.front.animation,
   },
 
   side: {
     ...lighting.side,
     asset: lightingAssets.side,
+    visible:
+      debugLighting === "side" ||
+      debugLighting === "all"
+        ? Boolean(lightingAssets.side)
+        : lighting.side.visible,
+    brightness:
+      debugLighting === "side" ||
+      debugLighting === "all"
+        ? 1
+        : lighting.side.brightness,
+    animation:
+      debugLighting === "side" ||
+      debugLighting === "all"
+        ? "none" as const
+        : lighting.side.animation,
   },
 };
 
@@ -586,6 +620,7 @@ const lightingWithAssets = {
       entity: "lawn_mower.luba_va8tp48r",
       name: "Luba",
       model: "Luba 3 AWD LiDAR",
+      debugLighting: "off",
     };
   }
 }
