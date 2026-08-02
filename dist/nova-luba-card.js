@@ -874,50 +874,52 @@ var je = {
     .robot-stage {
       position: relative;
       display: grid;
-      width: min(100%, 720px);
-      min-height: 320px;
+      width: 100%;
+      min-height: 330px;
       place-items: center;
-      overflow: hidden;
+      overflow: visible;
       border-radius: ${a(Z.radius.large)};
       background:
         radial-gradient(
-          circle at 50% 56%,
+          ellipse at 50% 62%,
           var(--nova-state-soft),
-          transparent 54%
+          transparent 58%
         );
     }
 
     .robot-stage::after {
       position: absolute;
-      right: 18%;
-      bottom: 8%;
-      left: 18%;
-      height: 18px;
+      z-index: 0;
+      right: 15%;
+      bottom: 5%;
+      left: 15%;
+      height: 20px;
       border-radius: 50%;
       background: rgba(0, 0, 0, 0.48);
-      filter: blur(14px);
+      filter: blur(15px);
       content: "";
     }
 
     .robot-image {
       position: relative;
-      z-index: 1;
+      z-index: 2;
       display: block;
-      width: min(118%, 700px);
-      max-width: none;
+      width: 100%;
+      max-width: 520px;
       max-height: 330px;
       object-fit: contain;
-      transform: translateY(12px) scale(1.12);
+      transform: translateY(24px) scale(1.45);
+      transform-origin: center center;
       filter:
         drop-shadow(0 20px 22px rgba(0, 0, 0, 0.38))
-        drop-shadow(0 0 15px var(--nova-state-glow));
+        drop-shadow(0 0 12px var(--nova-state-glow));
       transition:
         transform ${a(Z.animation.normal)} ease,
         filter ${a(Z.animation.normal)} ease;
     }
 
     .robot-image:hover {
-      transform: translateY(8px) scale(1.15);
+      transform: translateY(20px) scale(1.48);
     }
 
     .robot-fallback {
@@ -1014,6 +1016,11 @@ var je = {
       text-align: center;
     }
 
+    /*
+     * Home Assistant kann Karten auch auf einem Desktop schmaler
+     * als 600 Pixel darstellen. Deshalb erhält auch dieser Bereich
+     * die vergrößerten Bildwerte.
+     */
     @media (max-width: 600px) {
       ha-card {
         min-height: 440px;
@@ -1030,17 +1037,18 @@ var je = {
       }
 
       .robot-stage {
-        min-height: 245px;
+        min-height: 260px;
       }
 
       .robot-image {
-        width: 118%;
-        max-height: 245px;
-        transform: translateY(8px) scale(1.08);
+        width: 100%;
+        max-width: 430px;
+        max-height: 285px;
+        transform: translateY(20px) scale(1.45);
       }
 
       .robot-image:hover {
-        transform: translateY(5px) scale(1.1);
+        transform: translateY(17px) scale(1.48);
       }
 
       .footer {
