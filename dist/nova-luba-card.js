@@ -891,12 +891,12 @@ var je = {
       position: absolute;
       z-index: 0;
       right: 15%;
-      bottom: 5%;
+      bottom: 0%;
       left: 15%;
-      height: 20px;
+      height: 28px;
       border-radius: 50%;
       background: rgba(0, 0, 0, 0.48);
-      filter: blur(15px);
+      filter: blur(28px);
       content: "";
     }
 
@@ -908,7 +908,7 @@ var je = {
       max-width: 520px;
       max-height: 330px;
       object-fit: contain;
-      transform: translateY(42px) scale(1.38);
+      transform: translateY(58px) scale(1.43);
       transform-origin: center center;
       filter:
         drop-shadow(0 20px 22px rgba(0, 0, 0, 0.38))
@@ -919,7 +919,7 @@ var je = {
     }
 
     .robot-image:hover {
-      transform: translateY(20px) scale(1.48);
+      transform: translateY(54px) scale(1.46);
     }
 
     .robot-fallback {
