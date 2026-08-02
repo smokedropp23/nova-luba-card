@@ -587,25 +587,25 @@ const lightingWithAssets = {
             </div>
           </main>
 
-          <footer class="footer">
-            <div class="status-group">
-              <div class="status">
-                <span class="dot"></span>
+<footer class="footer">
+  <div class="status-group">
+    <div class="status">
+      <span class="dot"></span>
 
-                <span>
-                  ${stateLabels[novaState]}
-                </span>
-              </div>
+      <span>
+        ${stateLabels[novaState]}
+      </span>
+    </div>
 
-              <div class="raw-state">
-                Rohstatus: ${mower.state}
-              </div>
-            </div>
+    <div class="raw-state">
+      Rohstatus: ${mower.state}
+    </div>
+  </div>
 
-            <div class="layout-note">
-              ${resolvedModel}
-            </div>
-          </footer>
+  <div class="layout-note">
+    ${resolvedModel}
+  </div>
+</footer>
         </div>
       </ha-card>
     `;

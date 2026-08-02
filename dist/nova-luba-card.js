@@ -1635,25 +1635,25 @@ var ze = {
             </div>
           </main>
 
-          <footer class="footer">
-            <div class="status-group">
-              <div class="status">
-                <span class="dot"></span>
+<footer class="footer">
+  <div class="status-group">
+    <div class="status">
+      <span class="dot"></span>
 
-                <span>
-                  ${ze[o]}
-                </span>
-              </div>
+      <span>
+        ${ze[o]}
+      </span>
+    </div>
 
-              <div class="raw-state">
-                Rohstatus: ${e.state}
-              </div>
-            </div>
+    <div class="raw-state">
+      Rohstatus: ${e.state}
+    </div>
+  </div>
 
-            <div class="layout-note">
-              ${r}
-            </div>
-          </footer>
+  <div class="layout-note">
+    ${r}
+  </div>
+</footer>
         </div>
       </ha-card>
     `;
