@@ -60,16 +60,18 @@ export class NovaLubaCard extends LitElement {
     }
 
     ha-card {
+      position: relative;
       overflow: hidden;
+      min-height: 520px;
       padding: ${unsafeCSS(theme.spacing.lg)};
       border: 1px solid var(--nova-state-color);
       border-radius: ${unsafeCSS(theme.radius.large)};
       color: ${unsafeCSS(theme.colors.text)};
       background:
         radial-gradient(
-          circle at 15% 10%,
+          circle at 78% 20%,
           var(--nova-state-soft),
-          transparent 45%
+          transparent 38%
         ),
         linear-gradient(
           145deg,
@@ -78,43 +80,163 @@ export class NovaLubaCard extends LitElement {
         );
       box-shadow:
         ${unsafeCSS(theme.shadow.card)},
-        0 0 28px var(--nova-state-glow);
+        0 0 30px var(--nova-state-glow);
       transition:
         border-color ${unsafeCSS(theme.animation.normal)} ease,
         box-shadow ${unsafeCSS(theme.animation.normal)} ease,
         background ${unsafeCSS(theme.animation.normal)} ease;
     }
 
+    .card-layout {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-height: 520px;
+    }
+
+    .header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: ${unsafeCSS(theme.spacing.md)};
+    }
+
+    .brand {
+      min-width: 0;
+    }
+
     .eyebrow {
       margin-bottom: ${unsafeCSS(theme.spacing.sm)};
       color: var(--nova-state-color);
       font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 1.2px;
+      font-weight: 800;
+      letter-spacing: 1.4px;
       text-transform: uppercase;
     }
 
     h2 {
       margin: 0;
-      font-size: 26px;
-      line-height: 1.2;
+      font-size: clamp(28px, 5vw, 40px);
+      line-height: 1.05;
     }
 
     .model {
       margin-top: ${unsafeCSS(theme.spacing.sm)};
       color: ${unsafeCSS(theme.colors.textSecondary)};
-      font-size: 14px;
+      font-size: 15px;
+    }
+
+    .led-placeholder {
+      display: grid;
+      flex: 0 0 auto;
+      width: 54px;
+      height: 54px;
+      place-items: center;
+      border: 1px solid var(--nova-state-color);
+      border-radius: 50%;
+      background: var(--nova-state-soft);
+      box-shadow: 0 0 20px var(--nova-state-glow);
+    }
+
+    .led-core {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--nova-state-color);
+      box-shadow: 0 0 14px var(--nova-state-glow);
+    }
+
+    .hero {
+      display: grid;
+      align-items: center;
+      justify-items: center;
+      padding:
+        ${unsafeCSS(theme.spacing.lg)}
+        0;
+    }
+
+    .robot-placeholder {
+      position: relative;
+      display: grid;
+      width: min(100%, 620px);
+      min-height: 285px;
+      place-items: center;
+      border: 1px dashed rgba(255, 255, 255, 0.14);
+      border-radius: ${unsafeCSS(theme.radius.large)};
+      background:
+        radial-gradient(
+          circle at center,
+          var(--nova-state-soft),
+          transparent 58%
+        );
+    }
+
+    .robot-placeholder::after {
+      position: absolute;
+      right: 12%;
+      bottom: 8%;
+      left: 12%;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.55);
+      filter: blur(14px);
+      content: "";
+    }
+
+    .robot-placeholder-content {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: ${unsafeCSS(theme.spacing.sm)};
+      justify-items: center;
+      color: ${unsafeCSS(theme.colors.textMuted)};
+      text-align: center;
+    }
+
+    .robot-symbol {
+      color: var(--nova-state-color);
+      font-size: 56px;
+      line-height: 1;
+      text-shadow: 0 0 20px var(--nova-state-glow);
+    }
+
+    .robot-placeholder-title {
+      color: ${unsafeCSS(theme.colors.textSecondary)};
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .robot-placeholder-hint {
+      max-width: 260px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .footer {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: ${unsafeCSS(theme.spacing.md)};
+      padding-top: ${unsafeCSS(theme.spacing.md)};
+      border-top: 1px solid ${unsafeCSS(theme.colors.borderSoft)};
+    }
+
+    .status-group {
+      display: grid;
+      gap: ${unsafeCSS(theme.spacing.sm)};
     }
 
     .status {
       display: inline-flex;
+      width: fit-content;
       align-items: center;
       gap: 9px;
-      margin-top: ${unsafeCSS(theme.spacing.lg)};
-      padding: 10px 14px;
+      padding: 10px 15px;
       border: 1px solid var(--nova-state-color);
       border-radius: ${unsafeCSS(theme.radius.pill)};
       background: var(--nova-state-soft);
+      font-weight: 600;
       transition: all ${unsafeCSS(theme.animation.normal)} ease;
     }
 
@@ -127,18 +249,57 @@ export class NovaLubaCard extends LitElement {
     }
 
     .raw-state {
-      margin-top: ${unsafeCSS(theme.spacing.sm)};
       color: ${unsafeCSS(theme.colors.textMuted)};
       font-size: 12px;
     }
 
-    .error {
-      margin-top: ${unsafeCSS(theme.spacing.lg)};
-      padding: ${unsafeCSS(theme.spacing.md)};
+    .layout-note {
+      color: ${unsafeCSS(theme.colors.textMuted)};
+      font-size: 11px;
+      text-align: right;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .entity-error {
+      display: grid;
+      min-height: 240px;
+      place-items: center;
+      padding: ${unsafeCSS(theme.spacing.lg)};
       border: 1px solid ${unsafeCSS(theme.states.error.color)};
       border-radius: ${unsafeCSS(theme.radius.medium)};
       color: ${unsafeCSS(theme.states.error.color)};
       background: ${unsafeCSS(theme.states.error.soft)};
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      ha-card {
+        min-height: 440px;
+        padding: ${unsafeCSS(theme.spacing.md)};
+      }
+
+      .card-layout {
+        min-height: 440px;
+      }
+
+      .led-placeholder {
+        width: 44px;
+        height: 44px;
+      }
+
+      .robot-placeholder {
+        min-height: 230px;
+      }
+
+      .footer {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .layout-note {
+        text-align: left;
+      }
     }
   `;
 
@@ -177,17 +338,25 @@ export class NovaLubaCard extends LitElement {
       this.config.model ?? "Luba 3 AWD LiDAR";
 
     if (!mower) {
+      const errorTheme = theme.states.error;
+
       return html`
-        <ha-card>
-          <div class="eyebrow">Nova UI</div>
+        <ha-card
+          style=${styleMap({
+            "--nova-state-color": errorTheme.color,
+            "--nova-state-soft": errorTheme.soft,
+            "--nova-state-glow": errorTheme.glow,
+          })}
+        >
+          <div class="entity-error">
+            <div>
+              <strong>Entität nicht gefunden</strong>
 
-          <h2>${name}</h2>
-
-          <div class="model">${model}</div>
-
-          <div class="error">
-            Entität „${this.config.entity}“ wurde in
-            Home Assistant nicht gefunden.
+              <p>
+                „${this.config.entity}“ ist in
+                Home Assistant nicht vorhanden.
+              </p>
+            </div>
           </div>
         </ha-card>
       `;
@@ -204,27 +373,66 @@ export class NovaLubaCard extends LitElement {
 
     return html`
       <ha-card style=${styleMap(dynamicStyles)}>
-        <div class="eyebrow">Nova UI</div>
+        <div class="card-layout">
+          <header class="header">
+            <div class="brand">
+              <div class="eyebrow">Nova UI</div>
 
-        <h2>${name}</h2>
+              <h2>${name}</h2>
 
-        <div class="model">${model}</div>
+              <div class="model">${model}</div>
+            </div>
 
-        <div class="status">
-          <span class="dot"></span>
+            <div
+              class="led-placeholder"
+              title="LED-Platzhalter"
+            >
+              <span class="led-core"></span>
+            </div>
+          </header>
 
-          <span>${stateLabels[novaState]}</span>
-        </div>
+          <main class="hero">
+            <div class="robot-placeholder">
+              <div class="robot-placeholder-content">
+                <div class="robot-symbol">◆</div>
 
-        <div class="raw-state">
-          Rohstatus: ${mower.state}
+                <div class="robot-placeholder-title">
+                  Roboterbild
+                </div>
+
+                <div class="robot-placeholder-hint">
+                  Hier wird im nächsten Schritt das
+                  zum ausgewählten Modell passende
+                  Gerätebild eingebunden.
+                </div>
+              </div>
+            </div>
+          </main>
+
+          <footer class="footer">
+            <div class="status-group">
+              <div class="status">
+                <span class="dot"></span>
+
+                <span>${stateLabels[novaState]}</span>
+              </div>
+
+              <div class="raw-state">
+                Rohstatus: ${mower.state}
+              </div>
+            </div>
+
+            <div class="layout-note">
+              Layout V1
+            </div>
+          </footer>
         </div>
       </ha-card>
     `;
   }
 
   public getCardSize(): number {
-    return 3;
+    return 7;
   }
 
   public static getStubConfig(): NovaLubaCardConfig {
