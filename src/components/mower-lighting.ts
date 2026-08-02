@@ -31,19 +31,43 @@ export class MowerLightingComponent extends LitElement {
       pointer-events: none;
     }
 
-    .overlay {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      opacity: 0;
-      transform: inherit;
-      transform-origin: center center;
-      transition:
-        opacity 220ms ease,
-        filter 220ms ease;
-    }
+.overlay {
+  position: absolute;
+  z-index: 3;
+  display: block;
+  width: 100%;
+  max-width: var(--robot-desktop-max-width);
+  max-height: var(--robot-desktop-max-height);
+  object-fit: contain;
+
+  top: 50%;
+  left: 50%;
+
+  transform:
+    translate(-50%, -50%)
+    translateX(var(--robot-desktop-x))
+    translateY(var(--robot-desktop-y))
+    scale(var(--robot-desktop-scale));
+
+  transform-origin: center center;
+  opacity: 0;
+  transition:
+    opacity 220ms ease,
+    filter 220ms ease;
+}
+  @media (max-width: 600px) {
+  .overlay {
+    max-width: var(--robot-mobile-max-width);
+    max-height: var(--robot-mobile-max-height);
+
+    transform:
+      translate(-50%, -50%)
+      translateX(var(--robot-mobile-x))
+      translateY(var(--robot-mobile-y))
+      scale(var(--robot-mobile-scale));
+  }
+}
+
 
     .overlay.visible {
       opacity: var(--light-brightness);
