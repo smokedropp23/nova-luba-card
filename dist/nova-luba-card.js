@@ -665,7 +665,7 @@ var xe = {
 		mobile: {
 			scale: 1.4,
 			translateX: 6,
-			translateY: 40,
+			translateY: 48,
 			maxWidth: 430,
 			maxHeight: 290
 		}
