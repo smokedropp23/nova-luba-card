@@ -908,7 +908,7 @@ var je = {
       max-width: 520px;
       max-height: 330px;
       object-fit: contain;
-      transform: translateY(24px) scale(1.45);
+      transform: translateY(42px) scale(1.38);
       transform-origin: center center;
       filter:
         drop-shadow(0 20px 22px rgba(0, 0, 0, 0.38))
@@ -1044,11 +1044,11 @@ var je = {
         width: 100%;
         max-width: 430px;
         max-height: 285px;
-        transform: translateY(20px) scale(1.45);
+        transform: translateY(34px) scale(1.38);
       }
 
       .robot-image:hover {
-        transform: translateY(17px) scale(1.48);
+        transform: translateY(38px) scale(1.41);
       }
 
       .footer {
