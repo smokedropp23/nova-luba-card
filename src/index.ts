@@ -12,7 +12,12 @@ import {
   state,
 } from "lit/decorators.js";
 
+import { styleMap } from "lit/directives/style-map.js";
+
 import { theme } from "./constants/theme";
+import { resolveMowerState } from "./helpers/resolve-mower-state";
+
+import type { NovaMowerState } from "./types/mower-state";
 
 interface HomeAssistantState {
   state: string;
@@ -30,6 +35,17 @@ interface NovaLubaCardConfig {
   model?: string;
 }
 
+const stateLabels: Record<NovaMowerState, string> = {
+  mowing: "Mäht",
+  docked: "Im Dock",
+  returning: "Rückkehr zur Ladestation",
+  error: "Fehler",
+  maintenance: "Wartungsmodus",
+  update: "Update verfügbar",
+  offline: "Offline",
+  unknown: "Unbekannt",
+};
+
 @customElement("nova-luba-card")
 export class NovaLubaCard extends LitElement {
   @property({ attribute: false })
@@ -46,20 +62,32 @@ export class NovaLubaCard extends LitElement {
     ha-card {
       overflow: hidden;
       padding: ${unsafeCSS(theme.spacing.lg)};
-      border: 1px solid ${unsafeCSS(theme.colors.borderSoft)};
+      border: 1px solid var(--nova-state-color);
       border-radius: ${unsafeCSS(theme.radius.large)};
       color: ${unsafeCSS(theme.colors.text)};
-      background: linear-gradient(
-        145deg,
-        ${unsafeCSS(theme.colors.surface)},
-        ${unsafeCSS(theme.colors.backgroundDeep)}
-      );
-      box-shadow: ${unsafeCSS(theme.shadow.card)};
+      background:
+        radial-gradient(
+          circle at 15% 10%,
+          var(--nova-state-soft),
+          transparent 45%
+        ),
+        linear-gradient(
+          145deg,
+          ${unsafeCSS(theme.colors.surface)},
+          ${unsafeCSS(theme.colors.backgroundDeep)}
+        );
+      box-shadow:
+        ${unsafeCSS(theme.shadow.card)},
+        0 0 28px var(--nova-state-glow);
+      transition:
+        border-color ${unsafeCSS(theme.animation.normal)} ease,
+        box-shadow ${unsafeCSS(theme.animation.normal)} ease,
+        background ${unsafeCSS(theme.animation.normal)} ease;
     }
 
     .eyebrow {
       margin-bottom: ${unsafeCSS(theme.spacing.sm)};
-      color: ${unsafeCSS(theme.states.unknown.color)};
+      color: var(--nova-state-color);
       font-size: 12px;
       font-weight: 700;
       letter-spacing: 1.2px;
@@ -84,9 +112,9 @@ export class NovaLubaCard extends LitElement {
       gap: 9px;
       margin-top: ${unsafeCSS(theme.spacing.lg)};
       padding: 10px 14px;
-      border: 1px solid ${unsafeCSS(theme.states.unknown.color)};
+      border: 1px solid var(--nova-state-color);
       border-radius: ${unsafeCSS(theme.radius.pill)};
-      background: ${unsafeCSS(theme.states.unknown.soft)};
+      background: var(--nova-state-soft);
       transition: all ${unsafeCSS(theme.animation.normal)} ease;
     }
 
@@ -94,8 +122,14 @@ export class NovaLubaCard extends LitElement {
       width: 9px;
       height: 9px;
       border-radius: 50%;
-      background: ${unsafeCSS(theme.states.unknown.color)};
-      box-shadow: 0 0 12px ${unsafeCSS(theme.states.unknown.glow)};
+      background: var(--nova-state-color);
+      box-shadow: 0 0 12px var(--nova-state-glow);
+    }
+
+    .raw-state {
+      margin-top: ${unsafeCSS(theme.spacing.sm)};
+      color: ${unsafeCSS(theme.colors.textMuted)};
+      font-size: 12px;
     }
 
     .error {
@@ -142,38 +176,49 @@ export class NovaLubaCard extends LitElement {
     const model =
       this.config.model ?? "Luba 3 AWD LiDAR";
 
+    if (!mower) {
+      return html`
+        <ha-card>
+          <div class="eyebrow">Nova UI</div>
+
+          <h2>${name}</h2>
+
+          <div class="model">${model}</div>
+
+          <div class="error">
+            Entität „${this.config.entity}“ wurde in
+            Home Assistant nicht gefunden.
+          </div>
+        </ha-card>
+      `;
+    }
+
+    const novaState = resolveMowerState(mower.state);
+    const stateTheme = theme.states[novaState];
+
+    const dynamicStyles = {
+      "--nova-state-color": stateTheme.color,
+      "--nova-state-soft": stateTheme.soft,
+      "--nova-state-glow": stateTheme.glow,
+    };
+
     return html`
-      <ha-card>
-        <div class="eyebrow">
-          Nova UI
+      <ha-card style=${styleMap(dynamicStyles)}>
+        <div class="eyebrow">Nova UI</div>
+
+        <h2>${name}</h2>
+
+        <div class="model">${model}</div>
+
+        <div class="status">
+          <span class="dot"></span>
+
+          <span>${stateLabels[novaState]}</span>
         </div>
 
-        <h2>
-          ${name}
-        </h2>
-
-        <div class="model">
-          ${model}
+        <div class="raw-state">
+          Rohstatus: ${mower.state}
         </div>
-
-        ${
-          mower
-            ? html`
-                <div class="status">
-                  <span class="dot"></span>
-
-                  <span>
-                    Status: ${mower.state}
-                  </span>
-                </div>
-              `
-            : html`
-                <div class="error">
-                  Entität „${this.config.entity}“
-                  wurde in Home Assistant nicht gefunden.
-                </div>
-              `
-        }
       </ha-card>
     `;
   }
@@ -194,18 +239,15 @@ export class NovaLubaCard extends LitElement {
 
 declare global {
   interface Window {
-    customCards?: Array<
-      Record<string, unknown>
-    >;
+    customCards?: Array<Record<string, unknown>>;
   }
 }
 
-window.customCards =
-  window.customCards || [];
+window.customCards = window.customCards || [];
 
 window.customCards.push({
   type: "nova-luba-card",
-  name: "Nova UI – Luba Card",
+  name: "Nova UI - Luba Card",
   description:
     "A dynamic Mammotion mower card for Home Assistant.",
   preview: true,

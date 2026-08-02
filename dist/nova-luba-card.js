@@ -557,8 +557,56 @@ function ye(e) {
 	});
 }
 //#endregion
-//#region src/constants/theme.ts
-var Z = {
+//#region node_modules/lit-html/directive.js
+var be = {
+	ATTRIBUTE: 1,
+	CHILD: 2,
+	PROPERTY: 3,
+	BOOLEAN_ATTRIBUTE: 4,
+	EVENT: 5,
+	ELEMENT: 6
+}, xe = (e) => (...t) => ({
+	_$litDirective$: e,
+	values: t
+}), Se = class {
+	constructor(e) {}
+	get _$AU() {
+		return this._$AM._$AU;
+	}
+	_$AT(e, t, n) {
+		this._$Ct = e, this._$AM = t, this._$Ci = n;
+	}
+	_$AS(e, t) {
+		return this.update(e, t);
+	}
+	update(e, t) {
+		return this.render(...t);
+	}
+}, Ce = "important", we = " !important", Te = xe(class extends Se {
+	constructor(e) {
+		if (super(e), e.type !== be.ATTRIBUTE || e.name !== "style" || e.strings?.length > 2) throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.");
+	}
+	render(e) {
+		return Object.keys(e).reduce((t, n) => {
+			let r = e[n];
+			return r == null ? t : t + `${n = n.includes("-") ? n : n.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g, "-$&").toLowerCase()}:${r};`;
+		}, "");
+	}
+	update(e, [t]) {
+		let { style: n } = e.element;
+		if (this.ft === void 0) return this.ft = new Set(Object.keys(t)), this.render(t);
+		for (let e of this.ft) t[e] ?? (this.ft.delete(e), e.includes("-") ? n.removeProperty(e) : n[e] = null);
+		for (let e in t) {
+			let r = t[e];
+			if (r != null) {
+				this.ft.add(e);
+				let t = typeof r == "string" && r.endsWith(we);
+				e.includes("-") || t ? n.setProperty(e, t ? r.slice(0, -11) : r, t ? Ce : "") : n[e] = r;
+			}
+		}
+		return z;
+	}
+}), Z = {
 	colors: {
 		background: "#111827",
 		backgroundDeep: "#090D14",
@@ -638,6 +686,12 @@ var Z = {
 	}
 };
 //#endregion
+//#region src/helpers/resolve-mower-state.ts
+function Ee(e) {
+	let t = e?.trim().toLowerCase();
+	return !t || t === "unknown" ? "unknown" : t === "unavailable" || t === "offline" ? "offline" : t === "mowing" || t === "mähend" || t === "mowing_task" ? "mowing" : t === "docked" || t === "charging" || t === "idle" ? "docked" : t === "returning" || t === "returning_to_dock" ? "returning" : t === "error" || t === "blocked" ? "error" : "unknown";
+}
+//#endregion
 //#region \0@oxc-project+runtime@0.142.0/helpers/esm/decorate.js
 function Q(e, t, n, r) {
 	var i = arguments.length, a = i < 3 ? t : r === null ? r = Object.getOwnPropertyDescriptor(t, n) : r, o;
@@ -647,7 +701,16 @@ function Q(e, t, n, r) {
 }
 //#endregion
 //#region src/index.ts
-var $ = class extends Y {
+var De = {
+	mowing: "Mäht",
+	docked: "Im Dock",
+	returning: "Rückkehr zur Ladestation",
+	error: "Fehler",
+	maintenance: "Wartungsmodus",
+	update: "Update verfügbar",
+	offline: "Offline",
+	unknown: "Unbekannt"
+}, $ = class extends Y {
 	static {
 		this.styles = o`
     :host {
@@ -657,20 +720,32 @@ var $ = class extends Y {
     ha-card {
       overflow: hidden;
       padding: ${a(Z.spacing.lg)};
-      border: 1px solid ${a(Z.colors.borderSoft)};
+      border: 1px solid var(--nova-state-color);
       border-radius: ${a(Z.radius.large)};
       color: ${a(Z.colors.text)};
-      background: linear-gradient(
-        145deg,
-        ${a(Z.colors.surface)},
-        ${a(Z.colors.backgroundDeep)}
-      );
-      box-shadow: ${a(Z.shadow.card)};
+      background:
+        radial-gradient(
+          circle at 15% 10%,
+          var(--nova-state-soft),
+          transparent 45%
+        ),
+        linear-gradient(
+          145deg,
+          ${a(Z.colors.surface)},
+          ${a(Z.colors.backgroundDeep)}
+        );
+      box-shadow:
+        ${a(Z.shadow.card)},
+        0 0 28px var(--nova-state-glow);
+      transition:
+        border-color ${a(Z.animation.normal)} ease,
+        box-shadow ${a(Z.animation.normal)} ease,
+        background ${a(Z.animation.normal)} ease;
     }
 
     .eyebrow {
       margin-bottom: ${a(Z.spacing.sm)};
-      color: ${a(Z.states.unknown.color)};
+      color: var(--nova-state-color);
       font-size: 12px;
       font-weight: 700;
       letter-spacing: 1.2px;
@@ -695,9 +770,9 @@ var $ = class extends Y {
       gap: 9px;
       margin-top: ${a(Z.spacing.lg)};
       padding: 10px 14px;
-      border: 1px solid ${a(Z.states.unknown.color)};
+      border: 1px solid var(--nova-state-color);
       border-radius: ${a(Z.radius.pill)};
-      background: ${a(Z.states.unknown.soft)};
+      background: var(--nova-state-soft);
       transition: all ${a(Z.animation.normal)} ease;
     }
 
@@ -705,8 +780,14 @@ var $ = class extends Y {
       width: 9px;
       height: 9px;
       border-radius: 50%;
-      background: ${a(Z.states.unknown.color)};
-      box-shadow: 0 0 12px ${a(Z.states.unknown.glow)};
+      background: var(--nova-state-color);
+      box-shadow: 0 0 12px var(--nova-state-glow);
+    }
+
+    .raw-state {
+      margin-top: ${a(Z.spacing.sm)};
+      color: ${a(Z.colors.textMuted)};
+      font-size: 12px;
     }
 
     .error {
@@ -729,35 +810,43 @@ var $ = class extends Y {
 	}
 	render() {
 		if (!this.config) return B;
-		let e = this.mowerState;
+		let e = this.mowerState, t = this.config.name ?? "Luba", n = this.config.model ?? "Luba 3 AWD LiDAR";
+		if (!e) return R`
+        <ha-card>
+          <div class="eyebrow">Nova UI</div>
+
+          <h2>${t}</h2>
+
+          <div class="model">${n}</div>
+
+          <div class="error">
+            Entität „${this.config.entity}“ wurde in
+            Home Assistant nicht gefunden.
+          </div>
+        </ha-card>
+      `;
+		let r = Ee(e.state), i = Z.states[r];
 		return R`
-      <ha-card>
-        <div class="eyebrow">
-          Nova UI
+      <ha-card style=${Te({
+			"--nova-state-color": i.color,
+			"--nova-state-soft": i.soft,
+			"--nova-state-glow": i.glow
+		})}>
+        <div class="eyebrow">Nova UI</div>
+
+        <h2>${t}</h2>
+
+        <div class="model">${n}</div>
+
+        <div class="status">
+          <span class="dot"></span>
+
+          <span>${De[r]}</span>
         </div>
 
-        <h2>
-          ${this.config.name ?? "Luba"}
-        </h2>
-
-        <div class="model">
-          ${this.config.model ?? "Luba 3 AWD LiDAR"}
+        <div class="raw-state">
+          Rohstatus: ${e.state}
         </div>
-
-        ${e ? R`
-                <div class="status">
-                  <span class="dot"></span>
-
-                  <span>
-                    Status: ${e.state}
-                  </span>
-                </div>
-              ` : R`
-                <div class="error">
-                  Entität „${this.config.entity}“
-                  wurde in Home Assistant nicht gefunden.
-                </div>
-              `}
       </ha-card>
     `;
 	}
@@ -775,7 +864,7 @@ var $ = class extends Y {
 };
 Q([X({ attribute: !1 })], $.prototype, "hass", void 0), Q([ye()], $.prototype, "config", void 0), $ = Q([ge("nova-luba-card")], $), window.customCards = window.customCards || [], window.customCards.push({
 	type: "nova-luba-card",
-	name: "Nova UI – Luba Card",
+	name: "Nova UI - Luba Card",
 	description: "A dynamic Mammotion mower card for Home Assistant.",
 	preview: !0
 });
