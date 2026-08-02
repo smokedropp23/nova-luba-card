@@ -563,9 +563,10 @@ const lightingWithAssets = {
       @error=${this.handleImageError}
     />
 
-    <mower-lighting
-      .lighting=${lighting}
-    ></mower-lighting>
+<mower-lighting
+-  .lighting=${lighting}
++  .lighting=${lightingWithAssets}
+></mower-lighting>
 
               <div
                 class="robot-fallback"

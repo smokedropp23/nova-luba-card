@@ -1546,8 +1546,24 @@ var ze = {
         </ha-card>
       `;
 		}
-		let o = Re(e.state), s = Q.states[o], c = Ae(o), l = Oe(r), u = this.config.debugLighting ?? "off";
-		return { ...c }, { ...c.front }, l.front, u === "front" || u === "all" ? l.front : c.front.visible, u === "front" || u === "all" || c.front.brightness, u === "front" || u === "all" || c.front.animation, { ...c.side }, l.side, u === "side" || u === "all" ? l.side : c.side.visible, u === "side" || u === "all" || c.side.brightness, u === "side" || u === "all" || c.side.animation, P`
+		let o = Re(e.state), s = Q.states[o], c = Ae(o), l = Oe(r), u = this.config.debugLighting ?? "off", d = {
+			...c,
+			front: {
+				...c.front,
+				asset: l.front,
+				visible: u === "front" || u === "all" ? !!l.front : c.front.visible,
+				brightness: u === "front" || u === "all" ? 1 : c.front.brightness,
+				animation: u === "front" || u === "all" ? "none" : c.front.animation
+			},
+			side: {
+				...c.side,
+				asset: l.side,
+				visible: u === "side" || u === "all" ? !!l.side : c.side.visible,
+				brightness: u === "side" || u === "all" ? 1 : c.side.brightness,
+				animation: u === "side" || u === "all" ? "none" : c.side.animation
+			}
+		};
+		return P`
       <ha-card style=${J({
 			"--nova-state-color": s.color,
 			"--nova-state-soft": s.soft,
@@ -1595,9 +1611,10 @@ var ze = {
       @error=${this.handleImageError}
     />
 
-    <mower-lighting
-      .lighting=${c}
-    ></mower-lighting>
+<mower-lighting
+-  .lighting=${c}
++  .lighting=${d}
+></mower-lighting>
 
               <div
                 class="robot-fallback"
