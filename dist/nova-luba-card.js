@@ -29,11 +29,11 @@ var e = globalThis, t = e.ShadowRoot && (e.ShadyCSS === void 0 || e.ShadyCSS.nat
 	let t = "";
 	for (let n of e.cssRules) t += n.cssText;
 	return a(t);
-})(e) : e, { is: l, defineProperty: u, getOwnPropertyDescriptor: d, getOwnPropertyNames: ee, getOwnPropertySymbols: te, getPrototypeOf: ne } = Object, f = globalThis, p = f.trustedTypes, re = p ? p.emptyScript : "", ie = f.reactiveElementPolyfillSupport, m = (e, t) => e, h = {
+})(e) : e, { is: l, defineProperty: u, getOwnPropertyDescriptor: d, getOwnPropertyNames: f, getOwnPropertySymbols: p, getPrototypeOf: ee } = Object, m = globalThis, h = m.trustedTypes, te = h ? h.emptyScript : "", ne = m.reactiveElementPolyfillSupport, g = (e, t) => e, _ = {
 	toAttribute(e, t) {
 		switch (t) {
 			case Boolean:
-				e = e ? re : null;
+				e = e ? te : null;
 				break;
 			case Object:
 			case Array: e = e == null ? e : JSON.stringify(e);
@@ -58,23 +58,23 @@ var e = globalThis, t = e.ShadowRoot && (e.ShadyCSS === void 0 || e.ShadyCSS.nat
 		}
 		return n;
 	}
-}, g = (e, t) => !l(e, t), _ = {
+}, v = (e, t) => !l(e, t), y = {
 	attribute: !0,
 	type: String,
-	converter: h,
+	converter: _,
 	reflect: !1,
 	useDefault: !1,
-	hasChanged: g
+	hasChanged: v
 };
-Symbol.metadata ??= Symbol("metadata"), f.litPropertyMetadata ??= /* @__PURE__ */ new WeakMap();
-var v = class extends HTMLElement {
+Symbol.metadata ??= Symbol("metadata"), m.litPropertyMetadata ??= /* @__PURE__ */ new WeakMap();
+var b = class extends HTMLElement {
 	static addInitializer(e) {
 		this._$Ei(), (this.l ??= []).push(e);
 	}
 	static get observedAttributes() {
 		return this.finalize(), this._$Eh && [...this._$Eh.keys()];
 	}
-	static createProperty(e, t = _) {
+	static createProperty(e, t = y) {
 		if (t.state && (t.attribute = !1), this._$Ei(), this.prototype.hasOwnProperty(e) && ((t = Object.create(t)).wrapped = !0), this.elementProperties.set(e, t), !t.noAccessor) {
 			let n = Symbol(), r = this.getPropertyDescriptor(e, n, t);
 			r !== void 0 && u(this.prototype, e, r);
@@ -100,17 +100,17 @@ var v = class extends HTMLElement {
 		};
 	}
 	static getPropertyOptions(e) {
-		return this.elementProperties.get(e) ?? _;
+		return this.elementProperties.get(e) ?? y;
 	}
 	static _$Ei() {
-		if (this.hasOwnProperty(m("elementProperties"))) return;
-		let e = ne(this);
+		if (this.hasOwnProperty(g("elementProperties"))) return;
+		let e = ee(this);
 		e.finalize(), e.l !== void 0 && (this.l = [...e.l]), this.elementProperties = new Map(e.elementProperties);
 	}
 	static finalize() {
-		if (this.hasOwnProperty(m("finalized"))) return;
-		if (this.finalized = !0, this._$Ei(), this.hasOwnProperty(m("properties"))) {
-			let e = this.properties, t = [...ee(e), ...te(e)];
+		if (this.hasOwnProperty(g("finalized"))) return;
+		if (this.finalized = !0, this._$Ei(), this.hasOwnProperty(g("properties"))) {
+			let e = this.properties, t = [...f(e), ...p(e)];
 			for (let n of t) this.createProperty(n, e[n]);
 		}
 		let e = this[Symbol.metadata];
@@ -171,14 +171,14 @@ var v = class extends HTMLElement {
 	_$ET(e, t) {
 		let n = this.constructor.elementProperties.get(e), r = this.constructor._$Eu(e, n);
 		if (r !== void 0 && !0 === n.reflect) {
-			let i = (n.converter?.toAttribute === void 0 ? h : n.converter).toAttribute(t, n.type);
+			let i = (n.converter?.toAttribute === void 0 ? _ : n.converter).toAttribute(t, n.type);
 			this._$Em = e, i == null ? this.removeAttribute(r) : this.setAttribute(r, i), this._$Em = null;
 		}
 	}
 	_$AK(e, t) {
 		let n = this.constructor, r = n._$Eh.get(e);
 		if (r !== void 0 && this._$Em !== r) {
-			let e = n.getPropertyOptions(r), i = typeof e.converter == "function" ? { fromAttribute: e.converter } : e.converter?.fromAttribute === void 0 ? h : e.converter;
+			let e = n.getPropertyOptions(r), i = typeof e.converter == "function" ? { fromAttribute: e.converter } : e.converter?.fromAttribute === void 0 ? _ : e.converter;
 			this._$Em = r;
 			let a = i.fromAttribute(t, e.type);
 			this[r] = a ?? this._$Ej?.get(r) ?? a, this._$Em = null;
@@ -187,7 +187,7 @@ var v = class extends HTMLElement {
 	requestUpdate(e, t, n, r = !1, i) {
 		if (e !== void 0) {
 			let a = this.constructor;
-			if (!1 === r && (i = this[e]), n ??= a.getPropertyOptions(e), !((n.hasChanged ?? g)(i, t) || n.useDefault && n.reflect && i === this._$Ej?.get(e) && !this.hasAttribute(a._$Eu(e, n)))) return;
+			if (!1 === r && (i = this[e]), n ??= a.getPropertyOptions(e), !((n.hasChanged ?? v)(i, t) || n.useDefault && n.reflect && i === this._$Ej?.get(e) && !this.hasAttribute(a._$Eu(e, n)))) return;
 			this.C(e, t, n);
 		}
 		!1 === this.isUpdatePending && (this._$ES = this._$EP());
@@ -251,17 +251,17 @@ var v = class extends HTMLElement {
 	updated(e) {}
 	firstUpdated(e) {}
 };
-v.elementStyles = [], v.shadowRootOptions = { mode: "open" }, v[m("elementProperties")] = /* @__PURE__ */ new Map(), v[m("finalized")] = /* @__PURE__ */ new Map(), ie?.({ ReactiveElement: v }), (f.reactiveElementVersions ??= []).push("2.1.2");
+b.elementStyles = [], b.shadowRootOptions = { mode: "open" }, b[g("elementProperties")] = /* @__PURE__ */ new Map(), b[g("finalized")] = /* @__PURE__ */ new Map(), ne?.({ ReactiveElement: b }), (m.reactiveElementVersions ??= []).push("2.1.2");
 //#endregion
 //#region node_modules/lit-html/lit-html.js
-var y = globalThis, b = (e) => e, x = y.trustedTypes, S = x ? x.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, ae = "$lit$", C = `lit$${Math.random().toFixed(9).slice(2)}$`, w = "?" + C, oe = `<${w}>`, T = document, E = () => T.createComment(""), D = (e) => e === null || typeof e != "object" && typeof e != "function", O = Array.isArray, se = (e) => O(e) || typeof e?.[Symbol.iterator] == "function", k = "[ 	\n\f\r]", A = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, j = /-->/g, ce = />/g, M = RegExp(`>|${k}(?:([^\\s"'>=/]+)(${k}*=${k}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), le = /'/g, ue = /"/g, N = /^(?:script|style|textarea|title)$/i, P = ((e) => (t, ...n) => ({
+var x = globalThis, S = (e) => e, C = x.trustedTypes, re = C ? C.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, ie = "$lit$", w = `lit$${Math.random().toFixed(9).slice(2)}$`, ae = "?" + w, oe = `<${ae}>`, T = document, E = () => T.createComment(""), D = (e) => e === null || typeof e != "object" && typeof e != "function", O = Array.isArray, se = (e) => O(e) || typeof e?.[Symbol.iterator] == "function", k = "[ 	\n\f\r]", A = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, j = /-->/g, ce = />/g, M = RegExp(`>|${k}(?:([^\\s"'>=/]+)(${k}*=${k}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), le = /'/g, ue = /"/g, N = /^(?:script|style|textarea|title)$/i, P = ((e) => (t, ...n) => ({
 	_$litType$: e,
 	strings: t,
 	values: n
 }))(1), F = Symbol.for("lit-noChange"), I = Symbol.for("lit-nothing"), L = /* @__PURE__ */ new WeakMap(), R = T.createTreeWalker(T, 129);
 function z(e, t) {
 	if (!O(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
-	return S === void 0 ? t : S.createHTML(t);
+	return re === void 0 ? t : re.createHTML(t);
 }
 var de = (e, t) => {
 	let n = e.length - 1, r = [], i, a = t === 2 ? "<svg>" : t === 3 ? "<math>" : "", o = A;
@@ -269,7 +269,7 @@ var de = (e, t) => {
 		let n = e[t], s, c, l = -1, u = 0;
 		for (; u < n.length && (o.lastIndex = u, c = o.exec(n), c !== null);) u = o.lastIndex, o === A ? c[1] === "!--" ? o = j : c[1] === void 0 ? c[2] === void 0 ? c[3] !== void 0 && (o = M) : (N.test(c[2]) && (i = RegExp("</" + c[2], "g")), o = M) : o = ce : o === M ? c[0] === ">" ? (o = i ?? A, l = -1) : c[1] === void 0 ? l = -2 : (l = o.lastIndex - c[2].length, s = c[1], o = c[3] === void 0 ? M : c[3] === "\"" ? ue : le) : o === ue || o === le ? o = M : o === j || o === ce ? o = A : (o = M, i = void 0);
 		let d = o === M && e[t + 1].startsWith("/>") ? " " : "";
-		a += o === A ? n + oe : l >= 0 ? (r.push(s), n.slice(0, l) + ae + n.slice(l) + C + d) : n + C + (l === -2 ? t : d);
+		a += o === A ? n + oe : l >= 0 ? (r.push(s), n.slice(0, l) + ie + n.slice(l) + w + d) : n + w + (l === -2 ? t : d);
 	}
 	return [z(e, a + (e[n] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), r];
 }, B = class e {
@@ -283,8 +283,8 @@ var de = (e, t) => {
 		}
 		for (; (i = R.nextNode()) !== null && c.length < s;) {
 			if (i.nodeType === 1) {
-				if (i.hasAttributes()) for (let e of i.getAttributeNames()) if (e.endsWith(ae)) {
-					let t = u[o++], n = i.getAttribute(e).split(C), r = /([.?@])?(.*)/.exec(t);
+				if (i.hasAttributes()) for (let e of i.getAttributeNames()) if (e.endsWith(ie)) {
+					let t = u[o++], n = i.getAttribute(e).split(w), r = /([.?@])?(.*)/.exec(t);
 					c.push({
 						type: 1,
 						index: a,
@@ -292,14 +292,14 @@ var de = (e, t) => {
 						strings: n,
 						ctor: r[1] === "." ? pe : r[1] === "?" ? me : r[1] === "@" ? he : U
 					}), i.removeAttribute(e);
-				} else e.startsWith(C) && (c.push({
+				} else e.startsWith(w) && (c.push({
 					type: 6,
 					index: a
 				}), i.removeAttribute(e));
 				if (N.test(i.tagName)) {
-					let e = i.textContent.split(C), t = e.length - 1;
+					let e = i.textContent.split(w), t = e.length - 1;
 					if (t > 0) {
-						i.textContent = x ? x.emptyScript : "";
+						i.textContent = C ? C.emptyScript : "";
 						for (let n = 0; n < t; n++) i.append(e[n], E()), R.nextNode(), c.push({
 							type: 2,
 							index: ++a
@@ -307,16 +307,16 @@ var de = (e, t) => {
 						i.append(e[t], E());
 					}
 				}
-			} else if (i.nodeType === 8) if (i.data === w) c.push({
+			} else if (i.nodeType === 8) if (i.data === ae) c.push({
 				type: 2,
 				index: a
 			});
 			else {
 				let e = -1;
-				for (; (e = i.data.indexOf(C, e + 1)) !== -1;) c.push({
+				for (; (e = i.data.indexOf(w, e + 1)) !== -1;) c.push({
 					type: 7,
 					index: a
-				}), e += C.length - 1;
+				}), e += w.length - 1;
 			}
 			a++;
 		}
@@ -407,8 +407,8 @@ var fe = class {
 	}
 	_$AR(e = this._$AA.nextSibling, t) {
 		for (this._$AP?.(!1, !0, t); e !== this._$AB;) {
-			let t = b(e).nextSibling;
-			b(e).remove(), e = t;
+			let t = S(e).nextSibling;
+			S(e).remove(), e = t;
 		}
 	}
 	setConnected(e) {
@@ -472,8 +472,8 @@ var fe = class {
 	_$AI(e) {
 		V(this, e);
 	}
-}, _e = y.litHtmlPolyfillSupport;
-_e?.(B, H), (y.litHtmlVersions ??= []).push("3.3.3");
+}, _e = x.litHtmlPolyfillSupport;
+_e?.(B, H), (x.litHtmlVersions ??= []).push("3.3.3");
 var ve = (e, t, n) => {
 	let r = n?.renderBefore ?? t, i = r._$litPart$;
 	if (i === void 0) {
@@ -481,7 +481,7 @@ var ve = (e, t, n) => {
 		r._$litPart$ = i = new H(t.insertBefore(E(), e), e, void 0, n ?? {});
 	}
 	return i._$AI(e), i;
-}, W = globalThis, G = class extends v {
+}, W = globalThis, G = class extends b {
 	constructor() {
 		super(...arguments), this.renderOptions = { host: this }, this._$Do = void 0;
 	}
@@ -515,9 +515,9 @@ var K = (e) => (t, n) => {
 }, be = {
 	attribute: !0,
 	type: String,
-	converter: h,
+	converter: _,
 	reflect: !1,
-	hasChanged: g
+	hasChanged: v
 }, xe = (e = be, t, n) => {
 	let { kind: r, metadata: i } = n, a = globalThis.litPropertyMetadata.get(i);
 	if (a === void 0 && globalThis.litPropertyMetadata.set(i, a = /* @__PURE__ */ new Map()), r === "setter" && ((e = Object.create(e)).wrapped = !0), a.set(n.name, e), r === "accessor") {
@@ -769,29 +769,263 @@ var X = class extends G {
 };
 Y([q({ attribute: !1 })], X.prototype, "lighting", void 0), X = Y([K("mower-lighting")], X);
 //#endregion
+//#region src/constants/mower-presentation.ts
+var Oe = {
+	desktop: {
+		scale: 1.35,
+		translateX: 0,
+		translateY: 28,
+		maxWidth: 520,
+		maxHeight: 330
+	},
+	mobile: {
+		scale: 1.35,
+		translateX: 0,
+		translateY: 24,
+		maxWidth: 420,
+		maxHeight: 285
+	}
+}, ke = {
+	luba1: {
+		desktop: {
+			scale: 1.38,
+			translateX: 0,
+			translateY: 30,
+			maxWidth: 520,
+			maxHeight: 330
+		},
+		mobile: {
+			scale: 1.36,
+			translateX: 0,
+			translateY: 25,
+			maxWidth: 420,
+			maxHeight: 285
+		}
+	},
+	luba2: {
+		desktop: {
+			scale: 1.4,
+			translateX: 4,
+			translateY: 30,
+			maxWidth: 525,
+			maxHeight: 335
+		},
+		mobile: {
+			scale: 1.38,
+			translateX: 2,
+			translateY: 25,
+			maxWidth: 425,
+			maxHeight: 290
+		}
+	},
+	luba3: {
+		desktop: {
+			scale: 1.43,
+			translateX: 10,
+			translateY: 30,
+			maxWidth: 530,
+			maxHeight: 340
+		},
+		mobile: {
+			scale: 1.4,
+			translateX: 6,
+			translateY: 48,
+			maxWidth: 430,
+			maxHeight: 290
+		}
+	},
+	mini1: {
+		desktop: {
+			scale: 1.5,
+			translateX: 0,
+			translateY: 28,
+			maxWidth: 500,
+			maxHeight: 325
+		},
+		mobile: {
+			scale: 1.46,
+			translateX: 0,
+			translateY: 24,
+			maxWidth: 410,
+			maxHeight: 280
+		}
+	},
+	mini2: {
+		desktop: {
+			scale: 1.48,
+			translateX: 0,
+			translateY: 28,
+			maxWidth: 500,
+			maxHeight: 325
+		},
+		mobile: {
+			scale: 1.44,
+			translateX: 0,
+			translateY: 24,
+			maxWidth: 410,
+			maxHeight: 280
+		}
+	}
+};
+function Ae(e) {
+	return ke[e] ?? Oe;
+}
+//#endregion
+//#region src/constants/theme.ts
+var Z = {
+	colors: {
+		background: "#111827",
+		backgroundDeep: "#090D14",
+		surface: "#1F2937",
+		surfaceSoft: "#252D3A",
+		border: "#374151",
+		borderSoft: "rgba(255, 255, 255, 0.08)",
+		primary: "#3B82F6",
+		secondary: "#60A5FA",
+		text: "#FFFFFF",
+		textSecondary: "#9CA3AF",
+		textMuted: "#6B7280"
+	},
+	states: {
+		mowing: {
+			color: "#65D344",
+			soft: "rgba(101, 211, 68, 0.12)",
+			glow: "rgba(101, 211, 68, 0.42)"
+		},
+		docked: {
+			color: "#F7C843",
+			soft: "rgba(247, 200, 67, 0.12)",
+			glow: "rgba(247, 200, 67, 0.42)"
+		},
+		returning: {
+			color: "#F7C843",
+			soft: "rgba(247, 200, 67, 0.12)",
+			glow: "rgba(247, 200, 67, 0.42)"
+		},
+		error: {
+			color: "#EF4444",
+			soft: "rgba(239, 68, 68, 0.13)",
+			glow: "rgba(239, 68, 68, 0.45)"
+		},
+		maintenance: {
+			color: "#F28C28",
+			soft: "rgba(242, 140, 40, 0.13)",
+			glow: "rgba(242, 140, 40, 0.45)"
+		},
+		update: {
+			color: "#8B5CF6",
+			soft: "rgba(139, 92, 246, 0.13)",
+			glow: "rgba(139, 92, 246, 0.45)"
+		},
+		offline: {
+			color: "#9CA3AF",
+			soft: "rgba(156, 163, 175, 0.10)",
+			glow: "rgba(156, 163, 175, 0.22)"
+		},
+		unknown: {
+			color: "#F7C843",
+			soft: "rgba(247, 200, 67, 0.12)",
+			glow: "rgba(247, 200, 67, 0.35)"
+		}
+	},
+	radius: {
+		small: "10px",
+		medium: "18px",
+		large: "28px",
+		pill: "999px"
+	},
+	shadow: {
+		card: "0 8px 24px rgba(0, 0, 0, 0.35)",
+		elevated: "0 18px 48px rgba(0, 0, 0, 0.42)"
+	},
+	spacing: {
+		xs: "4px",
+		sm: "8px",
+		md: "16px",
+		lg: "24px",
+		xl: "32px"
+	},
+	animation: {
+		fast: "150ms",
+		normal: "300ms",
+		slow: "600ms"
+	}
+}, je = {
+	luba1: {
+		id: "luba1",
+		manufacturer: "Mammotion",
+		displayName: "Luba 1",
+		assetFolder: "luba1",
+		defaultImage: "default.webp"
+	},
+	luba2: {
+		id: "luba2",
+		manufacturer: "Mammotion",
+		displayName: "Luba 2",
+		assetFolder: "luba2",
+		defaultImage: "default.webp"
+	},
+	luba3: {
+		id: "luba3",
+		manufacturer: "Mammotion",
+		displayName: "Luba 3 AWD LiDAR",
+		assetFolder: "luba3",
+		defaultImage: "default.webp"
+	},
+	mini1: {
+		id: "mini1",
+		manufacturer: "Mammotion",
+		displayName: "Luba Mini 1",
+		assetFolder: "mini",
+		defaultImage: "mini1-default.webp"
+	},
+	mini2: {
+		id: "mini2",
+		manufacturer: "Mammotion",
+		displayName: "Luba Mini 2",
+		assetFolder: "mini",
+		defaultImage: "mini2-default.webp"
+	},
+	unknown: {
+		id: "unknown",
+		manufacturer: "Mammotion",
+		displayName: "Mammotion Mower",
+		assetFolder: "assets/robot",
+		defaultImage: "fallback.webp"
+	}
+}, Me = "/hacsfiles/nova-luba-card/images";
+function Ne(e) {
+	let t = je[e];
+	return [
+		Me,
+		t.assetFolder,
+		t.defaultImage
+	].join("/");
+}
+//#endregion
 //#region src/helpers/get-mower-lighting-assets.ts
-var Z = "/hacsfiles/nova-luba-card/images";
-function Oe(e) {
+var Q = "/hacsfiles/nova-luba-card/images";
+function Pe(e) {
 	switch (e) {
 		case "luba1": return {
 			front: null,
-			side: `${Z}/luba1/lighting/side-light.png`
+			side: `${Q}/luba1/lighting/side-light.png`
 		};
 		case "luba2": return {
 			front: null,
-			side: `${Z}/luba2/lighting/side-light.png`
+			side: `${Q}/luba2/lighting/side-light.png`
 		};
 		case "luba3": return {
-			front: `${Z}/luba3/lighting/front-light.png`,
-			side: `${Z}/luba3/lighting/side-light.png`
+			front: `${Q}/luba3/lighting/front-light.png`,
+			side: `${Q}/luba3/lighting/side-light.png`
 		};
 		case "mini1": return {
-			front: `${Z}/mini/lighting/mini1-front-light.png`,
+			front: `${Q}/mini/lighting/mini1-front-light.png`,
 			side: null
 		};
 		case "mini2": return {
-			front: `${Z}/mini/lighting/mini2-front-light.png`,
-			side: `${Z}/mini/lighting/mini2-side-light.png`
+			front: `${Q}/mini/lighting/mini2-front-light.png`,
+			side: `${Q}/mini/lighting/mini2-side-light.png`
 		};
 		default: return {
 			front: null,
@@ -801,7 +1035,7 @@ function Oe(e) {
 }
 //#endregion
 //#region src/constants/mower-lighting-config.ts
-var ke = {
+var Fe = {
 	ring: {
 		visible: !1,
 		color: "#ffffff",
@@ -823,7 +1057,7 @@ var ke = {
 };
 //#endregion
 //#region src/helpers/resolve-mower-lighting.ts
-function Ae(e) {
+function Ie(e) {
 	switch (e) {
 		case "mowing": return {
 			ring: {
@@ -945,242 +1179,8 @@ function Ae(e) {
 				animation: "pulse"
 			}
 		};
-		default: return structuredClone(ke);
+		default: return structuredClone(Fe);
 	}
-}
-//#endregion
-//#region src/constants/mower-presentation.ts
-var je = {
-	desktop: {
-		scale: 1.35,
-		translateX: 0,
-		translateY: 28,
-		maxWidth: 520,
-		maxHeight: 330
-	},
-	mobile: {
-		scale: 1.35,
-		translateX: 0,
-		translateY: 24,
-		maxWidth: 420,
-		maxHeight: 285
-	}
-}, Me = {
-	luba1: {
-		desktop: {
-			scale: 1.38,
-			translateX: 0,
-			translateY: 30,
-			maxWidth: 520,
-			maxHeight: 330
-		},
-		mobile: {
-			scale: 1.36,
-			translateX: 0,
-			translateY: 25,
-			maxWidth: 420,
-			maxHeight: 285
-		}
-	},
-	luba2: {
-		desktop: {
-			scale: 1.4,
-			translateX: 4,
-			translateY: 30,
-			maxWidth: 525,
-			maxHeight: 335
-		},
-		mobile: {
-			scale: 1.38,
-			translateX: 2,
-			translateY: 25,
-			maxWidth: 425,
-			maxHeight: 290
-		}
-	},
-	luba3: {
-		desktop: {
-			scale: 1.43,
-			translateX: 10,
-			translateY: 30,
-			maxWidth: 530,
-			maxHeight: 340
-		},
-		mobile: {
-			scale: 1.4,
-			translateX: 6,
-			translateY: 48,
-			maxWidth: 430,
-			maxHeight: 290
-		}
-	},
-	mini1: {
-		desktop: {
-			scale: 1.5,
-			translateX: 0,
-			translateY: 28,
-			maxWidth: 500,
-			maxHeight: 325
-		},
-		mobile: {
-			scale: 1.46,
-			translateX: 0,
-			translateY: 24,
-			maxWidth: 410,
-			maxHeight: 280
-		}
-	},
-	mini2: {
-		desktop: {
-			scale: 1.48,
-			translateX: 0,
-			translateY: 28,
-			maxWidth: 500,
-			maxHeight: 325
-		},
-		mobile: {
-			scale: 1.44,
-			translateX: 0,
-			translateY: 24,
-			maxWidth: 410,
-			maxHeight: 280
-		}
-	}
-};
-function Ne(e) {
-	return Me[e] ?? je;
-}
-//#endregion
-//#region src/constants/theme.ts
-var Q = {
-	colors: {
-		background: "#111827",
-		backgroundDeep: "#090D14",
-		surface: "#1F2937",
-		surfaceSoft: "#252D3A",
-		border: "#374151",
-		borderSoft: "rgba(255, 255, 255, 0.08)",
-		primary: "#3B82F6",
-		secondary: "#60A5FA",
-		text: "#FFFFFF",
-		textSecondary: "#9CA3AF",
-		textMuted: "#6B7280"
-	},
-	states: {
-		mowing: {
-			color: "#65D344",
-			soft: "rgba(101, 211, 68, 0.12)",
-			glow: "rgba(101, 211, 68, 0.42)"
-		},
-		docked: {
-			color: "#F7C843",
-			soft: "rgba(247, 200, 67, 0.12)",
-			glow: "rgba(247, 200, 67, 0.42)"
-		},
-		returning: {
-			color: "#F7C843",
-			soft: "rgba(247, 200, 67, 0.12)",
-			glow: "rgba(247, 200, 67, 0.42)"
-		},
-		error: {
-			color: "#EF4444",
-			soft: "rgba(239, 68, 68, 0.13)",
-			glow: "rgba(239, 68, 68, 0.45)"
-		},
-		maintenance: {
-			color: "#F28C28",
-			soft: "rgba(242, 140, 40, 0.13)",
-			glow: "rgba(242, 140, 40, 0.45)"
-		},
-		update: {
-			color: "#8B5CF6",
-			soft: "rgba(139, 92, 246, 0.13)",
-			glow: "rgba(139, 92, 246, 0.45)"
-		},
-		offline: {
-			color: "#9CA3AF",
-			soft: "rgba(156, 163, 175, 0.10)",
-			glow: "rgba(156, 163, 175, 0.22)"
-		},
-		unknown: {
-			color: "#F7C843",
-			soft: "rgba(247, 200, 67, 0.12)",
-			glow: "rgba(247, 200, 67, 0.35)"
-		}
-	},
-	radius: {
-		small: "10px",
-		medium: "18px",
-		large: "28px",
-		pill: "999px"
-	},
-	shadow: {
-		card: "0 8px 24px rgba(0, 0, 0, 0.35)",
-		elevated: "0 18px 48px rgba(0, 0, 0, 0.42)"
-	},
-	spacing: {
-		xs: "4px",
-		sm: "8px",
-		md: "16px",
-		lg: "24px",
-		xl: "32px"
-	},
-	animation: {
-		fast: "150ms",
-		normal: "300ms",
-		slow: "600ms"
-	}
-}, Pe = {
-	luba1: {
-		id: "luba1",
-		manufacturer: "Mammotion",
-		displayName: "Luba 1",
-		assetFolder: "luba1",
-		defaultImage: "default.webp"
-	},
-	luba2: {
-		id: "luba2",
-		manufacturer: "Mammotion",
-		displayName: "Luba 2",
-		assetFolder: "luba2",
-		defaultImage: "default.webp"
-	},
-	luba3: {
-		id: "luba3",
-		manufacturer: "Mammotion",
-		displayName: "Luba 3 AWD LiDAR",
-		assetFolder: "luba3",
-		defaultImage: "default.webp"
-	},
-	mini1: {
-		id: "mini1",
-		manufacturer: "Mammotion",
-		displayName: "Luba Mini 1",
-		assetFolder: "mini",
-		defaultImage: "mini1-default.webp"
-	},
-	mini2: {
-		id: "mini2",
-		manufacturer: "Mammotion",
-		displayName: "Luba Mini 2",
-		assetFolder: "mini",
-		defaultImage: "mini2-default.webp"
-	},
-	unknown: {
-		id: "unknown",
-		manufacturer: "Mammotion",
-		displayName: "Mammotion Mower",
-		assetFolder: "assets/robot",
-		defaultImage: "fallback.webp"
-	}
-}, Fe = "/hacsfiles/nova-luba-card/images";
-function Ie(e) {
-	let t = Pe[e];
-	return [
-		Fe,
-		t.assetFolder,
-		t.defaultImage
-	].join("/");
 }
 //#endregion
 //#region src/helpers/resolve-mower-model.ts
@@ -1216,10 +1216,10 @@ var ze = {
       position: relative;
       overflow: hidden;
       min-height: 520px;
-      padding: ${a(Q.spacing.lg)};
+      padding: ${a(Z.spacing.lg)};
       border: 1px solid var(--nova-state-color);
-      border-radius: ${a(Q.radius.large)};
-      color: ${a(Q.colors.text)};
+      border-radius: ${a(Z.radius.large)};
+      color: ${a(Z.colors.text)};
       background:
         radial-gradient(
           circle at 78% 20%,
@@ -1228,16 +1228,16 @@ var ze = {
         ),
         linear-gradient(
           145deg,
-          ${a(Q.colors.surface)},
-          ${a(Q.colors.backgroundDeep)}
+          ${a(Z.colors.surface)},
+          ${a(Z.colors.backgroundDeep)}
         );
       box-shadow:
-        ${a(Q.shadow.card)},
+        ${a(Z.shadow.card)},
         0 0 30px var(--nova-state-glow);
       transition:
-        border-color ${a(Q.animation.normal)} ease,
-        box-shadow ${a(Q.animation.normal)} ease,
-        background ${a(Q.animation.normal)} ease;
+        border-color ${a(Z.animation.normal)} ease,
+        box-shadow ${a(Z.animation.normal)} ease,
+        background ${a(Z.animation.normal)} ease;
     }
 
     .card-layout {
@@ -1252,7 +1252,7 @@ var ze = {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: ${a(Q.spacing.md)};
+      gap: ${a(Z.spacing.md)};
     }
 
     .brand {
@@ -1260,7 +1260,7 @@ var ze = {
     }
 
     .eyebrow {
-      margin-bottom: ${a(Q.spacing.sm)};
+      margin-bottom: ${a(Z.spacing.sm)};
       color: var(--nova-state-color);
       font-size: 12px;
       font-weight: 800;
@@ -1275,8 +1275,8 @@ var ze = {
     }
 
     .model {
-      margin-top: ${a(Q.spacing.sm)};
-      color: ${a(Q.colors.textSecondary)};
+      margin-top: ${a(Z.spacing.sm)};
+      color: ${a(Z.colors.textSecondary)};
       font-size: 15px;
     }
 
@@ -1305,7 +1305,7 @@ var ze = {
       align-items: center;
       justify-items: center;
       padding:
-        ${a(Q.spacing.lg)}
+        ${a(Z.spacing.lg)}
         0;
     }
 
@@ -1316,7 +1316,7 @@ var ze = {
       min-height: 330px;
       place-items: center;
       overflow: visible;
-      border-radius: ${a(Q.radius.large)};
+      border-radius: ${a(Z.radius.large)};
       background:
         radial-gradient(
           ellipse at 50% 65%,
@@ -1355,8 +1355,8 @@ var ze = {
         drop-shadow(0 18px 20px rgba(0, 0, 0, 0.42))
         drop-shadow(0 0 10px var(--nova-state-glow));
       transition:
-        transform ${a(Q.animation.normal)} ease,
-        filter ${a(Q.animation.normal)} ease;
+        transform ${a(Z.animation.normal)} ease,
+        filter ${a(Z.animation.normal)} ease;
     }
 
     .robot-image:hover {
@@ -1370,9 +1370,9 @@ var ze = {
       position: relative;
       z-index: 1;
       display: grid;
-      gap: ${a(Q.spacing.sm)};
+      gap: ${a(Z.spacing.sm)};
       justify-items: center;
-      color: ${a(Q.colors.textMuted)};
+      color: ${a(Z.colors.textMuted)};
       text-align: center;
     }
 
@@ -1388,7 +1388,7 @@ var ze = {
     }
 
     .robot-fallback-title {
-      color: ${a(Q.colors.textSecondary)};
+      color: ${a(Z.colors.textSecondary)};
       font-size: 15px;
       font-weight: 600;
     }
@@ -1404,14 +1404,14 @@ var ze = {
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
-      gap: ${a(Q.spacing.md)};
-      padding-top: ${a(Q.spacing.md)};
-      border-top: 1px solid ${a(Q.colors.borderSoft)};
+      gap: ${a(Z.spacing.md)};
+      padding-top: ${a(Z.spacing.md)};
+      border-top: 1px solid ${a(Z.colors.borderSoft)};
     }
 
     .status-group {
       display: grid;
-      gap: ${a(Q.spacing.sm)};
+      gap: ${a(Z.spacing.sm)};
     }
 
     .status {
@@ -1421,10 +1421,10 @@ var ze = {
       gap: 9px;
       padding: 10px 15px;
       border: 1px solid var(--nova-state-color);
-      border-radius: ${a(Q.radius.pill)};
+      border-radius: ${a(Z.radius.pill)};
       background: var(--nova-state-soft);
       font-weight: 600;
-      transition: all ${a(Q.animation.normal)} ease;
+      transition: all ${a(Z.animation.normal)} ease;
     }
 
     .dot {
@@ -1436,12 +1436,12 @@ var ze = {
     }
 
     .raw-state {
-      color: ${a(Q.colors.textMuted)};
+      color: ${a(Z.colors.textMuted)};
       font-size: 12px;
     }
 
     .layout-note {
-      color: ${a(Q.colors.textMuted)};
+      color: ${a(Z.colors.textMuted)};
       font-size: 11px;
       letter-spacing: 0.8px;
       text-align: right;
@@ -1452,18 +1452,18 @@ var ze = {
       display: grid;
       min-height: 240px;
       place-items: center;
-      padding: ${a(Q.spacing.lg)};
-      border: 1px solid ${a(Q.states.error.color)};
-      border-radius: ${a(Q.radius.medium)};
-      color: ${a(Q.states.error.color)};
-      background: ${a(Q.states.error.soft)};
+      padding: ${a(Z.spacing.lg)};
+      border: 1px solid ${a(Z.states.error.color)};
+      border-radius: ${a(Z.radius.medium)};
+      color: ${a(Z.states.error.color)};
+      background: ${a(Z.states.error.soft)};
       text-align: center;
     }
 
     @media (max-width: 600px) {
       ha-card {
         min-height: 440px;
-        padding: ${a(Q.spacing.md)};
+        padding: ${a(Z.spacing.md)};
       }
 
       .card-layout {
@@ -1517,14 +1517,14 @@ var ze = {
 	handleImageError(e) {
 		let t = e.currentTarget;
 		t.style.display = "none";
-		let n = t.nextElementSibling;
+		let n = t.parentElement?.querySelector(".robot-fallback");
 		n && (n.hidden = !1);
 	}
 	render() {
 		if (!this.config) return I;
-		let e = this.mowerState, t = this.config.name ?? "Luba", n = this.config.model ?? "Luba 3 AWD LiDAR", r = Le(n), i = Ie(r), a = Ne(r);
+		let e = this.mowerState, t = this.config.name ?? "Luba", n = this.config.model ?? "Luba 3 AWD LiDAR", r = Le(n), i = Ne(r), a = Ae(r);
 		if (!e) {
-			let e = Q.states.error;
+			let e = Z.states.error;
 			return P`
         <ha-card
           style=${J({
@@ -1546,21 +1546,21 @@ var ze = {
         </ha-card>
       `;
 		}
-		let o = Re(e.state), s = Q.states[o], c = Ae(o), l = Oe(r), u = this.config.debugLighting ?? "off", d = {
+		let o = Re(e.state), s = Z.states[o], c = Ie(o), l = Pe(r), u = this.config.debugLighting ?? "off", d = u === "front" || u === "all", f = u === "side" || u === "all", p = {
 			...c,
 			front: {
 				...c.front,
 				asset: l.front,
-				visible: u === "front" || u === "all" ? !!l.front : c.front.visible,
-				brightness: u === "front" || u === "all" ? 1 : c.front.brightness,
-				animation: u === "front" || u === "all" ? "none" : c.front.animation
+				visible: d ? !!l.front : c.front.visible,
+				brightness: d ? 1 : c.front.brightness,
+				animation: d ? "none" : c.front.animation
 			},
 			side: {
 				...c.side,
 				asset: l.side,
-				visible: u === "side" || u === "all" ? !!l.side : c.side.visible,
-				brightness: u === "side" || u === "all" ? 1 : c.side.brightness,
-				animation: u === "side" || u === "all" ? "none" : c.side.animation
+				visible: f ? !!l.side : c.side.visible,
+				brightness: f ? 1 : c.side.brightness,
+				animation: f ? "none" : c.side.animation
 			}
 		};
 		return P`
@@ -1601,20 +1601,19 @@ var ze = {
             </div>
           </header>
 
-<main class="hero">
-  <div class="robot-stage">
-    <img
-      class="robot-image"
-      src=${i}
-      alt=${n}
-      loading="eager"
-      @error=${this.handleImageError}
-    />
+          <main class="hero">
+            <div class="robot-stage">
+              <img
+                class="robot-image"
+                src=${i}
+                alt=${n}
+                loading="eager"
+                @error=${this.handleImageError}
+              />
 
-<mower-lighting
--  .lighting=${c}
-+  .lighting=${d}
-></mower-lighting>
+              <mower-lighting
+                .lighting=${p}
+              ></mower-lighting>
 
               <div
                 class="robot-fallback"
@@ -1635,25 +1634,25 @@ var ze = {
             </div>
           </main>
 
-<footer class="footer">
-  <div class="status-group">
-    <div class="status">
-      <span class="dot"></span>
+          <footer class="footer">
+            <div class="status-group">
+              <div class="status">
+                <span class="dot"></span>
 
-      <span>
-        ${ze[o]}
-      </span>
-    </div>
+                <span>
+                  ${ze[o]}
+                </span>
+              </div>
 
-    <div class="raw-state">
-      Rohstatus: ${e.state}
-    </div>
-  </div>
+              <div class="raw-state">
+                Rohstatus: ${e.state}
+              </div>
+            </div>
 
-  <div class="layout-note">
-    ${r}
-  </div>
-</footer>
+            <div class="layout-note">
+              ${r}
+            </div>
+          </footer>
         </div>
       </ha-card>
     `;

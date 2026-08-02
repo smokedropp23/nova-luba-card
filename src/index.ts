@@ -16,11 +16,11 @@ import { styleMap } from "lit/directives/style-map.js";
 
 import "./components/mower-lighting";
 
-import { getMowerLightingAssets } from "./helpers/get-mower-lighting-assets";
-import { resolveMowerLighting } from "./helpers/resolve-mower-lighting";
 import { getMowerPresentation } from "./constants/mower-presentation";
 import { theme } from "./constants/theme";
 import { getMowerImage } from "./helpers/get-mower-image";
+import { getMowerLightingAssets } from "./helpers/get-mower-lighting-assets";
+import { resolveMowerLighting } from "./helpers/resolve-mower-lighting";
 import { resolveMowerModel } from "./helpers/resolve-mower-model";
 import { resolveMowerState } from "./helpers/resolve-mower-state";
 
@@ -390,8 +390,9 @@ export class NovaLubaCard extends LitElement {
 
     image.style.display = "none";
 
+    const stage = image.parentElement;
     const fallback =
-      image.nextElementSibling as HTMLElement | null;
+      stage?.querySelector<HTMLElement>(".robot-fallback");
 
     if (fallback) {
       fallback.hidden = false;
@@ -438,60 +439,60 @@ export class NovaLubaCard extends LitElement {
       `;
     }
 
-const novaState = resolveMowerState(mower.state);
-const stateTheme = theme.states[novaState];
+    const novaState =
+      resolveMowerState(mower.state);
 
-const lighting = resolveMowerLighting(novaState);
+    const stateTheme =
+      theme.states[novaState];
 
-const lightingAssets =
-  getMowerLightingAssets(resolvedModel);
+    const lighting =
+      resolveMowerLighting(novaState);
 
-const debugLighting =
-  this.config.debugLighting ?? "off";
+    const lightingAssets =
+      getMowerLightingAssets(resolvedModel);
 
-const lightingWithAssets = {
-  ...lighting,
+    const debugLighting =
+      this.config.debugLighting ?? "off";
 
-  front: {
-    ...lighting.front,
-    asset: lightingAssets.front,
-    visible:
+    const debugFront =
       debugLighting === "front" ||
-      debugLighting === "all"
-        ? Boolean(lightingAssets.front)
-        : lighting.front.visible,
-    brightness:
-      debugLighting === "front" ||
-      debugLighting === "all"
-        ? 1
-        : lighting.front.brightness,
-    animation:
-      debugLighting === "front" ||
-      debugLighting === "all"
-        ? "none" as const
-        : lighting.front.animation,
-  },
+      debugLighting === "all";
 
-  side: {
-    ...lighting.side,
-    asset: lightingAssets.side,
-    visible:
+    const debugSide =
       debugLighting === "side" ||
-      debugLighting === "all"
-        ? Boolean(lightingAssets.side)
-        : lighting.side.visible,
-    brightness:
-      debugLighting === "side" ||
-      debugLighting === "all"
-        ? 1
-        : lighting.side.brightness,
-    animation:
-      debugLighting === "side" ||
-      debugLighting === "all"
-        ? "none" as const
-        : lighting.side.animation,
-  },
-};
+      debugLighting === "all";
+
+    const lightingWithAssets = {
+      ...lighting,
+
+      front: {
+        ...lighting.front,
+        asset: lightingAssets.front,
+        visible: debugFront
+          ? Boolean(lightingAssets.front)
+          : lighting.front.visible,
+        brightness: debugFront
+          ? 1
+          : lighting.front.brightness,
+        animation: debugFront
+          ? ("none" as const)
+          : lighting.front.animation,
+      },
+
+      side: {
+        ...lighting.side,
+        asset: lightingAssets.side,
+        visible: debugSide
+          ? Boolean(lightingAssets.side)
+          : lighting.side.visible,
+        brightness: debugSide
+          ? 1
+          : lighting.side.brightness,
+        animation: debugSide
+          ? ("none" as const)
+          : lighting.side.animation,
+      },
+    };
 
     const dynamicStyles = {
       "--nova-state-color": stateTheme.color,
@@ -553,20 +554,19 @@ const lightingWithAssets = {
             </div>
           </header>
 
-<main class="hero">
-  <div class="robot-stage">
-    <img
-      class="robot-image"
-      src=${mowerImage}
-      alt=${model}
-      loading="eager"
-      @error=${this.handleImageError}
-    />
+          <main class="hero">
+            <div class="robot-stage">
+              <img
+                class="robot-image"
+                src=${mowerImage}
+                alt=${model}
+                loading="eager"
+                @error=${this.handleImageError}
+              />
 
-<mower-lighting
--  .lighting=${lighting}
-+  .lighting=${lightingWithAssets}
-></mower-lighting>
+              <mower-lighting
+                .lighting=${lightingWithAssets}
+              ></mower-lighting>
 
               <div
                 class="robot-fallback"
@@ -587,25 +587,25 @@ const lightingWithAssets = {
             </div>
           </main>
 
-<footer class="footer">
-  <div class="status-group">
-    <div class="status">
-      <span class="dot"></span>
+          <footer class="footer">
+            <div class="status-group">
+              <div class="status">
+                <span class="dot"></span>
 
-      <span>
-        ${stateLabels[novaState]}
-      </span>
-    </div>
+                <span>
+                  ${stateLabels[novaState]}
+                </span>
+              </div>
 
-    <div class="raw-state">
-      Rohstatus: ${mower.state}
-    </div>
-  </div>
+              <div class="raw-state">
+                Rohstatus: ${mower.state}
+              </div>
+            </div>
 
-  <div class="layout-note">
-    ${resolvedModel}
-  </div>
-</footer>
+            <div class="layout-note">
+              ${resolvedModel}
+            </div>
+          </footer>
         </div>
       </ha-card>
     `;
@@ -632,7 +632,8 @@ declare global {
   }
 }
 
-window.customCards = window.customCards || [];
+window.customCards =
+  window.customCards || [];
 
 window.customCards.push({
   type: "nova-luba-card",
