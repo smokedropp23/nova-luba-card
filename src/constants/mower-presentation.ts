@@ -78,7 +78,7 @@ const presentations: Record<string, MowerPresentation> = {
     mobile: {
       scale: 1.4,
       translateX: 6,
-      translateY: 26,
+      translateY: 40,
       maxWidth: 430,
       maxHeight: 290,
     },
