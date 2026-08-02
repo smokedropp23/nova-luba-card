@@ -1,5 +1,7 @@
 # Nova UI – Luba Card
 
+![Nova UI – Luba Card Preview](images/preview/nova-luba-card-preview.png)
+
 A dynamic and visually rich Home Assistant card for Mammotion robotic mowers.
 
 ---
