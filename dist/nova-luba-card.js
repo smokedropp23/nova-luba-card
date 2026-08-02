@@ -518,7 +518,7 @@ var ge = (e) => (t, n) => {
 	converter: h,
 	reflect: !1,
 	hasChanged: g
-}, X = (e = _e, t, n) => {
+}, ve = (e = _e, t, n) => {
 	let { kind: r, metadata: i } = n, a = globalThis.litPropertyMetadata.get(i);
 	if (a === void 0 && globalThis.litPropertyMetadata.set(i, a = /* @__PURE__ */ new Map()), r === "setter" && ((e = Object.create(e)).wrapped = !0), a.set(n.name, e), r === "accessor") {
 		let { name: r } = n;
@@ -541,21 +541,102 @@ var ge = (e) => (t, n) => {
 	}
 	throw Error("Unsupported decorator location: " + r);
 };
-function Z(e) {
-	return (t, n) => typeof n == "object" ? X(e, t, n) : ((e, t, n) => {
+function X(e) {
+	return (t, n) => typeof n == "object" ? ve(e, t, n) : ((e, t, n) => {
 		let r = t.hasOwnProperty(n);
 		return t.constructor.createProperty(n, e), r ? Object.getOwnPropertyDescriptor(t, n) : void 0;
 	})(e, t, n);
 }
 //#endregion
 //#region node_modules/@lit/reactive-element/decorators/state.js
-function ve(e) {
-	return Z({
+function ye(e) {
+	return X({
 		...e,
 		state: !0,
 		attribute: !1
 	});
 }
+//#endregion
+//#region src/constants/theme.ts
+var Z = {
+	colors: {
+		background: "#111827",
+		backgroundDeep: "#090D14",
+		surface: "#1F2937",
+		surfaceSoft: "#252D3A",
+		border: "#374151",
+		borderSoft: "rgba(255, 255, 255, 0.08)",
+		primary: "#3B82F6",
+		secondary: "#60A5FA",
+		text: "#FFFFFF",
+		textSecondary: "#9CA3AF",
+		textMuted: "#6B7280"
+	},
+	states: {
+		mowing: {
+			color: "#65D344",
+			soft: "rgba(101, 211, 68, 0.12)",
+			glow: "rgba(101, 211, 68, 0.42)"
+		},
+		docked: {
+			color: "#F7C843",
+			soft: "rgba(247, 200, 67, 0.12)",
+			glow: "rgba(247, 200, 67, 0.42)"
+		},
+		returning: {
+			color: "#F7C843",
+			soft: "rgba(247, 200, 67, 0.12)",
+			glow: "rgba(247, 200, 67, 0.42)"
+		},
+		error: {
+			color: "#EF4444",
+			soft: "rgba(239, 68, 68, 0.13)",
+			glow: "rgba(239, 68, 68, 0.45)"
+		},
+		maintenance: {
+			color: "#F28C28",
+			soft: "rgba(242, 140, 40, 0.13)",
+			glow: "rgba(242, 140, 40, 0.45)"
+		},
+		update: {
+			color: "#8B5CF6",
+			soft: "rgba(139, 92, 246, 0.13)",
+			glow: "rgba(139, 92, 246, 0.45)"
+		},
+		offline: {
+			color: "#9CA3AF",
+			soft: "rgba(156, 163, 175, 0.10)",
+			glow: "rgba(156, 163, 175, 0.22)"
+		},
+		unknown: {
+			color: "#F7C843",
+			soft: "rgba(247, 200, 67, 0.12)",
+			glow: "rgba(247, 200, 67, 0.35)"
+		}
+	},
+	radius: {
+		small: "10px",
+		medium: "18px",
+		large: "28px",
+		pill: "999px"
+	},
+	shadow: {
+		card: "0 8px 24px rgba(0, 0, 0, 0.35)",
+		elevated: "0 18px 48px rgba(0, 0, 0, 0.42)"
+	},
+	spacing: {
+		xs: "4px",
+		sm: "8px",
+		md: "16px",
+		lg: "24px",
+		xl: "32px"
+	},
+	animation: {
+		fast: "150ms",
+		normal: "300ms",
+		slow: "600ms"
+	}
+};
 //#endregion
 //#region \0@oxc-project+runtime@0.142.0/helpers/esm/decorate.js
 function Q(e, t, n, r) {
@@ -575,21 +656,21 @@ var $ = class extends Y {
 
     ha-card {
       overflow: hidden;
-      padding: 24px;
-      border-radius: 24px;
-      color: var(--primary-text-color);
-      background:
-        linear-gradient(
-          145deg,
-          rgba(28, 32, 40, 0.98),
-          rgba(11, 14, 19, 0.98)
-        );
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: ${a(Z.spacing.lg)};
+      border: 1px solid ${a(Z.colors.borderSoft)};
+      border-radius: ${a(Z.radius.large)};
+      color: ${a(Z.colors.text)};
+      background: linear-gradient(
+        145deg,
+        ${a(Z.colors.surface)},
+        ${a(Z.colors.backgroundDeep)}
+      );
+      box-shadow: ${a(Z.shadow.card)};
     }
 
     .eyebrow {
-      margin-bottom: 8px;
-      color: #ff9f2f;
+      margin-bottom: ${a(Z.spacing.sm)};
+      color: ${a(Z.states.unknown.color)};
       font-size: 12px;
       font-weight: 700;
       letter-spacing: 1.2px;
@@ -603,8 +684,8 @@ var $ = class extends Y {
     }
 
     .model {
-      margin-top: 7px;
-      color: var(--secondary-text-color);
+      margin-top: ${a(Z.spacing.sm)};
+      color: ${a(Z.colors.textSecondary)};
       font-size: 14px;
     }
 
@@ -612,29 +693,29 @@ var $ = class extends Y {
       display: inline-flex;
       align-items: center;
       gap: 9px;
-      margin-top: 22px;
+      margin-top: ${a(Z.spacing.lg)};
       padding: 10px 14px;
-      border: 1px solid rgba(255, 159, 47, 0.22);
-      border-radius: 999px;
-      background: rgba(255, 159, 47, 0.09);
-      font-size: 14px;
+      border: 1px solid ${a(Z.states.unknown.color)};
+      border-radius: ${a(Z.radius.pill)};
+      background: ${a(Z.states.unknown.soft)};
+      transition: all ${a(Z.animation.normal)} ease;
     }
 
     .dot {
       width: 9px;
       height: 9px;
       border-radius: 50%;
-      background: #ff9f2f;
-      box-shadow: 0 0 12px rgba(255, 159, 47, 0.85);
+      background: ${a(Z.states.unknown.color)};
+      box-shadow: 0 0 12px ${a(Z.states.unknown.glow)};
     }
 
     .error {
-      margin-top: 18px;
-      padding: 14px;
-      border: 1px solid rgba(255, 70, 70, 0.28);
-      border-radius: 14px;
-      background: rgba(255, 70, 70, 0.1);
-      color: #ff8c8c;
+      margin-top: ${a(Z.spacing.lg)};
+      padding: ${a(Z.spacing.md)};
+      border: 1px solid ${a(Z.states.error.color)};
+      border-radius: ${a(Z.radius.medium)};
+      color: ${a(Z.states.error.color)};
+      background: ${a(Z.states.error.soft)};
     }
   `;
 	}
@@ -651,21 +732,30 @@ var $ = class extends Y {
 		let e = this.mowerState;
 		return R`
       <ha-card>
-        <div class="eyebrow">Nova UI</div>
+        <div class="eyebrow">
+          Nova UI
+        </div>
 
-        <h2>${this.config.name ?? "Luba"}</h2>
+        <h2>
+          ${this.config.name ?? "Luba"}
+        </h2>
 
-        <div class="model">${this.config.model ?? "Luba 3 AWD LiDAR"}</div>
+        <div class="model">
+          ${this.config.model ?? "Luba 3 AWD LiDAR"}
+        </div>
 
         ${e ? R`
                 <div class="status">
                   <span class="dot"></span>
-                  <span>Status: ${e.state}</span>
+
+                  <span>
+                    Status: ${e.state}
+                  </span>
                 </div>
               ` : R`
                 <div class="error">
-                  Entität „${this.config.entity}“ wurde in Home Assistant
-                  nicht gefunden.
+                  Entität „${this.config.entity}“
+                  wurde in Home Assistant nicht gefunden.
                 </div>
               `}
       </ha-card>
@@ -683,7 +773,7 @@ var $ = class extends Y {
 		};
 	}
 };
-Q([Z({ attribute: !1 })], $.prototype, "hass", void 0), Q([ve()], $.prototype, "config", void 0), $ = Q([ge("nova-luba-card")], $), window.customCards = window.customCards || [], window.customCards.push({
+Q([X({ attribute: !1 })], $.prototype, "hass", void 0), Q([ye()], $.prototype, "config", void 0), $ = Q([ge("nova-luba-card")], $), window.customCards = window.customCards || [], window.customCards.push({
 	type: "nova-luba-card",
 	name: "Nova UI – Luba Card",
 	description: "A dynamic Mammotion mower card for Home Assistant.",

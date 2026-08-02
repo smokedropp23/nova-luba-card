@@ -1,5 +1,18 @@
-import { LitElement, css, html, nothing } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import {
+  LitElement,
+  css,
+  html,
+  nothing,
+  unsafeCSS,
+} from "lit";
+
+import {
+  customElement,
+  property,
+  state,
+} from "lit/decorators.js";
+
+import { theme } from "./constants/theme";
 
 interface HomeAssistantState {
   state: string;
@@ -32,21 +45,21 @@ export class NovaLubaCard extends LitElement {
 
     ha-card {
       overflow: hidden;
-      padding: 24px;
-      border-radius: 24px;
-      color: var(--primary-text-color);
-      background:
-        linear-gradient(
-          145deg,
-          rgba(28, 32, 40, 0.98),
-          rgba(11, 14, 19, 0.98)
-        );
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: ${unsafeCSS(theme.spacing.lg)};
+      border: 1px solid ${unsafeCSS(theme.colors.borderSoft)};
+      border-radius: ${unsafeCSS(theme.radius.large)};
+      color: ${unsafeCSS(theme.colors.text)};
+      background: linear-gradient(
+        145deg,
+        ${unsafeCSS(theme.colors.surface)},
+        ${unsafeCSS(theme.colors.backgroundDeep)}
+      );
+      box-shadow: ${unsafeCSS(theme.shadow.card)};
     }
 
     .eyebrow {
-      margin-bottom: 8px;
-      color: #ff9f2f;
+      margin-bottom: ${unsafeCSS(theme.spacing.sm)};
+      color: ${unsafeCSS(theme.states.unknown.color)};
       font-size: 12px;
       font-weight: 700;
       letter-spacing: 1.2px;
@@ -60,8 +73,8 @@ export class NovaLubaCard extends LitElement {
     }
 
     .model {
-      margin-top: 7px;
-      color: var(--secondary-text-color);
+      margin-top: ${unsafeCSS(theme.spacing.sm)};
+      color: ${unsafeCSS(theme.colors.textSecondary)};
       font-size: 14px;
     }
 
@@ -69,35 +82,37 @@ export class NovaLubaCard extends LitElement {
       display: inline-flex;
       align-items: center;
       gap: 9px;
-      margin-top: 22px;
+      margin-top: ${unsafeCSS(theme.spacing.lg)};
       padding: 10px 14px;
-      border: 1px solid rgba(255, 159, 47, 0.22);
-      border-radius: 999px;
-      background: rgba(255, 159, 47, 0.09);
-      font-size: 14px;
+      border: 1px solid ${unsafeCSS(theme.states.unknown.color)};
+      border-radius: ${unsafeCSS(theme.radius.pill)};
+      background: ${unsafeCSS(theme.states.unknown.soft)};
+      transition: all ${unsafeCSS(theme.animation.normal)} ease;
     }
 
     .dot {
       width: 9px;
       height: 9px;
       border-radius: 50%;
-      background: #ff9f2f;
-      box-shadow: 0 0 12px rgba(255, 159, 47, 0.85);
+      background: ${unsafeCSS(theme.states.unknown.color)};
+      box-shadow: 0 0 12px ${unsafeCSS(theme.states.unknown.glow)};
     }
 
     .error {
-      margin-top: 18px;
-      padding: 14px;
-      border: 1px solid rgba(255, 70, 70, 0.28);
-      border-radius: 14px;
-      background: rgba(255, 70, 70, 0.1);
-      color: #ff8c8c;
+      margin-top: ${unsafeCSS(theme.spacing.lg)};
+      padding: ${unsafeCSS(theme.spacing.md)};
+      border: 1px solid ${unsafeCSS(theme.states.error.color)};
+      border-radius: ${unsafeCSS(theme.radius.medium)};
+      color: ${unsafeCSS(theme.states.error.color)};
+      background: ${unsafeCSS(theme.states.error.soft)};
     }
   `;
 
   public setConfig(config: NovaLubaCardConfig): void {
     if (!config) {
-      throw new Error("Nova UI: Kartenkonfiguration fehlt.");
+      throw new Error(
+        "Nova UI: Kartenkonfiguration fehlt.",
+      );
     }
 
     if (!config.entity) {
@@ -124,28 +139,38 @@ export class NovaLubaCard extends LitElement {
 
     const mower = this.mowerState;
     const name = this.config.name ?? "Luba";
-    const model = this.config.model ?? "Luba 3 AWD LiDAR";
+    const model =
+      this.config.model ?? "Luba 3 AWD LiDAR";
 
     return html`
       <ha-card>
-        <div class="eyebrow">Nova UI</div>
+        <div class="eyebrow">
+          Nova UI
+        </div>
 
-        <h2>${name}</h2>
+        <h2>
+          ${name}
+        </h2>
 
-        <div class="model">${model}</div>
+        <div class="model">
+          ${model}
+        </div>
 
         ${
           mower
             ? html`
                 <div class="status">
                   <span class="dot"></span>
-                  <span>Status: ${mower.state}</span>
+
+                  <span>
+                    Status: ${mower.state}
+                  </span>
                 </div>
               `
             : html`
                 <div class="error">
-                  Entität „${this.config.entity}“ wurde in Home Assistant
-                  nicht gefunden.
+                  Entität „${this.config.entity}“
+                  wurde in Home Assistant nicht gefunden.
                 </div>
               `
         }
@@ -169,15 +194,19 @@ export class NovaLubaCard extends LitElement {
 
 declare global {
   interface Window {
-    customCards?: Array<Record<string, unknown>>;
+    customCards?: Array<
+      Record<string, unknown>
+    >;
   }
 }
 
-window.customCards = window.customCards || [];
+window.customCards =
+  window.customCards || [];
 
 window.customCards.push({
   type: "nova-luba-card",
   name: "Nova UI – Luba Card",
-  description: "A dynamic Mammotion mower card for Home Assistant.",
+  description:
+    "A dynamic Mammotion mower card for Home Assistant.",
   preview: true,
 });
