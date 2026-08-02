@@ -254,34 +254,34 @@ var v = class extends HTMLElement {
 v.elementStyles = [], v.shadowRootOptions = { mode: "open" }, v[m("elementProperties")] = /* @__PURE__ */ new Map(), v[m("finalized")] = /* @__PURE__ */ new Map(), ie?.({ ReactiveElement: v }), (f.reactiveElementVersions ??= []).push("2.1.2");
 //#endregion
 //#region node_modules/lit-html/lit-html.js
-var y = globalThis, ae = (e) => e, b = y.trustedTypes, x = b ? b.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, S = "$lit$", C = `lit$${Math.random().toFixed(9).slice(2)}$`, w = "?" + C, oe = `<${w}>`, T = document, E = () => T.createComment(""), D = (e) => e === null || typeof e != "object" && typeof e != "function", O = Array.isArray, se = (e) => O(e) || typeof e?.[Symbol.iterator] == "function", k = "[ 	\n\f\r]", A = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, j = /-->/g, M = />/g, N = RegExp(`>|${k}(?:([^\\s"'>=/]+)(${k}*=${k}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), P = /'/g, F = /"/g, I = /^(?:script|style|textarea|title)$/i, L = ((e) => (t, ...n) => ({
+var y = globalThis, b = (e) => e, x = y.trustedTypes, ae = x ? x.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, S = "$lit$", C = `lit$${Math.random().toFixed(9).slice(2)}$`, w = "?" + C, oe = `<${w}>`, T = document, E = () => T.createComment(""), D = (e) => e === null || typeof e != "object" && typeof e != "function", O = Array.isArray, se = (e) => O(e) || typeof e?.[Symbol.iterator] == "function", k = "[ 	\n\f\r]", A = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, j = /-->/g, M = />/g, N = RegExp(`>|${k}(?:([^\\s"'>=/]+)(${k}*=${k}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), ce = /'/g, le = /"/g, P = /^(?:script|style|textarea|title)$/i, F = ((e) => (t, ...n) => ({
 	_$litType$: e,
 	strings: t,
 	values: n
-}))(1), R = Symbol.for("lit-noChange"), z = Symbol.for("lit-nothing"), B = /* @__PURE__ */ new WeakMap(), V = T.createTreeWalker(T, 129);
-function H(e, t) {
+}))(1), I = Symbol.for("lit-noChange"), L = Symbol.for("lit-nothing"), R = /* @__PURE__ */ new WeakMap(), z = T.createTreeWalker(T, 129);
+function B(e, t) {
 	if (!O(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
-	return x === void 0 ? t : x.createHTML(t);
+	return ae === void 0 ? t : ae.createHTML(t);
 }
-var ce = (e, t) => {
+var ue = (e, t) => {
 	let n = e.length - 1, r = [], i, a = t === 2 ? "<svg>" : t === 3 ? "<math>" : "", o = A;
 	for (let t = 0; t < n; t++) {
 		let n = e[t], s, c, l = -1, u = 0;
-		for (; u < n.length && (o.lastIndex = u, c = o.exec(n), c !== null);) u = o.lastIndex, o === A ? c[1] === "!--" ? o = j : c[1] === void 0 ? c[2] === void 0 ? c[3] !== void 0 && (o = N) : (I.test(c[2]) && (i = RegExp("</" + c[2], "g")), o = N) : o = M : o === N ? c[0] === ">" ? (o = i ?? A, l = -1) : c[1] === void 0 ? l = -2 : (l = o.lastIndex - c[2].length, s = c[1], o = c[3] === void 0 ? N : c[3] === "\"" ? F : P) : o === F || o === P ? o = N : o === j || o === M ? o = A : (o = N, i = void 0);
+		for (; u < n.length && (o.lastIndex = u, c = o.exec(n), c !== null);) u = o.lastIndex, o === A ? c[1] === "!--" ? o = j : c[1] === void 0 ? c[2] === void 0 ? c[3] !== void 0 && (o = N) : (P.test(c[2]) && (i = RegExp("</" + c[2], "g")), o = N) : o = M : o === N ? c[0] === ">" ? (o = i ?? A, l = -1) : c[1] === void 0 ? l = -2 : (l = o.lastIndex - c[2].length, s = c[1], o = c[3] === void 0 ? N : c[3] === "\"" ? le : ce) : o === le || o === ce ? o = N : o === j || o === M ? o = A : (o = N, i = void 0);
 		let d = o === N && e[t + 1].startsWith("/>") ? " " : "";
 		a += o === A ? n + oe : l >= 0 ? (r.push(s), n.slice(0, l) + S + n.slice(l) + C + d) : n + C + (l === -2 ? t : d);
 	}
-	return [H(e, a + (e[n] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), r];
-}, U = class e {
+	return [B(e, a + (e[n] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), r];
+}, V = class e {
 	constructor({ strings: t, _$litType$: n }, r) {
 		let i;
 		this.parts = [];
-		let a = 0, o = 0, s = t.length - 1, c = this.parts, [l, u] = ce(t, n);
-		if (this.el = e.createElement(l, r), V.currentNode = this.el.content, n === 2 || n === 3) {
+		let a = 0, o = 0, s = t.length - 1, c = this.parts, [l, u] = ue(t, n);
+		if (this.el = e.createElement(l, r), z.currentNode = this.el.content, n === 2 || n === 3) {
 			let e = this.el.content.firstChild;
 			e.replaceWith(...e.childNodes);
 		}
-		for (; (i = V.nextNode()) !== null && c.length < s;) {
+		for (; (i = z.nextNode()) !== null && c.length < s;) {
 			if (i.nodeType === 1) {
 				if (i.hasAttributes()) for (let e of i.getAttributeNames()) if (e.endsWith(S)) {
 					let t = u[o++], n = i.getAttribute(e).split(C), r = /([.?@])?(.*)/.exec(t);
@@ -290,17 +290,17 @@ var ce = (e, t) => {
 						index: a,
 						name: r[2],
 						strings: n,
-						ctor: r[1] === "." ? ue : r[1] === "?" ? de : r[1] === "@" ? fe : K
+						ctor: r[1] === "." ? fe : r[1] === "?" ? pe : r[1] === "@" ? me : W
 					}), i.removeAttribute(e);
 				} else e.startsWith(C) && (c.push({
 					type: 6,
 					index: a
 				}), i.removeAttribute(e));
-				if (I.test(i.tagName)) {
+				if (P.test(i.tagName)) {
 					let e = i.textContent.split(C), t = e.length - 1;
 					if (t > 0) {
-						i.textContent = b ? b.emptyScript : "";
-						for (let n = 0; n < t; n++) i.append(e[n], E()), V.nextNode(), c.push({
+						i.textContent = x ? x.emptyScript : "";
+						for (let n = 0; n < t; n++) i.append(e[n], E()), z.nextNode(), c.push({
 							type: 2,
 							index: ++a
 						});
@@ -326,12 +326,12 @@ var ce = (e, t) => {
 		return n.innerHTML = e, n;
 	}
 };
-function W(e, t, n = e, r) {
-	if (t === R) return t;
+function H(e, t, n = e, r) {
+	if (t === I) return t;
 	let i = r === void 0 ? n._$Cl : n._$Co?.[r], a = D(t) ? void 0 : t._$litDirective$;
-	return i?.constructor !== a && (i?._$AO?.(!1), a === void 0 ? i = void 0 : (i = new a(e), i._$AT(e, n, r)), r === void 0 ? n._$Cl = i : (n._$Co ??= [])[r] = i), i !== void 0 && (t = W(e, i._$AS(e, t.values), i, r)), t;
+	return i?.constructor !== a && (i?._$AO?.(!1), a === void 0 ? i = void 0 : (i = new a(e), i._$AT(e, n, r)), r === void 0 ? n._$Cl = i : (n._$Co ??= [])[r] = i), i !== void 0 && (t = H(e, i._$AS(e, t.values), i, r)), t;
 }
-var le = class {
+var de = class {
 	constructor(e, t) {
 		this._$AV = [], this._$AN = void 0, this._$AD = e, this._$AM = t;
 	}
@@ -343,27 +343,27 @@ var le = class {
 	}
 	u(e) {
 		let { el: { content: t }, parts: n } = this._$AD, r = (e?.creationScope ?? T).importNode(t, !0);
-		V.currentNode = r;
-		let i = V.nextNode(), a = 0, o = 0, s = n[0];
+		z.currentNode = r;
+		let i = z.nextNode(), a = 0, o = 0, s = n[0];
 		for (; s !== void 0;) {
 			if (a === s.index) {
 				let t;
-				s.type === 2 ? t = new G(i, i.nextSibling, this, e) : s.type === 1 ? t = new s.ctor(i, s.name, s.strings, this, e) : s.type === 6 && (t = new pe(i, this, e)), this._$AV.push(t), s = n[++o];
+				s.type === 2 ? t = new U(i, i.nextSibling, this, e) : s.type === 1 ? t = new s.ctor(i, s.name, s.strings, this, e) : s.type === 6 && (t = new he(i, this, e)), this._$AV.push(t), s = n[++o];
 			}
-			a !== s?.index && (i = V.nextNode(), a++);
+			a !== s?.index && (i = z.nextNode(), a++);
 		}
-		return V.currentNode = T, r;
+		return z.currentNode = T, r;
 	}
 	p(e) {
 		let t = 0;
 		for (let n of this._$AV) n !== void 0 && (n.strings === void 0 ? n._$AI(e[t]) : (n._$AI(e, n, t), t += n.strings.length - 2)), t++;
 	}
-}, G = class e {
+}, U = class e {
 	get _$AU() {
 		return this._$AM?._$AU ?? this._$Cv;
 	}
 	constructor(e, t, n, r) {
-		this.type = 2, this._$AH = z, this._$AN = void 0, this._$AA = e, this._$AB = t, this._$AM = n, this.options = r, this._$Cv = r?.isConnected ?? !0;
+		this.type = 2, this._$AH = L, this._$AN = void 0, this._$AA = e, this._$AB = t, this._$AM = n, this.options = r, this._$Cv = r?.isConnected ?? !0;
 	}
 	get parentNode() {
 		let e = this._$AA.parentNode, t = this._$AM;
@@ -376,7 +376,7 @@ var le = class {
 		return this._$AB;
 	}
 	_$AI(e, t = this) {
-		e = W(this, e, t), D(e) ? e === z || e == null || e === "" ? (this._$AH !== z && this._$AR(), this._$AH = z) : e !== this._$AH && e !== R && this._(e) : e._$litType$ === void 0 ? e.nodeType === void 0 ? se(e) ? this.k(e) : this._(e) : this.T(e) : this.$(e);
+		e = H(this, e, t), D(e) ? e === L || e == null || e === "" ? (this._$AH !== L && this._$AR(), this._$AH = L) : e !== this._$AH && e !== I && this._(e) : e._$litType$ === void 0 ? e.nodeType === void 0 ? se(e) ? this.k(e) : this._(e) : this.T(e) : this.$(e);
 	}
 	O(e) {
 		return this._$AA.parentNode.insertBefore(e, this._$AB);
@@ -385,19 +385,19 @@ var le = class {
 		this._$AH !== e && (this._$AR(), this._$AH = this.O(e));
 	}
 	_(e) {
-		this._$AH !== z && D(this._$AH) ? this._$AA.nextSibling.data = e : this.T(T.createTextNode(e)), this._$AH = e;
+		this._$AH !== L && D(this._$AH) ? this._$AA.nextSibling.data = e : this.T(T.createTextNode(e)), this._$AH = e;
 	}
 	$(e) {
-		let { values: t, _$litType$: n } = e, r = typeof n == "number" ? this._$AC(e) : (n.el === void 0 && (n.el = U.createElement(H(n.h, n.h[0]), this.options)), n);
+		let { values: t, _$litType$: n } = e, r = typeof n == "number" ? this._$AC(e) : (n.el === void 0 && (n.el = V.createElement(B(n.h, n.h[0]), this.options)), n);
 		if (this._$AH?._$AD === r) this._$AH.p(t);
 		else {
-			let e = new le(r, this), n = e.u(this.options);
+			let e = new de(r, this), n = e.u(this.options);
 			e.p(t), this.T(n), this._$AH = e;
 		}
 	}
 	_$AC(e) {
-		let t = B.get(e.strings);
-		return t === void 0 && B.set(e.strings, t = new U(e)), t;
+		let t = R.get(e.strings);
+		return t === void 0 && R.set(e.strings, t = new V(e)), t;
 	}
 	k(t) {
 		O(this._$AH) || (this._$AH = [], this._$AR());
@@ -407,14 +407,14 @@ var le = class {
 	}
 	_$AR(e = this._$AA.nextSibling, t) {
 		for (this._$AP?.(!1, !0, t); e !== this._$AB;) {
-			let t = ae(e).nextSibling;
-			ae(e).remove(), e = t;
+			let t = b(e).nextSibling;
+			b(e).remove(), e = t;
 		}
 	}
 	setConnected(e) {
 		this._$AM === void 0 && (this._$Cv = e, this._$AP?.(e));
 	}
-}, K = class {
+}, W = class {
 	get tagName() {
 		return this.element.tagName;
 	}
@@ -422,47 +422,47 @@ var le = class {
 		return this._$AM._$AU;
 	}
 	constructor(e, t, n, r, i) {
-		this.type = 1, this._$AH = z, this._$AN = void 0, this.element = e, this.name = t, this._$AM = r, this.options = i, n.length > 2 || n[0] !== "" || n[1] !== "" ? (this._$AH = Array(n.length - 1).fill(/* @__PURE__ */ new String()), this.strings = n) : this._$AH = z;
+		this.type = 1, this._$AH = L, this._$AN = void 0, this.element = e, this.name = t, this._$AM = r, this.options = i, n.length > 2 || n[0] !== "" || n[1] !== "" ? (this._$AH = Array(n.length - 1).fill(/* @__PURE__ */ new String()), this.strings = n) : this._$AH = L;
 	}
 	_$AI(e, t = this, n, r) {
 		let i = this.strings, a = !1;
-		if (i === void 0) e = W(this, e, t, 0), a = !D(e) || e !== this._$AH && e !== R, a && (this._$AH = e);
+		if (i === void 0) e = H(this, e, t, 0), a = !D(e) || e !== this._$AH && e !== I, a && (this._$AH = e);
 		else {
 			let r = e, o, s;
-			for (e = i[0], o = 0; o < i.length - 1; o++) s = W(this, r[n + o], t, o), s === R && (s = this._$AH[o]), a ||= !D(s) || s !== this._$AH[o], s === z ? e = z : e !== z && (e += (s ?? "") + i[o + 1]), this._$AH[o] = s;
+			for (e = i[0], o = 0; o < i.length - 1; o++) s = H(this, r[n + o], t, o), s === I && (s = this._$AH[o]), a ||= !D(s) || s !== this._$AH[o], s === L ? e = L : e !== L && (e += (s ?? "") + i[o + 1]), this._$AH[o] = s;
 		}
 		a && !r && this.j(e);
 	}
 	j(e) {
-		e === z ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, e ?? "");
+		e === L ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, e ?? "");
 	}
-}, ue = class extends K {
+}, fe = class extends W {
 	constructor() {
 		super(...arguments), this.type = 3;
 	}
 	j(e) {
-		this.element[this.name] = e === z ? void 0 : e;
+		this.element[this.name] = e === L ? void 0 : e;
 	}
-}, de = class extends K {
+}, pe = class extends W {
 	constructor() {
 		super(...arguments), this.type = 4;
 	}
 	j(e) {
-		this.element.toggleAttribute(this.name, !!e && e !== z);
+		this.element.toggleAttribute(this.name, !!e && e !== L);
 	}
-}, fe = class extends K {
+}, me = class extends W {
 	constructor(e, t, n, r, i) {
 		super(e, t, n, r, i), this.type = 5;
 	}
 	_$AI(e, t = this) {
-		if ((e = W(this, e, t, 0) ?? z) === R) return;
-		let n = this._$AH, r = e === z && n !== z || e.capture !== n.capture || e.once !== n.once || e.passive !== n.passive, i = e !== z && (n === z || r);
+		if ((e = H(this, e, t, 0) ?? L) === I) return;
+		let n = this._$AH, r = e === L && n !== L || e.capture !== n.capture || e.once !== n.once || e.passive !== n.passive, i = e !== L && (n === L || r);
 		r && this.element.removeEventListener(this.name, this, n), i && this.element.addEventListener(this.name, this, e), this._$AH = e;
 	}
 	handleEvent(e) {
 		typeof this._$AH == "function" ? this._$AH.call(this.options?.host ?? this.element, e) : this._$AH.handleEvent(e);
 	}
-}, pe = class {
+}, he = class {
 	constructor(e, t, n) {
 		this.element = e, this.type = 6, this._$AN = void 0, this._$AM = t, this.options = n;
 	}
@@ -470,18 +470,18 @@ var le = class {
 		return this._$AM._$AU;
 	}
 	_$AI(e) {
-		W(this, e);
+		H(this, e);
 	}
-}, me = y.litHtmlPolyfillSupport;
-me?.(U, G), (y.litHtmlVersions ??= []).push("3.3.3");
-var he = (e, t, n) => {
+}, ge = y.litHtmlPolyfillSupport;
+ge?.(V, U), (y.litHtmlVersions ??= []).push("3.3.3");
+var _e = (e, t, n) => {
 	let r = n?.renderBefore ?? t, i = r._$litPart$;
 	if (i === void 0) {
 		let e = n?.renderBefore ?? null;
-		r._$litPart$ = i = new G(t.insertBefore(E(), e), e, void 0, n ?? {});
+		r._$litPart$ = i = new U(t.insertBefore(E(), e), e, void 0, n ?? {});
 	}
 	return i._$AI(e), i;
-}, q = globalThis, J = class extends v {
+}, G = globalThis, K = class extends v {
 	constructor() {
 		super(...arguments), this.renderOptions = { host: this }, this._$Do = void 0;
 	}
@@ -491,7 +491,7 @@ var he = (e, t, n) => {
 	}
 	update(e) {
 		let t = this.render();
-		this.hasUpdated || (this.renderOptions.isConnected = this.isConnected), super.update(e), this._$Do = he(t, this.renderRoot, this.renderOptions);
+		this.hasUpdated || (this.renderOptions.isConnected = this.isConnected), super.update(e), this._$Do = _e(t, this.renderRoot, this.renderOptions);
 	}
 	connectedCallback() {
 		super.connectedCallback(), this._$Do?.setConnected(!0);
@@ -500,25 +500,25 @@ var he = (e, t, n) => {
 		super.disconnectedCallback(), this._$Do?.setConnected(!1);
 	}
 	render() {
-		return R;
+		return I;
 	}
 };
-J._$litElement$ = !0, J.finalized = !0, q.litElementHydrateSupport?.({ LitElement: J });
-var ge = q.litElementPolyfillSupport;
-ge?.({ LitElement: J }), (q.litElementVersions ??= []).push("4.2.2");
+K._$litElement$ = !0, K.finalized = !0, G.litElementHydrateSupport?.({ LitElement: K });
+var ve = G.litElementPolyfillSupport;
+ve?.({ LitElement: K }), (G.litElementVersions ??= []).push("4.2.2");
 //#endregion
 //#region node_modules/@lit/reactive-element/decorators/custom-element.js
-var _e = (e) => (t, n) => {
+var q = (e) => (t, n) => {
 	n === void 0 ? customElements.define(e, t) : n.addInitializer(() => {
 		customElements.define(e, t);
 	});
-}, ve = {
+}, ye = {
 	attribute: !0,
 	type: String,
 	converter: h,
 	reflect: !1,
 	hasChanged: g
-}, ye = (e = ve, t, n) => {
+}, be = (e = ye, t, n) => {
 	let { kind: r, metadata: i } = n, a = globalThis.litPropertyMetadata.get(i);
 	if (a === void 0 && globalThis.litPropertyMetadata.set(i, a = /* @__PURE__ */ new Map()), r === "setter" && ((e = Object.create(e)).wrapped = !0), a.set(n.name, e), r === "accessor") {
 		let { name: r } = n;
@@ -541,16 +541,16 @@ var _e = (e) => (t, n) => {
 	}
 	throw Error("Unsupported decorator location: " + r);
 };
-function Y(e) {
-	return (t, n) => typeof n == "object" ? ye(e, t, n) : ((e, t, n) => {
+function J(e) {
+	return (t, n) => typeof n == "object" ? be(e, t, n) : ((e, t, n) => {
 		let r = t.hasOwnProperty(n);
 		return t.constructor.createProperty(n, e), r ? Object.getOwnPropertyDescriptor(t, n) : void 0;
 	})(e, t, n);
 }
 //#endregion
 //#region node_modules/@lit/reactive-element/decorators/state.js
-function be(e) {
-	return Y({
+function xe(e) {
+	return J({
 		...e,
 		state: !0,
 		attribute: !1
@@ -558,17 +558,17 @@ function be(e) {
 }
 //#endregion
 //#region node_modules/lit-html/directive.js
-var xe = {
+var Se = {
 	ATTRIBUTE: 1,
 	CHILD: 2,
 	PROPERTY: 3,
 	BOOLEAN_ATTRIBUTE: 4,
 	EVENT: 5,
 	ELEMENT: 6
-}, Se = (e) => (...t) => ({
+}, Ce = (e) => (...t) => ({
 	_$litDirective$: e,
 	values: t
-}), Ce = class {
+}), we = class {
 	constructor(e) {}
 	get _$AU() {
 		return this._$AM._$AU;
@@ -582,9 +582,9 @@ var xe = {
 	update(e, t) {
 		return this.render(...t);
 	}
-}, we = "important", Te = " !important", X = Se(class extends Ce {
+}, Te = "important", Ee = " !important", Y = Ce(class extends we {
 	constructor(e) {
-		if (super(e), e.type !== xe.ATTRIBUTE || e.name !== "style" || e.strings?.length > 2) throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.");
+		if (super(e), e.type !== Se.ATTRIBUTE || e.name !== "style" || e.strings?.length > 2) throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.");
 	}
 	render(e) {
 		return Object.keys(e).reduce((t, n) => {
@@ -600,13 +600,308 @@ var xe = {
 			let r = t[e];
 			if (r != null) {
 				this.ft.add(e);
-				let t = typeof r == "string" && r.endsWith(Te);
-				e.includes("-") || t ? n.setProperty(e, t ? r.slice(0, -11) : r, t ? we : "") : n[e] = r;
+				let t = typeof r == "string" && r.endsWith(Ee);
+				e.includes("-") || t ? n.setProperty(e, t ? r.slice(0, -11) : r, t ? Te : "") : n[e] = r;
 			}
 		}
-		return R;
+		return I;
 	}
-}), Ee = {
+});
+//#endregion
+//#region \0@oxc-project+runtime@0.142.0/helpers/esm/decorate.js
+function X(e, t, n, r) {
+	var i = arguments.length, a = i < 3 ? t : r === null ? r = Object.getOwnPropertyDescriptor(t, n) : r, o;
+	if (typeof Reflect == "object" && typeof Reflect.decorate == "function") a = Reflect.decorate(e, t, n, r);
+	else for (var s = e.length - 1; s >= 0; s--) (o = e[s]) && (a = (i < 3 ? o(a) : i > 3 ? o(t, n, a) : o(t, n)) || a);
+	return i > 3 && a && Object.defineProperty(t, n, a), a;
+}
+//#endregion
+//#region src/components/mower-lighting.ts
+var Z = class extends K {
+	static {
+		this.styles = o`
+    :host {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: block;
+      pointer-events: none;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      opacity: 0;
+      transform: inherit;
+      transform-origin: center center;
+      transition:
+        opacity 220ms ease,
+        filter 220ms ease;
+    }
+
+    .overlay.visible {
+      opacity: var(--light-brightness);
+      filter:
+        brightness(calc(0.7 + var(--light-brightness)))
+        drop-shadow(
+          0 0 12px
+          var(--light-color)
+        );
+    }
+
+    .pulse {
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    .blink {
+      animation: blink 1s steps(1, end) infinite;
+    }
+
+    .breathe {
+      animation: breathe 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%,
+      100% {
+        opacity:
+          calc(
+            var(--light-brightness)
+            * 0.45
+          );
+      }
+
+      50% {
+        opacity: var(--light-brightness);
+      }
+    }
+
+    @keyframes blink {
+      0%,
+      49% {
+        opacity: var(--light-brightness);
+      }
+
+      50%,
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes breathe {
+      0%,
+      100% {
+        opacity:
+          calc(
+            var(--light-brightness)
+            * 0.5
+          );
+      }
+
+      50% {
+        opacity: var(--light-brightness);
+      }
+    }
+  `;
+	}
+	renderOverlay(e, t) {
+		return e.asset ? F`
+      <img
+        class=${[
+			"overlay",
+			t,
+			e.visible ? "visible" : "",
+			e.animation === "none" ? "" : e.animation
+		].filter(Boolean).join(" ")}
+        src=${e.asset}
+        alt=""
+        aria-hidden="true"
+        style=${Y({
+			"--light-color": e.color,
+			"--light-brightness": String(e.brightness)
+		})}
+      />
+    ` : L;
+	}
+	render() {
+		return this.lighting ? F`
+      ${this.renderOverlay(this.lighting.front, "front")}
+
+      ${this.renderOverlay(this.lighting.side, "side")}
+    ` : L;
+	}
+};
+X([J({ attribute: !1 })], Z.prototype, "lighting", void 0), Z = X([q("mower-lighting")], Z);
+//#endregion
+//#region src/helpers/get-mower-lighting-assets.ts
+var De = "/hacsfiles/nova-luba-card/images";
+function Oe(e) {
+	switch (e) {
+		case "luba3": return {
+			front: `${De}/luba3/lighting/front-light.png`,
+			side: `${De}/luba3/lighting/side-light.png`
+		};
+		default: return {
+			front: null,
+			side: null
+		};
+	}
+}
+//#endregion
+//#region src/constants/mower-lighting-config.ts
+var ke = {
+	ring: {
+		visible: !1,
+		color: "#ffffff",
+		brightness: 0,
+		animation: "none"
+	},
+	front: {
+		visible: !1,
+		color: "#ffffff",
+		brightness: 0,
+		animation: "none"
+	},
+	side: {
+		visible: !1,
+		color: "#ffffff",
+		brightness: 0,
+		animation: "none"
+	}
+};
+//#endregion
+//#region src/helpers/resolve-mower-lighting.ts
+function Ae(e) {
+	switch (e) {
+		case "mowing": return {
+			ring: {
+				visible: !0,
+				color: "#22c55e",
+				brightness: 1,
+				animation: "pulse"
+			},
+			front: {
+				visible: !0,
+				color: "#ffffff",
+				brightness: .9,
+				animation: "none"
+			},
+			side: {
+				visible: !0,
+				color: "#22c55e",
+				brightness: .8,
+				animation: "breathe"
+			}
+		};
+		case "returning": return {
+			ring: {
+				visible: !0,
+				color: "#facc15",
+				brightness: 1,
+				animation: "blink"
+			},
+			front: {
+				visible: !0,
+				color: "#ffffff",
+				brightness: 1,
+				animation: "none"
+			},
+			side: {
+				visible: !0,
+				color: "#facc15",
+				brightness: .85,
+				animation: "pulse"
+			}
+		};
+		case "docked": return {
+			ring: {
+				visible: !0,
+				color: "#3b82f6",
+				brightness: .75,
+				animation: "breathe"
+			},
+			front: {
+				visible: !1,
+				color: "#ffffff",
+				brightness: 0,
+				animation: "none"
+			},
+			side: {
+				visible: !0,
+				color: "#3b82f6",
+				brightness: .45,
+				animation: "none"
+			}
+		};
+		case "error": return {
+			ring: {
+				visible: !0,
+				color: "#ef4444",
+				brightness: 1,
+				animation: "blink"
+			},
+			front: {
+				visible: !0,
+				color: "#ef4444",
+				brightness: 1,
+				animation: "blink"
+			},
+			side: {
+				visible: !0,
+				color: "#ef4444",
+				brightness: 1,
+				animation: "blink"
+			}
+		};
+		case "maintenance": return {
+			ring: {
+				visible: !0,
+				color: "#f97316",
+				brightness: .85,
+				animation: "pulse"
+			},
+			front: {
+				visible: !1,
+				color: "#ffffff",
+				brightness: 0,
+				animation: "none"
+			},
+			side: {
+				visible: !0,
+				color: "#f97316",
+				brightness: .65,
+				animation: "breathe"
+			}
+		};
+		case "update": return {
+			ring: {
+				visible: !0,
+				color: "#06b6d4",
+				brightness: 1,
+				animation: "pulse"
+			},
+			front: {
+				visible: !1,
+				color: "#ffffff",
+				brightness: 0,
+				animation: "none"
+			},
+			side: {
+				visible: !0,
+				color: "#06b6d4",
+				brightness: .8,
+				animation: "pulse"
+			}
+		};
+		default: return structuredClone(ke);
+	}
+}
+//#endregion
+//#region src/constants/mower-presentation.ts
+var je = {
 	desktop: {
 		scale: 1.35,
 		translateX: 0,
@@ -621,7 +916,7 @@ var xe = {
 		maxWidth: 420,
 		maxHeight: 285
 	}
-}, De = {
+}, Me = {
 	luba1: {
 		desktop: {
 			scale: 1.38,
@@ -703,12 +998,12 @@ var xe = {
 		}
 	}
 };
-function Oe(e) {
-	return De[e] ?? Ee;
+function Ne(e) {
+	return Me[e] ?? je;
 }
 //#endregion
 //#region src/constants/theme.ts
-var Z = {
+var Q = {
 	colors: {
 		background: "#111827",
 		backgroundDeep: "#090D14",
@@ -786,7 +1081,7 @@ var Z = {
 		normal: "300ms",
 		slow: "600ms"
 	}
-}, ke = {
+}, Pe = {
 	luba1: {
 		id: "luba1",
 		manufacturer: "Mammotion",
@@ -829,38 +1124,30 @@ var Z = {
 		assetFolder: "assets/robot",
 		defaultImage: "fallback.webp"
 	}
-}, Ae = "/hacsfiles/nova-luba-card/images";
-function je(e) {
-	let t = ke[e];
+}, Fe = "/hacsfiles/nova-luba-card/images";
+function Ie(e) {
+	let t = Pe[e];
 	return [
-		Ae,
+		Fe,
 		t.assetFolder,
 		t.defaultImage
 	].join("/");
 }
 //#endregion
 //#region src/helpers/resolve-mower-model.ts
-function Me(e) {
+function Le(e) {
 	let t = e?.trim().toLowerCase().replaceAll("-", " ").replaceAll("_", " ");
 	return t ? t === "luba3" || t.includes("luba 3") ? "luba3" : t === "luba2" || t.includes("luba 2") ? "luba2" : t === "luba1" || t.includes("luba 1") ? "luba1" : t === "mini2" || t.includes("mini 2") ? "mini2" : t === "mini1" || t.includes("mini 1") ? "mini1" : "unknown" : "unknown";
 }
 //#endregion
 //#region src/helpers/resolve-mower-state.ts
-function Ne(e) {
+function Re(e) {
 	let t = e?.trim().toLowerCase();
 	return !t || t === "unknown" ? "unknown" : t === "unavailable" || t === "offline" ? "offline" : t === "mowing" || t === "mähend" || t === "mowing_task" ? "mowing" : t === "docked" || t === "charging" || t === "idle" ? "docked" : t === "returning" || t === "returning_to_dock" ? "returning" : t === "error" || t === "blocked" ? "error" : "unknown";
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.142.0/helpers/esm/decorate.js
-function Q(e, t, n, r) {
-	var i = arguments.length, a = i < 3 ? t : r === null ? r = Object.getOwnPropertyDescriptor(t, n) : r, o;
-	if (typeof Reflect == "object" && typeof Reflect.decorate == "function") a = Reflect.decorate(e, t, n, r);
-	else for (var s = e.length - 1; s >= 0; s--) (o = e[s]) && (a = (i < 3 ? o(a) : i > 3 ? o(t, n, a) : o(t, n)) || a);
-	return i > 3 && a && Object.defineProperty(t, n, a), a;
-}
-//#endregion
 //#region src/index.ts
-var Pe = {
+var ze = {
 	mowing: "Mäht",
 	docked: "Im Dock",
 	returning: "Rückkehr zur Ladestation",
@@ -869,7 +1156,7 @@ var Pe = {
 	update: "Update verfügbar",
 	offline: "Offline",
 	unknown: "Unbekannt"
-}, $ = class extends J {
+}, $ = class extends K {
 	static {
 		this.styles = o`
     :host {
@@ -880,10 +1167,10 @@ var Pe = {
       position: relative;
       overflow: hidden;
       min-height: 520px;
-      padding: ${a(Z.spacing.lg)};
+      padding: ${a(Q.spacing.lg)};
       border: 1px solid var(--nova-state-color);
-      border-radius: ${a(Z.radius.large)};
-      color: ${a(Z.colors.text)};
+      border-radius: ${a(Q.radius.large)};
+      color: ${a(Q.colors.text)};
       background:
         radial-gradient(
           circle at 78% 20%,
@@ -892,16 +1179,16 @@ var Pe = {
         ),
         linear-gradient(
           145deg,
-          ${a(Z.colors.surface)},
-          ${a(Z.colors.backgroundDeep)}
+          ${a(Q.colors.surface)},
+          ${a(Q.colors.backgroundDeep)}
         );
       box-shadow:
-        ${a(Z.shadow.card)},
+        ${a(Q.shadow.card)},
         0 0 30px var(--nova-state-glow);
       transition:
-        border-color ${a(Z.animation.normal)} ease,
-        box-shadow ${a(Z.animation.normal)} ease,
-        background ${a(Z.animation.normal)} ease;
+        border-color ${a(Q.animation.normal)} ease,
+        box-shadow ${a(Q.animation.normal)} ease,
+        background ${a(Q.animation.normal)} ease;
     }
 
     .card-layout {
@@ -916,7 +1203,7 @@ var Pe = {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: ${a(Z.spacing.md)};
+      gap: ${a(Q.spacing.md)};
     }
 
     .brand {
@@ -924,7 +1211,7 @@ var Pe = {
     }
 
     .eyebrow {
-      margin-bottom: ${a(Z.spacing.sm)};
+      margin-bottom: ${a(Q.spacing.sm)};
       color: var(--nova-state-color);
       font-size: 12px;
       font-weight: 800;
@@ -939,8 +1226,8 @@ var Pe = {
     }
 
     .model {
-      margin-top: ${a(Z.spacing.sm)};
-      color: ${a(Z.colors.textSecondary)};
+      margin-top: ${a(Q.spacing.sm)};
+      color: ${a(Q.colors.textSecondary)};
       font-size: 15px;
     }
 
@@ -969,7 +1256,7 @@ var Pe = {
       align-items: center;
       justify-items: center;
       padding:
-        ${a(Z.spacing.lg)}
+        ${a(Q.spacing.lg)}
         0;
     }
 
@@ -980,7 +1267,7 @@ var Pe = {
       min-height: 330px;
       place-items: center;
       overflow: visible;
-      border-radius: ${a(Z.radius.large)};
+      border-radius: ${a(Q.radius.large)};
       background:
         radial-gradient(
           ellipse at 50% 65%,
@@ -1019,8 +1306,8 @@ var Pe = {
         drop-shadow(0 18px 20px rgba(0, 0, 0, 0.42))
         drop-shadow(0 0 10px var(--nova-state-glow));
       transition:
-        transform ${a(Z.animation.normal)} ease,
-        filter ${a(Z.animation.normal)} ease;
+        transform ${a(Q.animation.normal)} ease,
+        filter ${a(Q.animation.normal)} ease;
     }
 
     .robot-image:hover {
@@ -1034,9 +1321,9 @@ var Pe = {
       position: relative;
       z-index: 1;
       display: grid;
-      gap: ${a(Z.spacing.sm)};
+      gap: ${a(Q.spacing.sm)};
       justify-items: center;
-      color: ${a(Z.colors.textMuted)};
+      color: ${a(Q.colors.textMuted)};
       text-align: center;
     }
 
@@ -1052,7 +1339,7 @@ var Pe = {
     }
 
     .robot-fallback-title {
-      color: ${a(Z.colors.textSecondary)};
+      color: ${a(Q.colors.textSecondary)};
       font-size: 15px;
       font-weight: 600;
     }
@@ -1068,14 +1355,14 @@ var Pe = {
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
-      gap: ${a(Z.spacing.md)};
-      padding-top: ${a(Z.spacing.md)};
-      border-top: 1px solid ${a(Z.colors.borderSoft)};
+      gap: ${a(Q.spacing.md)};
+      padding-top: ${a(Q.spacing.md)};
+      border-top: 1px solid ${a(Q.colors.borderSoft)};
     }
 
     .status-group {
       display: grid;
-      gap: ${a(Z.spacing.sm)};
+      gap: ${a(Q.spacing.sm)};
     }
 
     .status {
@@ -1085,10 +1372,10 @@ var Pe = {
       gap: 9px;
       padding: 10px 15px;
       border: 1px solid var(--nova-state-color);
-      border-radius: ${a(Z.radius.pill)};
+      border-radius: ${a(Q.radius.pill)};
       background: var(--nova-state-soft);
       font-weight: 600;
-      transition: all ${a(Z.animation.normal)} ease;
+      transition: all ${a(Q.animation.normal)} ease;
     }
 
     .dot {
@@ -1100,12 +1387,12 @@ var Pe = {
     }
 
     .raw-state {
-      color: ${a(Z.colors.textMuted)};
+      color: ${a(Q.colors.textMuted)};
       font-size: 12px;
     }
 
     .layout-note {
-      color: ${a(Z.colors.textMuted)};
+      color: ${a(Q.colors.textMuted)};
       font-size: 11px;
       letter-spacing: 0.8px;
       text-align: right;
@@ -1116,18 +1403,18 @@ var Pe = {
       display: grid;
       min-height: 240px;
       place-items: center;
-      padding: ${a(Z.spacing.lg)};
-      border: 1px solid ${a(Z.states.error.color)};
-      border-radius: ${a(Z.radius.medium)};
-      color: ${a(Z.states.error.color)};
-      background: ${a(Z.states.error.soft)};
+      padding: ${a(Q.spacing.lg)};
+      border: 1px solid ${a(Q.states.error.color)};
+      border-radius: ${a(Q.radius.medium)};
+      color: ${a(Q.states.error.color)};
+      background: ${a(Q.states.error.soft)};
       text-align: center;
     }
 
     @media (max-width: 600px) {
       ha-card {
         min-height: 440px;
-        padding: ${a(Z.spacing.md)};
+        padding: ${a(Q.spacing.md)};
       }
 
       .card-layout {
@@ -1185,13 +1472,13 @@ var Pe = {
 		n && (n.hidden = !1);
 	}
 	render() {
-		if (!this.config) return z;
-		let e = this.mowerState, t = this.config.name ?? "Luba", n = this.config.model ?? "Luba 3 AWD LiDAR", r = Me(n), i = je(r), a = Oe(r);
+		if (!this.config) return L;
+		let e = this.mowerState, t = this.config.name ?? "Luba", n = this.config.model ?? "Luba 3 AWD LiDAR", r = Le(n), i = Ie(r), a = Ne(r);
 		if (!e) {
-			let e = Z.states.error;
-			return L`
+			let e = Q.states.error;
+			return F`
         <ha-card
-          style=${X({
+          style=${Y({
 				"--nova-state-color": e.color,
 				"--nova-state-soft": e.soft,
 				"--nova-state-glow": e.glow
@@ -1210,9 +1497,9 @@ var Pe = {
         </ha-card>
       `;
 		}
-		let o = Ne(e.state), s = Z.states[o];
-		return L`
-      <ha-card style=${X({
+		let o = Re(e.state), s = Q.states[o], c = Ae(o), l = Oe(r);
+		return { ...c }, { ...c.front }, l.front, { ...c.side }, l.side, F`
+      <ha-card style=${Y({
 			"--nova-state-color": s.color,
 			"--nova-state-soft": s.soft,
 			"--nova-state-glow": s.glow,
@@ -1249,15 +1536,19 @@ var Pe = {
             </div>
           </header>
 
-          <main class="hero">
-            <div class="robot-stage">
-              <img
-                class="robot-image"
-                src=${i}
-                alt=${n}
-                loading="eager"
-                @error=${this.handleImageError}
-              />
+<main class="hero">
+  <div class="robot-stage">
+    <img
+      class="robot-image"
+      src=${i}
+      alt=${n}
+      loading="eager"
+      @error=${this.handleImageError}
+    />
+
+    <mower-lighting
+      .lighting=${c}
+    ></mower-lighting>
 
               <div
                 class="robot-fallback"
@@ -1284,7 +1575,7 @@ var Pe = {
                 <span class="dot"></span>
 
                 <span>
-                  ${Pe[o]}
+                  ${ze[o]}
                 </span>
               </div>
 
@@ -1313,7 +1604,7 @@ var Pe = {
 		};
 	}
 };
-Q([Y({ attribute: !1 })], $.prototype, "hass", void 0), Q([be()], $.prototype, "config", void 0), $ = Q([_e("nova-luba-card")], $), window.customCards = window.customCards || [], window.customCards.push({
+X([J({ attribute: !1 })], $.prototype, "hass", void 0), X([xe()], $.prototype, "config", void 0), $ = X([q("nova-luba-card")], $), window.customCards = window.customCards || [], window.customCards.push({
 	type: "nova-luba-card",
 	name: "Nova UI - Luba Card",
 	description: "A dynamic Mammotion mower card for Home Assistant.",

@@ -14,6 +14,10 @@ import {
 
 import { styleMap } from "lit/directives/style-map.js";
 
+import "./components/mower-lighting";
+
+import { getMowerLightingAssets } from "./helpers/get-mower-lighting-assets";
+import { resolveMowerLighting } from "./helpers/resolve-mower-lighting";
 import { getMowerPresentation } from "./constants/mower-presentation";
 import { theme } from "./constants/theme";
 import { getMowerImage } from "./helpers/get-mower-image";
@@ -433,8 +437,27 @@ export class NovaLubaCard extends LitElement {
       `;
     }
 
-    const novaState = resolveMowerState(mower.state);
-    const stateTheme = theme.states[novaState];
+const novaState = resolveMowerState(mower.state);
+const stateTheme = theme.states[novaState];
+
+const lighting = resolveMowerLighting(novaState);
+
+const lightingAssets =
+  getMowerLightingAssets(resolvedModel);
+
+const lightingWithAssets = {
+  ...lighting,
+
+  front: {
+    ...lighting.front,
+    asset: lightingAssets.front,
+  },
+
+  side: {
+    ...lighting.side,
+    asset: lightingAssets.side,
+  },
+};
 
     const dynamicStyles = {
       "--nova-state-color": stateTheme.color,
@@ -496,15 +519,19 @@ export class NovaLubaCard extends LitElement {
             </div>
           </header>
 
-          <main class="hero">
-            <div class="robot-stage">
-              <img
-                class="robot-image"
-                src=${mowerImage}
-                alt=${model}
-                loading="eager"
-                @error=${this.handleImageError}
-              />
+<main class="hero">
+  <div class="robot-stage">
+    <img
+      class="robot-image"
+      src=${mowerImage}
+      alt=${model}
+      loading="eager"
+      @error=${this.handleImageError}
+    />
+
+    <mower-lighting
+      .lighting=${lighting}
+    ></mower-lighting>
 
               <div
                 class="robot-fallback"
