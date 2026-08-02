@@ -31,48 +31,41 @@ export class MowerLightingComponent extends LitElement {
       pointer-events: none;
     }
 
-.overlay {
-  position: absolute;
-  z-index: 3;
-  display: block;
-  width: 100%;
-  max-width: var(--robot-desktop-max-width);
-  max-height: var(--robot-desktop-max-height);
-  object-fit: contain;
+    .overlay {
+      position: absolute;
+      z-index: 3;
+      top: 50%;
+      left: 50%;
+      display: block;
+      width: 100%;
+      max-width: var(--robot-desktop-max-width);
+      max-height: var(--robot-desktop-max-height);
+      object-fit: contain;
+      opacity: 0;
 
-  top: 50%;
-  left: 50%;
+      transform:
+        translate(-50%, -50%)
+        translateX(var(--robot-desktop-x))
+        translateY(var(--robot-desktop-y))
+        scale(var(--robot-desktop-scale));
 
-  transform:
-    translate(-50%, -50%)
-    translateX(var(--robot-desktop-x))
-    translateY(var(--robot-desktop-y))
-    scale(var(--robot-desktop-scale));
+      transform-origin: center center;
 
-  transform-origin: center center;
-  opacity: 0;
-  transition:
-    opacity 220ms ease,
-    filter 220ms ease;
-}
-  @media (max-width: 600px) {
-  .overlay {
-    max-width: var(--robot-mobile-max-width);
-    max-height: var(--robot-mobile-max-height);
-
-    transform:
-      translate(-50%, -50%)
-      translateX(var(--robot-mobile-x))
-      translateY(var(--robot-mobile-y))
-      scale(var(--robot-mobile-scale));
-  }
-}
-
+      transition:
+        opacity 220ms ease,
+        filter 220ms ease;
+    }
 
     .overlay.visible {
       opacity: var(--light-brightness);
+
       filter:
-        brightness(calc(0.7 + var(--light-brightness)))
+        brightness(
+          calc(
+            0.7
+            + var(--light-brightness)
+          )
+        )
         drop-shadow(
           0 0 12px
           var(--light-color)
@@ -132,6 +125,19 @@ export class MowerLightingComponent extends LitElement {
         opacity: var(--light-brightness);
       }
     }
+
+    @media (max-width: 600px) {
+      .overlay {
+        max-width: var(--robot-mobile-max-width);
+        max-height: var(--robot-mobile-max-height);
+
+        transform:
+          translate(-50%, -50%)
+          translateX(var(--robot-mobile-x))
+          translateY(var(--robot-mobile-y))
+          scale(var(--robot-mobile-scale));
+      }
+    }
   `;
 
   private renderOverlay(
@@ -163,6 +169,11 @@ export class MowerLightingComponent extends LitElement {
           "--light-color": layer.color,
           "--light-brightness":
             String(layer.brightness),
+
+          opacity: "1",
+          outline: "3px solid red",
+          background:
+            "rgba(255, 0, 0, 0.15)",
         })}
       />
     `;
