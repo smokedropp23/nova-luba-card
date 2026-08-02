@@ -606,7 +606,109 @@ var xe = {
 		}
 		return R;
 	}
-}), Z = {
+}), Ee = {
+	desktop: {
+		scale: 1.35,
+		translateX: 0,
+		translateY: 28,
+		maxWidth: 520,
+		maxHeight: 330
+	},
+	mobile: {
+		scale: 1.35,
+		translateX: 0,
+		translateY: 24,
+		maxWidth: 420,
+		maxHeight: 285
+	}
+}, De = {
+	luba1: {
+		desktop: {
+			scale: 1.38,
+			translateX: 0,
+			translateY: 30,
+			maxWidth: 520,
+			maxHeight: 330
+		},
+		mobile: {
+			scale: 1.36,
+			translateX: 0,
+			translateY: 25,
+			maxWidth: 420,
+			maxHeight: 285
+		}
+	},
+	luba2: {
+		desktop: {
+			scale: 1.4,
+			translateX: 4,
+			translateY: 30,
+			maxWidth: 525,
+			maxHeight: 335
+		},
+		mobile: {
+			scale: 1.38,
+			translateX: 2,
+			translateY: 25,
+			maxWidth: 425,
+			maxHeight: 290
+		}
+	},
+	luba3: {
+		desktop: {
+			scale: 1.43,
+			translateX: 10,
+			translateY: 30,
+			maxWidth: 530,
+			maxHeight: 340
+		},
+		mobile: {
+			scale: 1.4,
+			translateX: 6,
+			translateY: 26,
+			maxWidth: 430,
+			maxHeight: 290
+		}
+	},
+	mini1: {
+		desktop: {
+			scale: 1.5,
+			translateX: 0,
+			translateY: 28,
+			maxWidth: 500,
+			maxHeight: 325
+		},
+		mobile: {
+			scale: 1.46,
+			translateX: 0,
+			translateY: 24,
+			maxWidth: 410,
+			maxHeight: 280
+		}
+	},
+	mini2: {
+		desktop: {
+			scale: 1.48,
+			translateX: 0,
+			translateY: 28,
+			maxWidth: 500,
+			maxHeight: 325
+		},
+		mobile: {
+			scale: 1.44,
+			translateX: 0,
+			translateY: 24,
+			maxWidth: 410,
+			maxHeight: 280
+		}
+	}
+};
+function Oe(e) {
+	return De[e] ?? Ee;
+}
+//#endregion
+//#region src/constants/theme.ts
+var Z = {
 	colors: {
 		background: "#111827",
 		backgroundDeep: "#090D14",
@@ -684,7 +786,7 @@ var xe = {
 		normal: "300ms",
 		slow: "600ms"
 	}
-}, Ee = {
+}, ke = {
 	luba1: {
 		id: "luba1",
 		manufacturer: "Mammotion",
@@ -727,24 +829,24 @@ var xe = {
 		assetFolder: "assets/robot",
 		defaultImage: "fallback.webp"
 	}
-}, De = "/hacsfiles/nova-luba-card/images";
-function Oe(e) {
-	let t = Ee[e];
+}, Ae = "/hacsfiles/nova-luba-card/images";
+function je(e) {
+	let t = ke[e];
 	return [
-		De,
+		Ae,
 		t.assetFolder,
 		t.defaultImage
 	].join("/");
 }
 //#endregion
 //#region src/helpers/resolve-mower-model.ts
-function ke(e) {
+function Me(e) {
 	let t = e?.trim().toLowerCase().replaceAll("-", " ").replaceAll("_", " ");
 	return t ? t === "luba3" || t.includes("luba 3") ? "luba3" : t === "luba2" || t.includes("luba 2") ? "luba2" : t === "luba1" || t.includes("luba 1") ? "luba1" : t === "mini2" || t.includes("mini 2") ? "mini2" : t === "mini1" || t.includes("mini 1") ? "mini1" : "unknown" : "unknown";
 }
 //#endregion
 //#region src/helpers/resolve-mower-state.ts
-function Ae(e) {
+function Ne(e) {
 	let t = e?.trim().toLowerCase();
 	return !t || t === "unknown" ? "unknown" : t === "unavailable" || t === "offline" ? "offline" : t === "mowing" || t === "mähend" || t === "mowing_task" ? "mowing" : t === "docked" || t === "charging" || t === "idle" ? "docked" : t === "returning" || t === "returning_to_dock" ? "returning" : t === "error" || t === "blocked" ? "error" : "unknown";
 }
@@ -758,7 +860,7 @@ function Q(e, t, n, r) {
 }
 //#endregion
 //#region src/index.ts
-var je = {
+var Pe = {
 	mowing: "Mäht",
 	docked: "Im Dock",
 	returning: "Rückkehr zur Ladestation",
@@ -881,7 +983,7 @@ var je = {
       border-radius: ${a(Z.radius.large)};
       background:
         radial-gradient(
-          ellipse at 50% 62%,
+          ellipse at 50% 65%,
           var(--nova-state-soft),
           transparent 58%
         );
@@ -891,12 +993,12 @@ var je = {
       position: absolute;
       z-index: 0;
       right: 15%;
-      bottom: 0%;
+      bottom: 0;
       left: 15%;
       height: 28px;
       border-radius: 50%;
       background: rgba(0, 0, 0, 0.48);
-      filter: blur(28px);
+      filter: blur(20px);
       content: "";
     }
 
@@ -905,21 +1007,27 @@ var je = {
       z-index: 2;
       display: block;
       width: 100%;
-      max-width: 520px;
-      max-height: 330px;
+      max-width: var(--robot-desktop-max-width);
+      max-height: var(--robot-desktop-max-height);
       object-fit: contain;
-      transform: translateY(58px) scale(1.43);
+      transform:
+        translateX(var(--robot-desktop-x))
+        translateY(var(--robot-desktop-y))
+        scale(var(--robot-desktop-scale));
       transform-origin: center center;
       filter:
-        drop-shadow(0 20px 22px rgba(0, 0, 0, 0.38))
-        drop-shadow(0 0 12px var(--nova-state-glow));
+        drop-shadow(0 18px 20px rgba(0, 0, 0, 0.42))
+        drop-shadow(0 0 10px var(--nova-state-glow));
       transition:
         transform ${a(Z.animation.normal)} ease,
         filter ${a(Z.animation.normal)} ease;
     }
 
     .robot-image:hover {
-      transform: translateY(54px) scale(1.46);
+      transform:
+        translateX(var(--robot-desktop-x))
+        translateY(calc(var(--robot-desktop-y) - 3px))
+        scale(calc(var(--robot-desktop-scale) + 0.03));
     }
 
     .robot-fallback {
@@ -1016,11 +1124,6 @@ var je = {
       text-align: center;
     }
 
-    /*
-     * Home Assistant kann Karten auch auf einem Desktop schmaler
-     * als 600 Pixel darstellen. Deshalb erhält auch dieser Bereich
-     * die vergrößerten Bildwerte.
-     */
     @media (max-width: 600px) {
       ha-card {
         min-height: 440px;
@@ -1041,14 +1144,19 @@ var je = {
       }
 
       .robot-image {
-        width: 100%;
-        max-width: 430px;
-        max-height: 285px;
-        transform: translateY(34px) scale(1.38);
+        max-width: var(--robot-mobile-max-width);
+        max-height: var(--robot-mobile-max-height);
+        transform:
+          translateX(var(--robot-mobile-x))
+          translateY(var(--robot-mobile-y))
+          scale(var(--robot-mobile-scale));
       }
 
       .robot-image:hover {
-        transform: translateY(38px) scale(1.41);
+        transform:
+          translateX(var(--robot-mobile-x))
+          translateY(calc(var(--robot-mobile-y) - 3px))
+          scale(calc(var(--robot-mobile-scale) + 0.03));
       }
 
       .footer {
@@ -1078,7 +1186,7 @@ var je = {
 	}
 	render() {
 		if (!this.config) return z;
-		let e = this.mowerState, t = this.config.name ?? "Luba", n = this.config.model ?? "Luba 3 AWD LiDAR", r = ke(n), i = Oe(r);
+		let e = this.mowerState, t = this.config.name ?? "Luba", n = this.config.model ?? "Luba 3 AWD LiDAR", r = Me(n), i = je(r), a = Oe(r);
 		if (!e) {
 			let e = Z.states.error;
 			return L`
@@ -1102,12 +1210,22 @@ var je = {
         </ha-card>
       `;
 		}
-		let a = Ae(e.state), o = Z.states[a];
+		let o = Ne(e.state), s = Z.states[o];
 		return L`
       <ha-card style=${X({
-			"--nova-state-color": o.color,
-			"--nova-state-soft": o.soft,
-			"--nova-state-glow": o.glow
+			"--nova-state-color": s.color,
+			"--nova-state-soft": s.soft,
+			"--nova-state-glow": s.glow,
+			"--robot-desktop-scale": String(a.desktop.scale),
+			"--robot-desktop-x": `${a.desktop.translateX}px`,
+			"--robot-desktop-y": `${a.desktop.translateY}px`,
+			"--robot-desktop-max-width": `${a.desktop.maxWidth}px`,
+			"--robot-desktop-max-height": `${a.desktop.maxHeight}px`,
+			"--robot-mobile-scale": String(a.mobile.scale),
+			"--robot-mobile-x": `${a.mobile.translateX}px`,
+			"--robot-mobile-y": `${a.mobile.translateY}px`,
+			"--robot-mobile-max-width": `${a.mobile.maxWidth}px`,
+			"--robot-mobile-max-height": `${a.mobile.maxHeight}px`
 		})}>
         <div class="card-layout">
           <header class="header">
@@ -1166,7 +1284,7 @@ var je = {
                 <span class="dot"></span>
 
                 <span>
-                  ${je[a]}
+                  ${Pe[o]}
                 </span>
               </div>
 

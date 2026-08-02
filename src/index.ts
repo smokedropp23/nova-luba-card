@@ -14,6 +14,7 @@ import {
 
 import { styleMap } from "lit/directives/style-map.js";
 
+import { getMowerPresentation } from "./constants/mower-presentation";
 import { theme } from "./constants/theme";
 import { getMowerImage } from "./helpers/get-mower-image";
 import { resolveMowerModel } from "./helpers/resolve-mower-model";
@@ -168,7 +169,7 @@ export class NovaLubaCard extends LitElement {
       border-radius: ${unsafeCSS(theme.radius.large)};
       background:
         radial-gradient(
-          ellipse at 50% 62%,
+          ellipse at 50% 65%,
           var(--nova-state-soft),
           transparent 58%
         );
@@ -178,12 +179,12 @@ export class NovaLubaCard extends LitElement {
       position: absolute;
       z-index: 0;
       right: 15%;
-      bottom: 0%;
+      bottom: 0;
       left: 15%;
       height: 28px;
       border-radius: 50%;
       background: rgba(0, 0, 0, 0.48);
-      filter: blur(28px);
+      filter: blur(20px);
       content: "";
     }
 
@@ -192,21 +193,27 @@ export class NovaLubaCard extends LitElement {
       z-index: 2;
       display: block;
       width: 100%;
-      max-width: 520px;
-      max-height: 330px;
+      max-width: var(--robot-desktop-max-width);
+      max-height: var(--robot-desktop-max-height);
       object-fit: contain;
-      transform: translateY(58px) scale(1.43);
+      transform:
+        translateX(var(--robot-desktop-x))
+        translateY(var(--robot-desktop-y))
+        scale(var(--robot-desktop-scale));
       transform-origin: center center;
       filter:
-        drop-shadow(0 20px 22px rgba(0, 0, 0, 0.38))
-        drop-shadow(0 0 12px var(--nova-state-glow));
+        drop-shadow(0 18px 20px rgba(0, 0, 0, 0.42))
+        drop-shadow(0 0 10px var(--nova-state-glow));
       transition:
         transform ${unsafeCSS(theme.animation.normal)} ease,
         filter ${unsafeCSS(theme.animation.normal)} ease;
     }
 
     .robot-image:hover {
-      transform: translateY(54px) scale(1.46);
+      transform:
+        translateX(var(--robot-desktop-x))
+        translateY(calc(var(--robot-desktop-y) - 3px))
+        scale(calc(var(--robot-desktop-scale) + 0.03));
     }
 
     .robot-fallback {
@@ -303,11 +310,6 @@ export class NovaLubaCard extends LitElement {
       text-align: center;
     }
 
-    /*
-     * Home Assistant kann Karten auch auf einem Desktop schmaler
-     * als 600 Pixel darstellen. Deshalb erhält auch dieser Bereich
-     * die vergrößerten Bildwerte.
-     */
     @media (max-width: 600px) {
       ha-card {
         min-height: 440px;
@@ -328,14 +330,19 @@ export class NovaLubaCard extends LitElement {
       }
 
       .robot-image {
-        width: 100%;
-        max-width: 430px;
-        max-height: 285px;
-        transform: translateY(34px) scale(1.38);
+        max-width: var(--robot-mobile-max-width);
+        max-height: var(--robot-mobile-max-height);
+        transform:
+          translateX(var(--robot-mobile-x))
+          translateY(var(--robot-mobile-y))
+          scale(var(--robot-mobile-scale));
       }
 
       .robot-image:hover {
-        transform: translateY(38px) scale(1.41);
+        transform:
+          translateX(var(--robot-mobile-x))
+          translateY(calc(var(--robot-mobile-y) - 3px))
+          scale(calc(var(--robot-mobile-scale) + 0.03));
       }
 
       .footer {
@@ -398,6 +405,8 @@ export class NovaLubaCard extends LitElement {
 
     const resolvedModel = resolveMowerModel(model);
     const mowerImage = getMowerImage(resolvedModel);
+    const presentation =
+      getMowerPresentation(resolvedModel);
 
     if (!mower) {
       const errorTheme = theme.states.error;
@@ -431,6 +440,36 @@ export class NovaLubaCard extends LitElement {
       "--nova-state-color": stateTheme.color,
       "--nova-state-soft": stateTheme.soft,
       "--nova-state-glow": stateTheme.glow,
+
+      "--robot-desktop-scale":
+        String(presentation.desktop.scale),
+
+      "--robot-desktop-x":
+        `${presentation.desktop.translateX}px`,
+
+      "--robot-desktop-y":
+        `${presentation.desktop.translateY}px`,
+
+      "--robot-desktop-max-width":
+        `${presentation.desktop.maxWidth}px`,
+
+      "--robot-desktop-max-height":
+        `${presentation.desktop.maxHeight}px`,
+
+      "--robot-mobile-scale":
+        String(presentation.mobile.scale),
+
+      "--robot-mobile-x":
+        `${presentation.mobile.translateX}px`,
+
+      "--robot-mobile-y":
+        `${presentation.mobile.translateY}px`,
+
+      "--robot-mobile-max-width":
+        `${presentation.mobile.maxWidth}px`,
+
+      "--robot-mobile-max-height":
+        `${presentation.mobile.maxHeight}px`,
     };
 
     return html`
