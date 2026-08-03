@@ -462,37 +462,55 @@ export class NovaLubaCard extends LitElement {
       debugLighting === "side" ||
       debugLighting === "all";
 
-    const lightingWithAssets = {
-      ...lighting,
+const lightingWithAssets = {
+  ...lighting,
 
-      front: {
-        ...lighting.front,
-        asset: lightingAssets.front,
-        visible: debugFront
-          ? Boolean(lightingAssets.front)
-          : lighting.front.visible,
-        brightness: debugFront
-          ? 1
-          : lighting.front.brightness,
-        animation: debugFront
-          ? ("none" as const)
-          : lighting.front.animation,
-      },
+  front: {
+    ...lighting.front,
+    asset: lightingAssets.front,
 
-      side: {
-        ...lighting.side,
-        asset: lightingAssets.side,
-        visible: debugSide
-          ? Boolean(lightingAssets.side)
-          : lighting.side.visible,
-        brightness: debugSide
-          ? 1
-          : lighting.side.brightness,
-        animation: debugSide
-          ? ("none" as const)
-          : lighting.side.animation,
-      },
-    };
+    visible: debugFront
+      ? Boolean(lightingAssets.front)
+      : lighting.front.visible,
+
+    color: debugFront
+      ? "#ffffff"
+      : lighting.front.color,
+
+    brightness: debugFront
+      ? 1
+      : lighting.front.brightness,
+
+    animation: debugFront
+      ? ("none" as const)
+      : lighting.front.animation,
+  },
+
+  side: {
+    ...lighting.side,
+    asset: lightingAssets.side,
+
+    visible: debugSide
+      ? Boolean(lightingAssets.side)
+      : lighting.side.visible,
+
+    /*
+     * Grüne Testfarbe, damit wir eindeutig sehen,
+     * ob das Seitenlicht wirklich eingefärbt wird.
+     */
+    color: debugSide
+      ? "#22c55e"
+      : lighting.side.color,
+
+    brightness: debugSide
+      ? 1
+      : lighting.side.brightness,
+
+    animation: debugSide
+      ? ("none" as const)
+      : lighting.side.animation,
+  },
+};
 
     const dynamicStyles = {
       "--nova-state-color": stateTheme.color,

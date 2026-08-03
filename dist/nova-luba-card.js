@@ -1549,6 +1549,7 @@ var ze = {
 				...c.front,
 				asset: l.front,
 				visible: d ? !!l.front : c.front.visible,
+				color: d ? "#ffffff" : c.front.color,
 				brightness: d ? 1 : c.front.brightness,
 				animation: d ? "none" : c.front.animation
 			},
@@ -1556,6 +1557,7 @@ var ze = {
 				...c.side,
 				asset: l.side,
 				visible: f ? !!l.side : c.side.visible,
+				color: f ? "#22c55e" : c.side.color,
 				brightness: f ? 1 : c.side.brightness,
 				animation: f ? "none" : c.side.animation
 			}
