@@ -1100,10 +1100,10 @@ function Ie(e) {
 	switch (e) {
 		case "mowing": return {
 			ring: {
-				visible: !0,
+				visible: !1,
 				color: "#22c55e",
-				brightness: 1,
-				animation: "pulse"
+				brightness: 0,
+				animation: "none"
 			},
 			front: {
 				visible: !0,
@@ -1120,10 +1120,10 @@ function Ie(e) {
 		};
 		case "returning": return {
 			ring: {
-				visible: !0,
+				visible: !1,
 				color: "#facc15",
-				brightness: 1,
-				animation: "blink"
+				brightness: 0,
+				animation: "none"
 			},
 			front: {
 				visible: !0,
@@ -1140,10 +1140,10 @@ function Ie(e) {
 		};
 		case "docked": return {
 			ring: {
-				visible: !0,
+				visible: !1,
 				color: "#3b82f6",
-				brightness: .75,
-				animation: "breathe"
+				brightness: 0,
+				animation: "none"
 			},
 			front: {
 				visible: !1,
@@ -1160,10 +1160,10 @@ function Ie(e) {
 		};
 		case "error": return {
 			ring: {
-				visible: !0,
+				visible: !1,
 				color: "#ef4444",
-				brightness: 1,
-				animation: "blink"
+				brightness: 0,
+				animation: "none"
 			},
 			front: {
 				visible: !0,
@@ -1180,10 +1180,10 @@ function Ie(e) {
 		};
 		case "maintenance": return {
 			ring: {
-				visible: !0,
+				visible: !1,
 				color: "#f97316",
-				brightness: .85,
-				animation: "pulse"
+				brightness: 0,
+				animation: "none"
 			},
 			front: {
 				visible: !1,
@@ -1200,10 +1200,10 @@ function Ie(e) {
 		};
 		case "update": return {
 			ring: {
-				visible: !0,
+				visible: !1,
 				color: "#8b5cf6",
-				brightness: 1,
-				animation: "pulse"
+				brightness: 0,
+				animation: "none"
 			},
 			front: {
 				visible: !1,
@@ -1213,7 +1213,7 @@ function Ie(e) {
 			},
 			side: {
 				visible: !0,
-				color: "#06b6d4",
+				color: "#8b5cf6",
 				brightness: .8,
 				animation: "pulse"
 			}

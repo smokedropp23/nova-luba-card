@@ -10,10 +10,10 @@ export function resolveMowerLighting(
     case "mowing":
       return {
         ring: {
-          visible: true,
+          visible: false,
           color: "#22c55e",
-          brightness: 1,
-          animation: "pulse",
+          brightness: 0,
+          animation: "none",
         },
 
         front: {
@@ -34,10 +34,10 @@ export function resolveMowerLighting(
     case "returning":
       return {
         ring: {
-          visible: true,
+          visible: false,
           color: "#facc15",
-          brightness: 1,
-          animation: "blink",
+          brightness: 0,
+          animation: "none",
         },
 
         front: {
@@ -58,10 +58,10 @@ export function resolveMowerLighting(
     case "docked":
       return {
         ring: {
-          visible: true,
+          visible: false,
           color: "#3b82f6",
-          brightness: 0.75,
-          animation: "breathe",
+          brightness: 0,
+          animation: "none",
         },
 
         front: {
@@ -82,10 +82,10 @@ export function resolveMowerLighting(
     case "error":
       return {
         ring: {
-          visible: true,
+          visible: false,
           color: "#ef4444",
-          brightness: 1,
-          animation: "blink",
+          brightness: 0,
+          animation: "none",
         },
 
         front: {
@@ -106,10 +106,10 @@ export function resolveMowerLighting(
     case "maintenance":
       return {
         ring: {
-          visible: true,
+          visible: false,
           color: "#f97316",
-          brightness: 0.85,
-          animation: "pulse",
+          brightness: 0,
+          animation: "none",
         },
 
         front: {
@@ -130,10 +130,10 @@ export function resolveMowerLighting(
     case "update":
       return {
         ring: {
-          visible: true,
+          visible: false,
           color: "#8b5cf6",
-          brightness: 1,
-          animation: "pulse",
+          brightness: 0,
+          animation: "none",
         },
 
         front: {
@@ -145,7 +145,7 @@ export function resolveMowerLighting(
 
         side: {
           visible: true,
-          color: "#06b6d4",
+          color: "#8b5cf6",
           brightness: 0.8,
           animation: "pulse",
         },
