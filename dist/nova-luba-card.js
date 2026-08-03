@@ -29,7 +29,7 @@ var e = globalThis, t = e.ShadowRoot && (e.ShadyCSS === void 0 || e.ShadyCSS.nat
 	let t = "";
 	for (let n of e.cssRules) t += n.cssText;
 	return a(t);
-})(e) : e, { is: l, defineProperty: u, getOwnPropertyDescriptor: d, getOwnPropertyNames: f, getOwnPropertySymbols: p, getPrototypeOf: m } = Object, h = globalThis, g = h.trustedTypes, _ = g ? g.emptyScript : "", ee = h.reactiveElementPolyfillSupport, v = (e, t) => e, y = {
+})(e) : e, { is: l, defineProperty: u, getOwnPropertyDescriptor: d, getOwnPropertyNames: f, getOwnPropertySymbols: p, getPrototypeOf: m } = Object, h = globalThis, g = h.trustedTypes, _ = g ? g.emptyScript : "", v = h.reactiveElementPolyfillSupport, y = (e, t) => e, b = {
 	toAttribute(e, t) {
 		switch (t) {
 			case Boolean:
@@ -58,23 +58,23 @@ var e = globalThis, t = e.ShadowRoot && (e.ShadyCSS === void 0 || e.ShadyCSS.nat
 		}
 		return n;
 	}
-}, b = (e, t) => !l(e, t), x = {
+}, x = (e, t) => !l(e, t), S = {
 	attribute: !0,
 	type: String,
-	converter: y,
+	converter: b,
 	reflect: !1,
 	useDefault: !1,
-	hasChanged: b
+	hasChanged: x
 };
 Symbol.metadata ??= Symbol("metadata"), h.litPropertyMetadata ??= /* @__PURE__ */ new WeakMap();
-var S = class extends HTMLElement {
+var C = class extends HTMLElement {
 	static addInitializer(e) {
 		this._$Ei(), (this.l ??= []).push(e);
 	}
 	static get observedAttributes() {
 		return this.finalize(), this._$Eh && [...this._$Eh.keys()];
 	}
-	static createProperty(e, t = x) {
+	static createProperty(e, t = S) {
 		if (t.state && (t.attribute = !1), this._$Ei(), this.prototype.hasOwnProperty(e) && ((t = Object.create(t)).wrapped = !0), this.elementProperties.set(e, t), !t.noAccessor) {
 			let n = Symbol(), r = this.getPropertyDescriptor(e, n, t);
 			r !== void 0 && u(this.prototype, e, r);
@@ -100,16 +100,16 @@ var S = class extends HTMLElement {
 		};
 	}
 	static getPropertyOptions(e) {
-		return this.elementProperties.get(e) ?? x;
+		return this.elementProperties.get(e) ?? S;
 	}
 	static _$Ei() {
-		if (this.hasOwnProperty(v("elementProperties"))) return;
+		if (this.hasOwnProperty(y("elementProperties"))) return;
 		let e = m(this);
 		e.finalize(), e.l !== void 0 && (this.l = [...e.l]), this.elementProperties = new Map(e.elementProperties);
 	}
 	static finalize() {
-		if (this.hasOwnProperty(v("finalized"))) return;
-		if (this.finalized = !0, this._$Ei(), this.hasOwnProperty(v("properties"))) {
+		if (this.hasOwnProperty(y("finalized"))) return;
+		if (this.finalized = !0, this._$Ei(), this.hasOwnProperty(y("properties"))) {
 			let e = this.properties, t = [...f(e), ...p(e)];
 			for (let n of t) this.createProperty(n, e[n]);
 		}
@@ -171,14 +171,14 @@ var S = class extends HTMLElement {
 	_$ET(e, t) {
 		let n = this.constructor.elementProperties.get(e), r = this.constructor._$Eu(e, n);
 		if (r !== void 0 && !0 === n.reflect) {
-			let i = (n.converter?.toAttribute === void 0 ? y : n.converter).toAttribute(t, n.type);
+			let i = (n.converter?.toAttribute === void 0 ? b : n.converter).toAttribute(t, n.type);
 			this._$Em = e, i == null ? this.removeAttribute(r) : this.setAttribute(r, i), this._$Em = null;
 		}
 	}
 	_$AK(e, t) {
 		let n = this.constructor, r = n._$Eh.get(e);
 		if (r !== void 0 && this._$Em !== r) {
-			let e = n.getPropertyOptions(r), i = typeof e.converter == "function" ? { fromAttribute: e.converter } : e.converter?.fromAttribute === void 0 ? y : e.converter;
+			let e = n.getPropertyOptions(r), i = typeof e.converter == "function" ? { fromAttribute: e.converter } : e.converter?.fromAttribute === void 0 ? b : e.converter;
 			this._$Em = r;
 			let a = i.fromAttribute(t, e.type);
 			this[r] = a ?? this._$Ej?.get(r) ?? a, this._$Em = null;
@@ -187,7 +187,7 @@ var S = class extends HTMLElement {
 	requestUpdate(e, t, n, r = !1, i) {
 		if (e !== void 0) {
 			let a = this.constructor;
-			if (!1 === r && (i = this[e]), n ??= a.getPropertyOptions(e), !((n.hasChanged ?? b)(i, t) || n.useDefault && n.reflect && i === this._$Ej?.get(e) && !this.hasAttribute(a._$Eu(e, n)))) return;
+			if (!1 === r && (i = this[e]), n ??= a.getPropertyOptions(e), !((n.hasChanged ?? x)(i, t) || n.useDefault && n.reflect && i === this._$Ej?.get(e) && !this.hasAttribute(a._$Eu(e, n)))) return;
 			this.C(e, t, n);
 		}
 		!1 === this.isUpdatePending && (this._$ES = this._$EP());
@@ -251,25 +251,25 @@ var S = class extends HTMLElement {
 	updated(e) {}
 	firstUpdated(e) {}
 };
-S.elementStyles = [], S.shadowRootOptions = { mode: "open" }, S[v("elementProperties")] = /* @__PURE__ */ new Map(), S[v("finalized")] = /* @__PURE__ */ new Map(), ee?.({ ReactiveElement: S }), (h.reactiveElementVersions ??= []).push("2.1.2");
+C.elementStyles = [], C.shadowRootOptions = { mode: "open" }, C[y("elementProperties")] = /* @__PURE__ */ new Map(), C[y("finalized")] = /* @__PURE__ */ new Map(), v?.({ ReactiveElement: C }), (h.reactiveElementVersions ??= []).push("2.1.2");
 //#endregion
 //#region node_modules/lit-html/lit-html.js
-var C = globalThis, w = (e) => e, T = C.trustedTypes, E = T ? T.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, D = "$lit$", O = `lit$${Math.random().toFixed(9).slice(2)}$`, te = "?" + O, ne = `<${te}>`, k = document, A = () => k.createComment(""), j = (e) => e === null || typeof e != "object" && typeof e != "function", M = Array.isArray, re = (e) => M(e) || typeof e?.[Symbol.iterator] == "function", N = "[ 	\n\f\r]", P = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, ie = /-->/g, ae = />/g, F = RegExp(`>|${N}(?:([^\\s"'>=/]+)(${N}*=${N}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), oe = /'/g, I = /"/g, se = /^(?:script|style|textarea|title)$/i, L = ((e) => (t, ...n) => ({
+var w = globalThis, T = (e) => e, E = w.trustedTypes, D = E ? E.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, ee = "$lit$", O = `lit$${Math.random().toFixed(9).slice(2)}$`, te = "?" + O, ne = `<${te}>`, k = document, A = () => k.createComment(""), j = (e) => e === null || typeof e != "object" && typeof e != "function", M = Array.isArray, re = (e) => M(e) || typeof e?.[Symbol.iterator] == "function", N = "[ 	\n\f\r]", P = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, ie = /-->/g, F = />/g, I = RegExp(`>|${N}(?:([^\\s"'>=/]+)(${N}*=${N}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), ae = /'/g, oe = /"/g, se = /^(?:script|style|textarea|title)$/i, L = ((e) => (t, ...n) => ({
 	_$litType$: e,
 	strings: t,
 	values: n
 }))(1), R = Symbol.for("lit-noChange"), z = Symbol.for("lit-nothing"), ce = /* @__PURE__ */ new WeakMap(), B = k.createTreeWalker(k, 129);
 function le(e, t) {
 	if (!M(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
-	return E === void 0 ? t : E.createHTML(t);
+	return D === void 0 ? t : D.createHTML(t);
 }
 var ue = (e, t) => {
 	let n = e.length - 1, r = [], i, a = t === 2 ? "<svg>" : t === 3 ? "<math>" : "", o = P;
 	for (let t = 0; t < n; t++) {
 		let n = e[t], s, c, l = -1, u = 0;
-		for (; u < n.length && (o.lastIndex = u, c = o.exec(n), c !== null);) u = o.lastIndex, o === P ? c[1] === "!--" ? o = ie : c[1] === void 0 ? c[2] === void 0 ? c[3] !== void 0 && (o = F) : (se.test(c[2]) && (i = RegExp("</" + c[2], "g")), o = F) : o = ae : o === F ? c[0] === ">" ? (o = i ?? P, l = -1) : c[1] === void 0 ? l = -2 : (l = o.lastIndex - c[2].length, s = c[1], o = c[3] === void 0 ? F : c[3] === "\"" ? I : oe) : o === I || o === oe ? o = F : o === ie || o === ae ? o = P : (o = F, i = void 0);
-		let d = o === F && e[t + 1].startsWith("/>") ? " " : "";
-		a += o === P ? n + ne : l >= 0 ? (r.push(s), n.slice(0, l) + D + n.slice(l) + O + d) : n + O + (l === -2 ? t : d);
+		for (; u < n.length && (o.lastIndex = u, c = o.exec(n), c !== null);) u = o.lastIndex, o === P ? c[1] === "!--" ? o = ie : c[1] === void 0 ? c[2] === void 0 ? c[3] !== void 0 && (o = I) : (se.test(c[2]) && (i = RegExp("</" + c[2], "g")), o = I) : o = F : o === I ? c[0] === ">" ? (o = i ?? P, l = -1) : c[1] === void 0 ? l = -2 : (l = o.lastIndex - c[2].length, s = c[1], o = c[3] === void 0 ? I : c[3] === "\"" ? oe : ae) : o === oe || o === ae ? o = I : o === ie || o === F ? o = P : (o = I, i = void 0);
+		let d = o === I && e[t + 1].startsWith("/>") ? " " : "";
+		a += o === P ? n + ne : l >= 0 ? (r.push(s), n.slice(0, l) + ee + n.slice(l) + O + d) : n + O + (l === -2 ? t : d);
 	}
 	return [le(e, a + (e[n] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), r];
 }, V = class e {
@@ -283,7 +283,7 @@ var ue = (e, t) => {
 		}
 		for (; (i = B.nextNode()) !== null && c.length < s;) {
 			if (i.nodeType === 1) {
-				if (i.hasAttributes()) for (let e of i.getAttributeNames()) if (e.endsWith(D)) {
+				if (i.hasAttributes()) for (let e of i.getAttributeNames()) if (e.endsWith(ee)) {
 					let t = u[o++], n = i.getAttribute(e).split(O), r = /([.?@])?(.*)/.exec(t);
 					c.push({
 						type: 1,
@@ -299,7 +299,7 @@ var ue = (e, t) => {
 				if (se.test(i.tagName)) {
 					let e = i.textContent.split(O), t = e.length - 1;
 					if (t > 0) {
-						i.textContent = T ? T.emptyScript : "";
+						i.textContent = E ? E.emptyScript : "";
 						for (let n = 0; n < t; n++) i.append(e[n], A()), B.nextNode(), c.push({
 							type: 2,
 							index: ++a
@@ -407,8 +407,8 @@ var de = class {
 	}
 	_$AR(e = this._$AA.nextSibling, t) {
 		for (this._$AP?.(!1, !0, t); e !== this._$AB;) {
-			let t = w(e).nextSibling;
-			w(e).remove(), e = t;
+			let t = T(e).nextSibling;
+			T(e).remove(), e = t;
 		}
 	}
 	setConnected(e) {
@@ -472,8 +472,8 @@ var de = class {
 	_$AI(e) {
 		H(this, e);
 	}
-}, ge = C.litHtmlPolyfillSupport;
-ge?.(V, U), (C.litHtmlVersions ??= []).push("3.3.3");
+}, ge = w.litHtmlPolyfillSupport;
+ge?.(V, U), (w.litHtmlVersions ??= []).push("3.3.3");
 var _e = (e, t, n) => {
 	let r = n?.renderBefore ?? t, i = r._$litPart$;
 	if (i === void 0) {
@@ -481,7 +481,7 @@ var _e = (e, t, n) => {
 		r._$litPart$ = i = new U(t.insertBefore(A(), e), e, void 0, n ?? {});
 	}
 	return i._$AI(e), i;
-}, G = globalThis, K = class extends S {
+}, G = globalThis, K = class extends C {
 	constructor() {
 		super(...arguments), this.renderOptions = { host: this }, this._$Do = void 0;
 	}
@@ -515,9 +515,9 @@ var ye = (e) => (t, n) => {
 }, be = {
 	attribute: !0,
 	type: String,
-	converter: y,
+	converter: b,
 	reflect: !1,
-	hasChanged: b
+	hasChanged: x
 }, xe = (e = be, t, n) => {
 	let { kind: r, metadata: i } = n, a = globalThis.litPropertyMetadata.get(i);
 	if (a === void 0 && globalThis.litPropertyMetadata.set(i, a = /* @__PURE__ */ new Map()), r === "setter" && ((e = Object.create(e)).wrapped = !0), a.set(n.name, e), r === "accessor") {
@@ -1235,7 +1235,7 @@ function Re(e) {
 }
 //#endregion
 //#region src/index.ts
-var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_standort", Ve = "sensor.luba_va8tp48r_fortschritt", He = "sensor.luba_va8tp48r_verbleibende_zeit", Ue = "sensor.luba_va8tp48r_gesamtzeit", We = {
+var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_batteriezyklen", Ve = "sensor.luba_va8tp48r_aktueller_standort", He = "sensor.luba_va8tp48r_fortschritt", Ue = "sensor.luba_va8tp48r_verbleibende_zeit", We = "sensor.luba_va8tp48r_gesamtzeit", Ge = {
 	mowing: "Mäht",
 	docked: "Im Dock",
 	returning: "Rückkehr zur Ladestation",
@@ -1463,10 +1463,11 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
 
     .overview-icon {
       color: var(--nova-state-color);
-      filter: drop-shadow(
-        0 0 10px
-        var(--nova-state-glow)
-      );
+      filter:
+        drop-shadow(
+          0 0 10px
+          var(--nova-state-glow)
+        );
       --mdc-icon-size: 46px;
     }
 
@@ -1591,7 +1592,10 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
 
     .metric-row {
       display: grid;
-      grid-template-columns: 34px minmax(0, 1fr) auto;
+      grid-template-columns:
+        34px
+        minmax(0, 1fr)
+        auto;
       gap: 10px;
       align-items: center;
       min-height: 49px;
@@ -1605,10 +1609,11 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
 
     .metric-icon {
       color: var(--nova-state-color);
-      filter: drop-shadow(
-        0 0 7px
-        var(--nova-state-glow)
-      );
+      filter:
+        drop-shadow(
+          0 0 7px
+          var(--nova-state-glow)
+        );
       --mdc-icon-size: 24px;
     }
 
@@ -1670,10 +1675,11 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
 
     .state-symbol ha-icon {
       color: var(--nova-state-color);
-      filter: drop-shadow(
-        0 0 10px
-        var(--nova-state-glow)
-      );
+      filter:
+        drop-shadow(
+          0 0 10px
+          var(--nova-state-glow)
+        );
       --mdc-icon-size: 46px;
     }
 
@@ -1900,12 +1906,19 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
           </h3>
 
           <div class="overview-description">
-            <span>Mähvorgang läuft.</span>
-            <span>Der Mäher arbeitet autonom.</span>
+            <span>
+              Mähvorgang läuft.
+            </span>
+
+            <span>
+              Der Mäher arbeitet autonom.
+            </span>
           </div>
         </div>
 
-        <div class="glass-panel progress-panel">
+        <div
+          class="glass-panel progress-panel"
+        >
           <div
             class="progress-ring"
             style=${J({ "--progress-angle": `${e.progress * 3.6}deg` })}
@@ -1964,16 +1977,26 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
           ></ha-icon>
 
           <h3 class="overview-title">
-            ${e.name} ist in der Ladestation
+            ${e.name}
+            ist in der Ladestation
           </h3>
 
           <div class="overview-description">
-            <span>Der Mäher befindet sich sicher in der Basis.</span>
-            <span>Er ist bereit für die nächste Aufgabe.</span>
+            <span>
+              Der Mäher befindet sich
+              sicher in der Basis.
+            </span>
+
+            <span>
+              Er ist bereit für die
+              nächste Aufgabe.
+            </span>
           </div>
         </div>
 
-        <div class="glass-panel progress-panel">
+        <div
+          class="glass-panel progress-panel"
+        >
           <div
             class="battery-ring"
             style=${J({ "--battery-angle": `${e.battery * 3.6}deg` })}
@@ -1994,7 +2017,7 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
 
             ${this.renderMetricRow("mdi:battery-charging", "Ladezustand", e.battery >= 100 ? "Vollständig geladen" : "Wird geladen")}
 
-            ${this.renderMetricRow("mdi:timer-outline", "Letzte Gesamtzeit", e.totalTimeLabel)}
+            ${this.renderMetricRow("mdi:battery-sync-outline", "Batteriezyklen", e.batteryCyclesLabel)}
 
             ${this.renderMetricRow("mdi:check-circle-outline", "Bereitschaft", "Bereit")}
           </div>
@@ -2012,12 +2035,20 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
           ></ha-icon>
 
           <h3 class="overview-title">
-            ${e.name} fährt zur Basis
+            ${e.name}
+            fährt zur Basis
           </h3>
 
           <div class="overview-description">
-            <span>Die aktuelle Aufgabe wird beendet.</span>
-            <span>Der Mäher kehrt zur Ladestation zurück.</span>
+            <span>
+              Die aktuelle Aufgabe
+              wird beendet.
+            </span>
+
+            <span>
+              Der Mäher kehrt zur
+              Ladestation zurück.
+            </span>
           </div>
         </div>
 
@@ -2049,7 +2080,9 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
           </h3>
         </div>
 
-        <div class="glass-panel state-panel">
+        <div
+          class="glass-panel state-panel"
+        >
           <div class="state-symbol">
             <ha-icon
               icon="mdi:robot-mower-outline"
@@ -2057,13 +2090,16 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
           </div>
 
           <div class="state-message">
-            Bitte schalten Sie den Mäher ein und prüfen
-            Sie die WLAN- oder Bluetooth-Verbindung.
-            Momentan werden keine aktuellen Daten übertragen.
+            Bitte schalten Sie den Mäher
+            ein und prüfen Sie die WLAN-
+            oder Bluetooth-Verbindung.
+            Momentan werden keine
+            aktuellen Daten übertragen.
           </div>
 
           <div class="state-detail">
-            Letzter Rohstatus: ${e.rawState}
+            Letzter Rohstatus:
+            ${e.rawState}
           </div>
         </div>
       </section>
@@ -2079,12 +2115,20 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
           ></ha-icon>
 
           <h3 class="overview-title">
-            ${e.name} benötigt Aufmerksamkeit
+            ${e.name}
+            benötigt Aufmerksamkeit
           </h3>
 
           <div class="overview-description">
-            <span>Der Mäher meldet eine Störung.</span>
-            <span>Bitte Gerät und Umgebung überprüfen.</span>
+            <span>
+              Der Mäher meldet
+              eine Störung.
+            </span>
+
+            <span>
+              Bitte Gerät und Umgebung
+              überprüfen.
+            </span>
           </div>
         </div>
 
@@ -2112,27 +2156,41 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
           ></ha-icon>
 
           <h3 class="overview-title">
-            Software-Update wird verarbeitet
+            Software-Update
+            wird verarbeitet
           </h3>
 
           <div class="overview-description">
-            <span>${e.name} wird aktualisiert.</span>
-            <span>Bitte Gerät währenddessen nicht ausschalten.</span>
+            <span>
+              ${e.name}
+              wird aktualisiert.
+            </span>
+
+            <span>
+              Bitte Gerät währenddessen
+              nicht ausschalten.
+            </span>
           </div>
         </div>
 
-        <div class="glass-panel state-panel">
+        <div
+          class="glass-panel state-panel"
+        >
           <div class="state-symbol">
-            <ha-icon icon="mdi:download"></ha-icon>
+            <ha-icon
+              icon="mdi:download"
+            ></ha-icon>
           </div>
 
           <div class="state-message">
-            Der Mäher ist während des Updates
-            vorübergehend nicht einsatzbereit.
+            Der Mäher ist während
+            des Updates vorübergehend
+            nicht einsatzbereit.
           </div>
 
           <div class="state-detail">
-            Akkustand: ${e.batteryLabel}
+            Akkustand:
+            ${e.batteryLabel}
           </div>
         </div>
       </section>
@@ -2152,8 +2210,15 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
           </h3>
 
           <div class="overview-description">
-            <span>Automatische Aufgaben sind pausiert.</span>
-            <span>${e.name} kann sicher gewartet werden.</span>
+            <span>
+              Automatische Aufgaben
+              sind pausiert.
+            </span>
+
+            <span>
+              ${e.name} kann sicher
+              gewartet werden.
+            </span>
           </div>
         </div>
 
@@ -2181,11 +2246,14 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
           ></ha-icon>
 
           <h3 class="overview-title">
-            Status konnte nicht erkannt werden
+            Status konnte nicht
+            erkannt werden
           </h3>
         </div>
 
-        <div class="glass-panel state-panel">
+        <div
+          class="glass-panel state-panel"
+        >
           <div class="state-symbol">
             <ha-icon
               icon="mdi:help"
@@ -2193,12 +2261,15 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
           </div>
 
           <div class="state-message">
-            Der aktuelle Zustand des Mähers kann
-            noch keiner bekannten Ansicht zugeordnet werden.
+            Der aktuelle Zustand des
+            Mähers kann noch keiner
+            bekannten Ansicht
+            zugeordnet werden.
           </div>
 
           <div class="state-detail">
-            Rohstatus: ${e.rawState}
+            Rohstatus:
+            ${e.rawState}
           </div>
         </div>
       </section>
@@ -2217,14 +2288,12 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
 		}
 	}
 	handleImageError(e) {
-		let t = e.currentTarget;
-		t.style.display = "none";
-		let n = t.parentElement?.querySelector(".robot-fallback");
-		n && (n.hidden = !1);
+		let t = e.currentTarget.parentElement?.querySelector(".robot-fallback");
+		t && (t.hidden = !1);
 	}
 	render() {
 		if (!this.config) return z;
-		let e = this.mowerState, t = this.config.name ?? "Luba", n = this.config.model ?? "Luba 3 AWD LiDAR", r = this.config.battery_entity ?? ze, i = this.config.location_entity ?? Be, a = this.config.progress_entity ?? Ve, o = this.config.remaining_time_entity ?? He, s = this.config.total_time_entity ?? Ue, c = Le(n), l = Ne(c), u = Ae(c);
+		let e = this.mowerState, t = this.config.name ?? "Luba", n = this.config.model ?? "Luba 3 AWD LiDAR", r = this.config.battery_entity ?? ze, i = this.config.battery_cycles_entity ?? Be, a = this.config.location_entity ?? Ve, o = this.config.progress_entity ?? He, s = this.config.remaining_time_entity ?? Ue, c = this.config.total_time_entity ?? We, l = Le(n), u = Ne(l), d = Ae(l);
 		if (!e) {
 			let e = Z.states.error;
 			return L`
@@ -2242,52 +2311,56 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
               </strong>
 
               <p>
-                „${this.config.entity}“ ist in
-                Home Assistant nicht vorhanden.
+                „${this.config.entity}“
+                ist in Home Assistant
+                nicht vorhanden.
               </p>
             </div>
           </div>
         </ha-card>
       `;
 		}
-		let d = Re(e.state), f = Z.states[d], p = Ie(d), m = Pe(c), h = {
-			...p,
+		let f = Re(e.state), p = Z.states[f], m = Ie(f), h = Pe(l), g = {
+			...m,
 			front: {
-				...p.front,
-				asset: m.front
+				...m.front,
+				asset: h.front
 			},
 			side: {
-				...p.side,
-				asset: m.side
+				...m.side,
+				asset: h.side
 			}
-		}, g = this.getNumericValue(a), _ = this.clampPercentage(g), ee = g === null ? "—" : `${Math.round(_)} %`, v = this.getNumericValue(r), y = this.clampPercentage(v), b = this.formatEntityValue(r, "%"), x = this.formatEntityValue(i), S = this.formatEntityValue(o), C = this.formatEntityValue(s), w = {
+		}, _ = this.getNumericValue(o), v = this.clampPercentage(_), y = _ === null ? "—" : `${Math.round(v)} %`, b = this.getNumericValue(r), x = this.clampPercentage(b), S = this.formatEntityValue(r, "%"), C = this.formatEntityValue(i), w = this.formatEntityValue(a), T = this.formatEntityValue(s), E = this.formatEntityValue(c), D = {
 			name: t,
-			novaState: d,
+			novaState: f,
 			rawState: e.state,
-			progress: _,
-			progressLabel: ee,
-			battery: y,
-			batteryLabel: b,
-			locationLabel: x,
-			remainingTimeLabel: S,
-			totalTimeLabel: C
+			progress: v,
+			progressLabel: y,
+			battery: x,
+			batteryLabel: S,
+			batteryCyclesLabel: C,
+			locationLabel: w,
+			remainingTimeLabel: T,
+			totalTimeLabel: E
 		};
 		return L`
-      <ha-card style=${J({
-			"--nova-state-color": f.color,
-			"--nova-state-soft": f.soft,
-			"--nova-state-glow": f.glow,
-			"--robot-desktop-scale": String(u.desktop.scale),
-			"--robot-desktop-x": `${u.desktop.translateX}px`,
-			"--robot-desktop-y": `${u.desktop.translateY}px`,
-			"--robot-desktop-max-width": `${u.desktop.maxWidth}px`,
-			"--robot-desktop-max-height": `${u.desktop.maxHeight}px`,
-			"--robot-mobile-scale": String(u.mobile.scale),
-			"--robot-mobile-x": `${u.mobile.translateX}px`,
-			"--robot-mobile-y": `${u.mobile.translateY}px`,
-			"--robot-mobile-max-width": `${u.mobile.maxWidth}px`,
-			"--robot-mobile-max-height": `${u.mobile.maxHeight}px`
-		})}>
+      <ha-card
+        style=${J({
+			"--nova-state-color": p.color,
+			"--nova-state-soft": p.soft,
+			"--nova-state-glow": p.glow,
+			"--robot-desktop-scale": String(d.desktop.scale),
+			"--robot-desktop-x": `${d.desktop.translateX}px`,
+			"--robot-desktop-y": `${d.desktop.translateY}px`,
+			"--robot-desktop-max-width": `${d.desktop.maxWidth}px`,
+			"--robot-desktop-max-height": `${d.desktop.maxHeight}px`,
+			"--robot-mobile-scale": String(d.mobile.scale),
+			"--robot-mobile-x": `${d.mobile.translateX}px`,
+			"--robot-mobile-y": `${d.mobile.translateY}px`,
+			"--robot-mobile-max-width": `${d.mobile.maxWidth}px`,
+			"--robot-mobile-max-height": `${d.mobile.maxHeight}px`
+		})}
+      >
         <div class="card-layout">
           <header class="header">
             <div class="brand">
@@ -2295,7 +2368,9 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
                 Nova UI
               </div>
 
-              <h2>${t}</h2>
+              <h2>
+                ${t}
+              </h2>
 
               <div class="model">
                 ${n}
@@ -2306,7 +2381,9 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
               class="led-placeholder"
               title="Statusanzeige"
             >
-              <span class="led-core"></span>
+              <span
+                class="led-core"
+              ></span>
             </div>
           </header>
 
@@ -2315,14 +2392,14 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
               <div class="robot-stage">
                 <img
                   class="robot-image"
-                  src=${l}
+                  src=${u}
                   alt=${n}
                   loading="eager"
                   @error=${this.handleImageError}
                 />
 
                 <mower-lighting
-                  .lighting=${h}
+                  .lighting=${g}
                 ></mower-lighting>
 
                 <div
@@ -2330,47 +2407,56 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
                   hidden
                 >
                   <div
-                    class="robot-fallback-symbol"
+                    class="
+                      robot-fallback-symbol
+                    "
                   >
                     ◆
                   </div>
 
                   <div
-                    class="robot-fallback-title"
+                    class="
+                      robot-fallback-title
+                    "
                   >
-                    Gerätebild konnte nicht
-                    geladen werden
+                    Gerätebild konnte
+                    nicht geladen werden
                   </div>
 
                   <div
-                    class="robot-fallback-path"
+                    class="
+                      robot-fallback-path
+                    "
                   >
-                    ${l}
+                    ${u}
                   </div>
                 </div>
               </div>
             </section>
 
-            ${this.renderStateContent(w)}
+            ${this.renderStateContent(D)}
           </main>
 
           <footer class="footer">
             <div class="status-group">
               <div class="status">
-                <span class="dot"></span>
+                <span
+                  class="dot"
+                ></span>
 
                 <span>
-                  ${We[d]}
+                  ${Ge[f]}
                 </span>
               </div>
 
               <div class="raw-state">
-                Rohstatus: ${e.state}
+                Rohstatus:
+                ${e.state}
               </div>
             </div>
 
             <div class="layout-note">
-              ${c}
+              ${l}
             </div>
           </footer>
         </div>
@@ -2387,10 +2473,11 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
 			name: "Luba",
 			model: "Luba 3 AWD LiDAR",
 			battery_entity: ze,
-			location_entity: Be,
-			progress_entity: Ve,
-			remaining_time_entity: He,
-			total_time_entity: Ue
+			battery_cycles_entity: Be,
+			location_entity: Ve,
+			progress_entity: He,
+			remaining_time_entity: Ue,
+			total_time_entity: We
 		};
 	}
 };
