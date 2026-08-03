@@ -47,6 +47,7 @@ interface NovaLubaCardConfig {
   progress_entity?: string;
   remaining_time_entity?: string;
   total_time_entity?: string;
+  battery_cycles_entity?: string;
 }
 
 interface MowerViewData {
@@ -79,6 +80,9 @@ const DEFAULT_REMAINING_TIME_ENTITY =
 
 const DEFAULT_TOTAL_TIME_ENTITY =
   "sensor.luba_va8tp48r_gesamtzeit";
+
+const DEFAULT_BATTERY_CYCLES_ENTITY =
+  "sensor.luba_va8tp48r_batteriezyklen";
 
 const stateLabels: Record<NovaMowerState, string> = {
   mowing: "Mäht",
@@ -957,9 +961,9 @@ export class NovaLubaCard extends LitElement {
             )}
 
             ${this.renderMetricRow(
-              "mdi:timer-outline",
-              "Letzte Gesamtzeit",
-              data.totalTimeLabel,
+              "mdi:battery-sync-outline",
+              "Batteriezyklen",
+              data.batteryCyclesLabel,
             )}
 
             ${this.renderMetricRow(
@@ -1422,6 +1426,11 @@ export class NovaLubaCard extends LitElement {
         "%",
       );
 
+    const batteryCyclesLabel =
+      this.formatEntityValue(
+        batteryCyclesEntity,
+      );
+
     const locationLabel =
       this.formatEntityValue(
         locationEntity,
@@ -1447,10 +1456,12 @@ export class NovaLubaCard extends LitElement {
 
       battery,
       batteryLabel,
+      
 
       locationLabel,
       remainingTimeLabel,
       totalTimeLabel,
+      batteryCyclesLabel,
     };
 
     const dynamicStyles = {
@@ -1609,6 +1620,9 @@ export class NovaLubaCard extends LitElement {
 
       battery_entity:
         DEFAULT_BATTERY_ENTITY,
+
+      battery_cycles_entity:
+        DEFAULT_BATTERY_CYCLES_ENTITY,
 
       location_entity:
         DEFAULT_LOCATION_ENTITY,
