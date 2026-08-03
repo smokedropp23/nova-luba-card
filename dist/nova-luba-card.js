@@ -254,22 +254,22 @@ var S = class extends HTMLElement {
 S.elementStyles = [], S.shadowRootOptions = { mode: "open" }, S[v("elementProperties")] = /* @__PURE__ */ new Map(), S[v("finalized")] = /* @__PURE__ */ new Map(), ee?.({ ReactiveElement: S }), (h.reactiveElementVersions ??= []).push("2.1.2");
 //#endregion
 //#region node_modules/lit-html/lit-html.js
-var C = globalThis, w = (e) => e, T = C.trustedTypes, te = T ? T.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, ne = "$lit$", E = `lit$${Math.random().toFixed(9).slice(2)}$`, D = "?" + E, re = `<${D}>`, O = document, k = () => O.createComment(""), A = (e) => e === null || typeof e != "object" && typeof e != "function", j = Array.isArray, ie = (e) => j(e) || typeof e?.[Symbol.iterator] == "function", M = "[ 	\n\f\r]", N = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, ae = /-->/g, oe = />/g, P = RegExp(`>|${M}(?:([^\\s"'>=/]+)(${M}*=${M}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), se = /'/g, F = /"/g, I = /^(?:script|style|textarea|title)$/i, L = ((e) => (t, ...n) => ({
+var C = globalThis, w = (e) => e, T = C.trustedTypes, E = T ? T.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, D = "$lit$", O = `lit$${Math.random().toFixed(9).slice(2)}$`, te = "?" + O, ne = `<${te}>`, k = document, A = () => k.createComment(""), j = (e) => e === null || typeof e != "object" && typeof e != "function", M = Array.isArray, re = (e) => M(e) || typeof e?.[Symbol.iterator] == "function", N = "[ 	\n\f\r]", P = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, ie = /-->/g, ae = />/g, F = RegExp(`>|${N}(?:([^\\s"'>=/]+)(${N}*=${N}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), oe = /'/g, I = /"/g, se = /^(?:script|style|textarea|title)$/i, L = ((e) => (t, ...n) => ({
 	_$litType$: e,
 	strings: t,
 	values: n
-}))(1), R = Symbol.for("lit-noChange"), z = Symbol.for("lit-nothing"), ce = /* @__PURE__ */ new WeakMap(), B = O.createTreeWalker(O, 129);
+}))(1), R = Symbol.for("lit-noChange"), z = Symbol.for("lit-nothing"), ce = /* @__PURE__ */ new WeakMap(), B = k.createTreeWalker(k, 129);
 function le(e, t) {
-	if (!j(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
-	return te === void 0 ? t : te.createHTML(t);
+	if (!M(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
+	return E === void 0 ? t : E.createHTML(t);
 }
 var ue = (e, t) => {
-	let n = e.length - 1, r = [], i, a = t === 2 ? "<svg>" : t === 3 ? "<math>" : "", o = N;
+	let n = e.length - 1, r = [], i, a = t === 2 ? "<svg>" : t === 3 ? "<math>" : "", o = P;
 	for (let t = 0; t < n; t++) {
 		let n = e[t], s, c, l = -1, u = 0;
-		for (; u < n.length && (o.lastIndex = u, c = o.exec(n), c !== null);) u = o.lastIndex, o === N ? c[1] === "!--" ? o = ae : c[1] === void 0 ? c[2] === void 0 ? c[3] !== void 0 && (o = P) : (I.test(c[2]) && (i = RegExp("</" + c[2], "g")), o = P) : o = oe : o === P ? c[0] === ">" ? (o = i ?? N, l = -1) : c[1] === void 0 ? l = -2 : (l = o.lastIndex - c[2].length, s = c[1], o = c[3] === void 0 ? P : c[3] === "\"" ? F : se) : o === F || o === se ? o = P : o === ae || o === oe ? o = N : (o = P, i = void 0);
-		let d = o === P && e[t + 1].startsWith("/>") ? " " : "";
-		a += o === N ? n + re : l >= 0 ? (r.push(s), n.slice(0, l) + ne + n.slice(l) + E + d) : n + E + (l === -2 ? t : d);
+		for (; u < n.length && (o.lastIndex = u, c = o.exec(n), c !== null);) u = o.lastIndex, o === P ? c[1] === "!--" ? o = ie : c[1] === void 0 ? c[2] === void 0 ? c[3] !== void 0 && (o = F) : (se.test(c[2]) && (i = RegExp("</" + c[2], "g")), o = F) : o = ae : o === F ? c[0] === ">" ? (o = i ?? P, l = -1) : c[1] === void 0 ? l = -2 : (l = o.lastIndex - c[2].length, s = c[1], o = c[3] === void 0 ? F : c[3] === "\"" ? I : oe) : o === I || o === oe ? o = F : o === ie || o === ae ? o = P : (o = F, i = void 0);
+		let d = o === F && e[t + 1].startsWith("/>") ? " " : "";
+		a += o === P ? n + ne : l >= 0 ? (r.push(s), n.slice(0, l) + D + n.slice(l) + O + d) : n + O + (l === -2 ? t : d);
 	}
 	return [le(e, a + (e[n] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), r];
 }, V = class e {
@@ -283,8 +283,8 @@ var ue = (e, t) => {
 		}
 		for (; (i = B.nextNode()) !== null && c.length < s;) {
 			if (i.nodeType === 1) {
-				if (i.hasAttributes()) for (let e of i.getAttributeNames()) if (e.endsWith(ne)) {
-					let t = u[o++], n = i.getAttribute(e).split(E), r = /([.?@])?(.*)/.exec(t);
+				if (i.hasAttributes()) for (let e of i.getAttributeNames()) if (e.endsWith(D)) {
+					let t = u[o++], n = i.getAttribute(e).split(O), r = /([.?@])?(.*)/.exec(t);
 					c.push({
 						type: 1,
 						index: a,
@@ -292,43 +292,43 @@ var ue = (e, t) => {
 						strings: n,
 						ctor: r[1] === "." ? fe : r[1] === "?" ? pe : r[1] === "@" ? me : W
 					}), i.removeAttribute(e);
-				} else e.startsWith(E) && (c.push({
+				} else e.startsWith(O) && (c.push({
 					type: 6,
 					index: a
 				}), i.removeAttribute(e));
-				if (I.test(i.tagName)) {
-					let e = i.textContent.split(E), t = e.length - 1;
+				if (se.test(i.tagName)) {
+					let e = i.textContent.split(O), t = e.length - 1;
 					if (t > 0) {
 						i.textContent = T ? T.emptyScript : "";
-						for (let n = 0; n < t; n++) i.append(e[n], k()), B.nextNode(), c.push({
+						for (let n = 0; n < t; n++) i.append(e[n], A()), B.nextNode(), c.push({
 							type: 2,
 							index: ++a
 						});
-						i.append(e[t], k());
+						i.append(e[t], A());
 					}
 				}
-			} else if (i.nodeType === 8) if (i.data === D) c.push({
+			} else if (i.nodeType === 8) if (i.data === te) c.push({
 				type: 2,
 				index: a
 			});
 			else {
 				let e = -1;
-				for (; (e = i.data.indexOf(E, e + 1)) !== -1;) c.push({
+				for (; (e = i.data.indexOf(O, e + 1)) !== -1;) c.push({
 					type: 7,
 					index: a
-				}), e += E.length - 1;
+				}), e += O.length - 1;
 			}
 			a++;
 		}
 	}
 	static createElement(e, t) {
-		let n = O.createElement("template");
+		let n = k.createElement("template");
 		return n.innerHTML = e, n;
 	}
 };
 function H(e, t, n = e, r) {
 	if (t === R) return t;
-	let i = r === void 0 ? n._$Cl : n._$Co?.[r], a = A(t) ? void 0 : t._$litDirective$;
+	let i = r === void 0 ? n._$Cl : n._$Co?.[r], a = j(t) ? void 0 : t._$litDirective$;
 	return i?.constructor !== a && (i?._$AO?.(!1), a === void 0 ? i = void 0 : (i = new a(e), i._$AT(e, n, r)), r === void 0 ? n._$Cl = i : (n._$Co ??= [])[r] = i), i !== void 0 && (t = H(e, i._$AS(e, t.values), i, r)), t;
 }
 var de = class {
@@ -342,7 +342,7 @@ var de = class {
 		return this._$AM._$AU;
 	}
 	u(e) {
-		let { el: { content: t }, parts: n } = this._$AD, r = (e?.creationScope ?? O).importNode(t, !0);
+		let { el: { content: t }, parts: n } = this._$AD, r = (e?.creationScope ?? k).importNode(t, !0);
 		B.currentNode = r;
 		let i = B.nextNode(), a = 0, o = 0, s = n[0];
 		for (; s !== void 0;) {
@@ -352,7 +352,7 @@ var de = class {
 			}
 			a !== s?.index && (i = B.nextNode(), a++);
 		}
-		return B.currentNode = O, r;
+		return B.currentNode = k, r;
 	}
 	p(e) {
 		let t = 0;
@@ -376,7 +376,7 @@ var de = class {
 		return this._$AB;
 	}
 	_$AI(e, t = this) {
-		e = H(this, e, t), A(e) ? e === z || e == null || e === "" ? (this._$AH !== z && this._$AR(), this._$AH = z) : e !== this._$AH && e !== R && this._(e) : e._$litType$ === void 0 ? e.nodeType === void 0 ? ie(e) ? this.k(e) : this._(e) : this.T(e) : this.$(e);
+		e = H(this, e, t), j(e) ? e === z || e == null || e === "" ? (this._$AH !== z && this._$AR(), this._$AH = z) : e !== this._$AH && e !== R && this._(e) : e._$litType$ === void 0 ? e.nodeType === void 0 ? re(e) ? this.k(e) : this._(e) : this.T(e) : this.$(e);
 	}
 	O(e) {
 		return this._$AA.parentNode.insertBefore(e, this._$AB);
@@ -385,7 +385,7 @@ var de = class {
 		this._$AH !== e && (this._$AR(), this._$AH = this.O(e));
 	}
 	_(e) {
-		this._$AH !== z && A(this._$AH) ? this._$AA.nextSibling.data = e : this.T(O.createTextNode(e)), this._$AH = e;
+		this._$AH !== z && j(this._$AH) ? this._$AA.nextSibling.data = e : this.T(k.createTextNode(e)), this._$AH = e;
 	}
 	$(e) {
 		let { values: t, _$litType$: n } = e, r = typeof n == "number" ? this._$AC(e) : (n.el === void 0 && (n.el = V.createElement(le(n.h, n.h[0]), this.options)), n);
@@ -400,9 +400,9 @@ var de = class {
 		return t === void 0 && ce.set(e.strings, t = new V(e)), t;
 	}
 	k(t) {
-		j(this._$AH) || (this._$AH = [], this._$AR());
+		M(this._$AH) || (this._$AH = [], this._$AR());
 		let n = this._$AH, r, i = 0;
-		for (let a of t) i === n.length ? n.push(r = new e(this.O(k()), this.O(k()), this, this.options)) : r = n[i], r._$AI(a), i++;
+		for (let a of t) i === n.length ? n.push(r = new e(this.O(A()), this.O(A()), this, this.options)) : r = n[i], r._$AI(a), i++;
 		i < n.length && (this._$AR(r && r._$AB.nextSibling, i), n.length = i);
 	}
 	_$AR(e = this._$AA.nextSibling, t) {
@@ -426,10 +426,10 @@ var de = class {
 	}
 	_$AI(e, t = this, n, r) {
 		let i = this.strings, a = !1;
-		if (i === void 0) e = H(this, e, t, 0), a = !A(e) || e !== this._$AH && e !== R, a && (this._$AH = e);
+		if (i === void 0) e = H(this, e, t, 0), a = !j(e) || e !== this._$AH && e !== R, a && (this._$AH = e);
 		else {
 			let r = e, o, s;
-			for (e = i[0], o = 0; o < i.length - 1; o++) s = H(this, r[n + o], t, o), s === R && (s = this._$AH[o]), a ||= !A(s) || s !== this._$AH[o], s === z ? e = z : e !== z && (e += (s ?? "") + i[o + 1]), this._$AH[o] = s;
+			for (e = i[0], o = 0; o < i.length - 1; o++) s = H(this, r[n + o], t, o), s === R && (s = this._$AH[o]), a ||= !j(s) || s !== this._$AH[o], s === z ? e = z : e !== z && (e += (s ?? "") + i[o + 1]), this._$AH[o] = s;
 		}
 		a && !r && this.j(e);
 	}
@@ -478,7 +478,7 @@ var _e = (e, t, n) => {
 	let r = n?.renderBefore ?? t, i = r._$litPart$;
 	if (i === void 0) {
 		let e = n?.renderBefore ?? null;
-		r._$litPart$ = i = new U(t.insertBefore(k(), e), e, void 0, n ?? {});
+		r._$litPart$ = i = new U(t.insertBefore(A(), e), e, void 0, n ?? {});
 	}
 	return i._$AI(e), i;
 }, G = globalThis, K = class extends S {
@@ -1244,24 +1244,6 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
 	update: "Update verfügbar",
 	offline: "Offline",
 	unknown: "Unbekannt"
-}, Ge = {
-	mowing: "mäht",
-	docked: "ist in der Ladestation",
-	returning: "fährt zur Basis",
-	error: "benötigt Aufmerksamkeit",
-	maintenance: "ist im Wartungsmodus",
-	update: "wird aktualisiert",
-	offline: "ist offline",
-	unknown: "hat einen unbekannten Status"
-}, Ke = {
-	mowing: ["Mähvorgang läuft.", "Der Mäher arbeitet autonom."],
-	docked: ["Der Mäher befindet sich in der Basis.", "Er ist bereit für die nächste Aufgabe."],
-	returning: ["Der Mäher kehrt zur Ladestation zurück.", "Die aktuelle Aufgabe wird beendet."],
-	error: ["Der Mäher meldet eine Störung.", "Bitte Status und Umgebung prüfen."],
-	maintenance: ["Der Wartungsmodus ist aktiv.", "Automatische Aufgaben sind pausiert."],
-	update: ["Eine Aktualisierung wird verarbeitet.", "Der Mäher steht vorübergehend nicht bereit."],
-	offline: ["Der Mäher ist momentan nicht erreichbar.", "Es werden keine aktuellen Daten übertragen."],
-	unknown: ["Der Zustand konnte nicht erkannt werden.", "Bitte die Verbindung und Entität prüfen."]
 }, $ = class extends K {
 	static {
 		this.styles = o`
@@ -1462,10 +1444,6 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
       line-height: 1.5;
     }
 
-    /*
-     * Neuer zentraler Statusbereich
-     */
-
     .overview {
       display: grid;
       min-width: 0;
@@ -1506,13 +1484,9 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
       line-height: 1.45;
     }
 
-    .progress-panel {
+    .glass-panel {
       display: grid;
-      grid-template-columns:
-        minmax(130px, 0.75fr)
-        minmax(0, 1.25fr);
       gap: ${a(Z.spacing.md)};
-      align-items: center;
       padding: ${a(Z.spacing.md)};
       border: 1px solid ${a(Z.colors.borderSoft)};
       border-radius: ${a(Z.radius.medium)};
@@ -1528,7 +1502,15 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
       backdrop-filter: blur(12px);
     }
 
-    .progress-ring {
+    .progress-panel {
+      grid-template-columns:
+        minmax(130px, 0.75fr)
+        minmax(0, 1.25fr);
+      align-items: center;
+    }
+
+    .progress-ring,
+    .battery-ring {
       position: relative;
       display: grid;
       width: min(160px, 100%);
@@ -1536,6 +1518,12 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
       place-items: center;
       justify-self: center;
       border-radius: 50%;
+      box-shadow:
+        0 0 18px var(--nova-state-glow),
+        inset 0 0 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .progress-ring {
       background:
         conic-gradient(
           var(--nova-state-color)
@@ -1545,12 +1533,22 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
           var(--progress-angle)
           360deg
         );
-      box-shadow:
-        0 0 18px var(--nova-state-glow),
-        inset 0 0 20px rgba(0, 0, 0, 0.25);
     }
 
-    .progress-ring::before {
+    .battery-ring {
+      background:
+        conic-gradient(
+          var(--nova-state-color)
+          0deg
+          var(--battery-angle),
+          rgba(255, 255, 255, 0.09)
+          var(--battery-angle)
+          360deg
+        );
+    }
+
+    .progress-ring::before,
+    .battery-ring::before {
       position: absolute;
       inset: 12px;
       border-radius: 50%;
@@ -1566,7 +1564,7 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
       content: "";
     }
 
-    .progress-ring-content {
+    .ring-content {
       position: relative;
       z-index: 1;
       display: grid;
@@ -1575,13 +1573,13 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
       text-align: center;
     }
 
-    .progress-value {
+    .ring-value {
       font-size: clamp(30px, 6vw, 46px);
       font-weight: 750;
       line-height: 1;
     }
 
-    .progress-label {
+    .ring-label {
       color: ${a(Z.colors.textSecondary)};
       font-size: 13px;
     }
@@ -1650,6 +1648,47 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
         width ${a(Z.animation.normal)} ease;
     }
 
+    .state-panel {
+      align-content: center;
+      justify-items: center;
+      min-height: 280px;
+      text-align: center;
+    }
+
+    .state-symbol {
+      display: grid;
+      width: 92px;
+      height: 92px;
+      place-items: center;
+      border: 1px solid var(--nova-state-color);
+      border-radius: 50%;
+      background: var(--nova-state-soft);
+      box-shadow:
+        0 0 24px var(--nova-state-glow),
+        inset 0 0 18px rgba(255, 255, 255, 0.035);
+    }
+
+    .state-symbol ha-icon {
+      color: var(--nova-state-color);
+      filter: drop-shadow(
+        0 0 10px
+        var(--nova-state-glow)
+      );
+      --mdc-icon-size: 46px;
+    }
+
+    .state-message {
+      max-width: 430px;
+      color: ${a(Z.colors.textSecondary)};
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .state-detail {
+      color: ${a(Z.colors.textMuted)};
+      font-size: 12px;
+    }
+
     .footer {
       display: flex;
       align-items: flex-end;
@@ -1674,7 +1713,6 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
       border-radius: ${a(Z.radius.pill)};
       background: var(--nova-state-soft);
       font-weight: 600;
-      transition: all ${a(Z.animation.normal)} ease;
     }
 
     .dot {
@@ -1710,11 +1748,6 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
       text-align: center;
     }
 
-    /*
-     * Breite Lovelace-Karte:
-     * Mäher links, Statusbereich rechts.
-     */
-
     @container (min-width: 760px) {
       .content-grid {
         grid-template-columns:
@@ -1725,15 +1758,7 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
       .robot-stage {
         min-height: 390px;
       }
-
-      .overview-heading {
-        justify-items: center;
-      }
     }
-
-    /*
-     * Mobile beziehungsweise schmale Karte.
-     */
 
     @container (max-width: 759px) {
       ha-card {
@@ -1803,7 +1828,8 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
         grid-template-columns: 1fr;
       }
 
-      .progress-ring {
+      .progress-ring,
+      .battery-ring {
         width: 145px;
       }
 
@@ -1838,6 +1864,357 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
 	}
 	clampPercentage(e) {
 		return e === null ? 0 : Math.min(100, Math.max(0, e));
+	}
+	renderMetricRow(e, t, n) {
+		return L`
+      <div class="metric-row">
+        <ha-icon
+          class="metric-icon"
+          icon=${e}
+        ></ha-icon>
+
+        <span class="metric-label">
+          ${t}
+        </span>
+
+        <span
+          class="metric-value"
+          title=${n}
+        >
+          ${n}
+        </span>
+      </div>
+    `;
+	}
+	renderMowingView(e) {
+		return L`
+      <section class="overview">
+        <div class="overview-heading">
+          <ha-icon
+            class="overview-icon"
+            icon="mdi:grass"
+          ></ha-icon>
+
+          <h3 class="overview-title">
+            ${e.name} mäht
+          </h3>
+
+          <div class="overview-description">
+            <span>Mähvorgang läuft.</span>
+            <span>Der Mäher arbeitet autonom.</span>
+          </div>
+        </div>
+
+        <div class="glass-panel progress-panel">
+          <div
+            class="progress-ring"
+            style=${J({ "--progress-angle": `${e.progress * 3.6}deg` })}
+          >
+            <div class="ring-content">
+              <span class="ring-value">
+                ${e.progressLabel}
+              </span>
+
+              <span class="ring-label">
+                Fortschritt
+              </span>
+            </div>
+          </div>
+
+          <div class="metric-list">
+            ${this.renderMetricRow("mdi:clock-outline", "Verbleibende Zeit", e.remainingTimeLabel)}
+
+            ${this.renderMetricRow("mdi:map-marker-outline", "Aktuelle Zone", e.locationLabel)}
+
+            ${this.renderMetricRow("mdi:timer-outline", "Gesamtzeit", e.totalTimeLabel)}
+
+            <div class="metric-row">
+              <ha-icon
+                class="metric-icon"
+                icon="mdi:battery"
+              ></ha-icon>
+
+              <span class="metric-label">
+                Akkustand
+              </span>
+
+              <span class="metric-value">
+                ${e.batteryLabel}
+              </span>
+
+              <div class="battery-track">
+                <span
+                  class="battery-fill"
+                  style=${J({ width: `${e.battery}%` })}
+                ></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+	}
+	renderDockedView(e) {
+		return L`
+      <section class="overview">
+        <div class="overview-heading">
+          <ha-icon
+            class="overview-icon"
+            icon="mdi:home-battery-outline"
+          ></ha-icon>
+
+          <h3 class="overview-title">
+            ${e.name} ist in der Ladestation
+          </h3>
+
+          <div class="overview-description">
+            <span>Der Mäher befindet sich sicher in der Basis.</span>
+            <span>Er ist bereit für die nächste Aufgabe.</span>
+          </div>
+        </div>
+
+        <div class="glass-panel progress-panel">
+          <div
+            class="battery-ring"
+            style=${J({ "--battery-angle": `${e.battery * 3.6}deg` })}
+          >
+            <div class="ring-content">
+              <span class="ring-value">
+                ${e.batteryLabel}
+              </span>
+
+              <span class="ring-label">
+                Akkustand
+              </span>
+            </div>
+          </div>
+
+          <div class="metric-list">
+            ${this.renderMetricRow("mdi:map-marker-outline", "Aktueller Standort", e.locationLabel)}
+
+            ${this.renderMetricRow("mdi:battery-charging", "Ladezustand", e.battery >= 100 ? "Vollständig geladen" : "Wird geladen")}
+
+            ${this.renderMetricRow("mdi:timer-outline", "Letzte Gesamtzeit", e.totalTimeLabel)}
+
+            ${this.renderMetricRow("mdi:check-circle-outline", "Bereitschaft", "Bereit")}
+          </div>
+        </div>
+      </section>
+    `;
+	}
+	renderReturningView(e) {
+		return L`
+      <section class="overview">
+        <div class="overview-heading">
+          <ha-icon
+            class="overview-icon"
+            icon="mdi:home-import-outline"
+          ></ha-icon>
+
+          <h3 class="overview-title">
+            ${e.name} fährt zur Basis
+          </h3>
+
+          <div class="overview-description">
+            <span>Die aktuelle Aufgabe wird beendet.</span>
+            <span>Der Mäher kehrt zur Ladestation zurück.</span>
+          </div>
+        </div>
+
+        <div class="glass-panel">
+          <div class="metric-list">
+            ${this.renderMetricRow("mdi:map-marker-outline", "Aktueller Standort", e.locationLabel)}
+
+            ${this.renderMetricRow("mdi:clock-outline", "Verbleibende Zeit", e.remainingTimeLabel)}
+
+            ${this.renderMetricRow("mdi:battery", "Akkustand", e.batteryLabel)}
+
+            ${this.renderMetricRow("mdi:home-outline", "Ziel", "Ladestation")}
+          </div>
+        </div>
+      </section>
+    `;
+	}
+	renderOfflineView(e) {
+		return L`
+      <section class="overview">
+        <div class="overview-heading">
+          <ha-icon
+            class="overview-icon"
+            icon="mdi:power-plug-off-outline"
+          ></ha-icon>
+
+          <h3 class="overview-title">
+            ${e.name} ist offline
+          </h3>
+        </div>
+
+        <div class="glass-panel state-panel">
+          <div class="state-symbol">
+            <ha-icon
+              icon="mdi:robot-mower-outline"
+            ></ha-icon>
+          </div>
+
+          <div class="state-message">
+            Bitte schalten Sie den Mäher ein und prüfen
+            Sie die WLAN- oder Bluetooth-Verbindung.
+            Momentan werden keine aktuellen Daten übertragen.
+          </div>
+
+          <div class="state-detail">
+            Letzter Rohstatus: ${e.rawState}
+          </div>
+        </div>
+      </section>
+    `;
+	}
+	renderErrorView(e) {
+		return L`
+      <section class="overview">
+        <div class="overview-heading">
+          <ha-icon
+            class="overview-icon"
+            icon="mdi:alert-circle-outline"
+          ></ha-icon>
+
+          <h3 class="overview-title">
+            ${e.name} benötigt Aufmerksamkeit
+          </h3>
+
+          <div class="overview-description">
+            <span>Der Mäher meldet eine Störung.</span>
+            <span>Bitte Gerät und Umgebung überprüfen.</span>
+          </div>
+        </div>
+
+        <div class="glass-panel">
+          <div class="metric-list">
+            ${this.renderMetricRow("mdi:alert-outline", "Fehlerstatus", e.rawState)}
+
+            ${this.renderMetricRow("mdi:map-marker-outline", "Aktueller Standort", e.locationLabel)}
+
+            ${this.renderMetricRow("mdi:battery", "Akkustand", e.batteryLabel)}
+
+            ${this.renderMetricRow("mdi:information-outline", "Empfehlung", "Gerät prüfen")}
+          </div>
+        </div>
+      </section>
+    `;
+	}
+	renderUpdateView(e) {
+		return L`
+      <section class="overview">
+        <div class="overview-heading">
+          <ha-icon
+            class="overview-icon"
+            icon="mdi:update"
+          ></ha-icon>
+
+          <h3 class="overview-title">
+            Software-Update wird verarbeitet
+          </h3>
+
+          <div class="overview-description">
+            <span>${e.name} wird aktualisiert.</span>
+            <span>Bitte Gerät währenddessen nicht ausschalten.</span>
+          </div>
+        </div>
+
+        <div class="glass-panel state-panel">
+          <div class="state-symbol">
+            <ha-icon icon="mdi:download"></ha-icon>
+          </div>
+
+          <div class="state-message">
+            Der Mäher ist während des Updates
+            vorübergehend nicht einsatzbereit.
+          </div>
+
+          <div class="state-detail">
+            Akkustand: ${e.batteryLabel}
+          </div>
+        </div>
+      </section>
+    `;
+	}
+	renderMaintenanceView(e) {
+		return L`
+      <section class="overview">
+        <div class="overview-heading">
+          <ha-icon
+            class="overview-icon"
+            icon="mdi:tools"
+          ></ha-icon>
+
+          <h3 class="overview-title">
+            Wartungsmodus ist aktiv
+          </h3>
+
+          <div class="overview-description">
+            <span>Automatische Aufgaben sind pausiert.</span>
+            <span>${e.name} kann sicher gewartet werden.</span>
+          </div>
+        </div>
+
+        <div class="glass-panel">
+          <div class="metric-list">
+            ${this.renderMetricRow("mdi:map-marker-outline", "Aktueller Standort", e.locationLabel)}
+
+            ${this.renderMetricRow("mdi:battery", "Akkustand", e.batteryLabel)}
+
+            ${this.renderMetricRow("mdi:timer-outline", "Gesamtzeit", e.totalTimeLabel)}
+
+            ${this.renderMetricRow("mdi:pause-circle-outline", "Automatik", "Pausiert")}
+          </div>
+        </div>
+      </section>
+    `;
+	}
+	renderUnknownView(e) {
+		return L`
+      <section class="overview">
+        <div class="overview-heading">
+          <ha-icon
+            class="overview-icon"
+            icon="mdi:help-circle-outline"
+          ></ha-icon>
+
+          <h3 class="overview-title">
+            Status konnte nicht erkannt werden
+          </h3>
+        </div>
+
+        <div class="glass-panel state-panel">
+          <div class="state-symbol">
+            <ha-icon
+              icon="mdi:help"
+            ></ha-icon>
+          </div>
+
+          <div class="state-message">
+            Der aktuelle Zustand des Mähers kann
+            noch keiner bekannten Ansicht zugeordnet werden.
+          </div>
+
+          <div class="state-detail">
+            Rohstatus: ${e.rawState}
+          </div>
+        </div>
+      </section>
+    `;
+	}
+	renderStateContent(e) {
+		switch (e.novaState) {
+			case "mowing": return this.renderMowingView(e);
+			case "docked": return this.renderDockedView(e);
+			case "returning": return this.renderReturningView(e);
+			case "error": return this.renderErrorView(e);
+			case "maintenance": return this.renderMaintenanceView(e);
+			case "update": return this.renderUpdateView(e);
+			case "offline": return this.renderOfflineView(e);
+			default: return this.renderUnknownView(e);
+		}
 	}
 	handleImageError(e) {
 		let t = e.currentTarget;
@@ -1883,7 +2260,18 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
 				...p.side,
 				asset: m.side
 			}
-		}, g = this.getNumericValue(a), _ = this.clampPercentage(g), ee = g === null ? "—" : `${Math.round(_)} %`, v = this.getNumericValue(r), y = this.clampPercentage(v), b = this.formatEntityValue(r, "%"), x = this.formatEntityValue(i), S = this.formatEntityValue(o), C = this.formatEntityValue(s), [w, T] = Ke[d];
+		}, g = this.getNumericValue(a), _ = this.clampPercentage(g), ee = g === null ? "—" : `${Math.round(_)} %`, v = this.getNumericValue(r), y = this.clampPercentage(v), b = this.formatEntityValue(r, "%"), x = this.formatEntityValue(i), S = this.formatEntityValue(o), C = this.formatEntityValue(s), w = {
+			name: t,
+			novaState: d,
+			rawState: e.state,
+			progress: _,
+			progressLabel: ee,
+			battery: y,
+			batteryLabel: b,
+			locationLabel: x,
+			remainingTimeLabel: S,
+			totalTimeLabel: C
+		};
 		return L`
       <ha-card style=${J({
 			"--nova-state-color": f.color,
@@ -1963,140 +2351,7 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_s
               </div>
             </section>
 
-            <section class="overview">
-              <div class="overview-heading">
-                <ha-icon
-                  class="overview-icon"
-                  icon="mdi:grass"
-                ></ha-icon>
-
-                <h3 class="overview-title">
-                  ${t}
-                  ${Ge[d]}
-                </h3>
-
-                <div
-                  class="overview-description"
-                >
-                  <span>
-                    ${w}
-                  </span>
-
-                  <span>
-                    ${T}
-                  </span>
-                </div>
-              </div>
-
-              <div class="progress-panel">
-                <div
-                  class="progress-ring"
-                  style=${J({ "--progress-angle": `${_ * 3.6}deg` })}
-                >
-                  <div
-                    class="progress-ring-content"
-                  >
-                    <span
-                      class="progress-value"
-                    >
-                      ${ee}
-                    </span>
-
-                    <span
-                      class="progress-label"
-                    >
-                      Fortschritt
-                    </span>
-                  </div>
-                </div>
-
-                <div class="metric-list">
-                  <div class="metric-row">
-                    <ha-icon
-                      class="metric-icon"
-                      icon="mdi:clock-outline"
-                    ></ha-icon>
-
-                    <span
-                      class="metric-label"
-                    >
-                      Verbleibende Zeit
-                    </span>
-
-                    <span
-                      class="metric-value"
-                    >
-                      ${S}
-                    </span>
-                  </div>
-
-                  <div class="metric-row">
-                    <ha-icon
-                      class="metric-icon"
-                      icon="mdi:map-marker-outline"
-                    ></ha-icon>
-
-                    <span
-                      class="metric-label"
-                    >
-                      Aktuelle Zone
-                    </span>
-
-                    <span
-                      class="metric-value"
-                      title=${x}
-                    >
-                      ${x}
-                    </span>
-                  </div>
-
-                  <div class="metric-row">
-                    <ha-icon
-                      class="metric-icon"
-                      icon="mdi:timer-outline"
-                    ></ha-icon>
-
-                    <span
-                      class="metric-label"
-                    >
-                      Gesamtzeit
-                    </span>
-
-                    <span
-                      class="metric-value"
-                    >
-                      ${C}
-                    </span>
-                  </div>
-
-                  <div class="metric-row">
-                    <ha-icon
-                      class="metric-icon"
-                      icon="mdi:battery"
-                    ></ha-icon>
-
-                    <span
-                      class="metric-label"
-                    >
-                      Akkustand
-                    </span>
-
-                    <span
-                      class="metric-value"
-                    >
-                      ${b}
-                    </span>
-
-                    <div class="battery-track">
-                      <span
-                        class="battery-fill"
-                        style=${J({ width: `${y}%` })}
-                      ></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
+            ${this.renderStateContent(w)}
           </main>
 
           <footer class="footer">

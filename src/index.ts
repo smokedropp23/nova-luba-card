@@ -49,6 +49,22 @@ interface NovaLubaCardConfig {
   total_time_entity?: string;
 }
 
+interface MowerViewData {
+  name: string;
+  novaState: NovaMowerState;
+  rawState: string;
+
+  progress: number;
+  progressLabel: string;
+
+  battery: number;
+  batteryLabel: string;
+
+  locationLabel: string;
+  remainingTimeLabel: string;
+  totalTimeLabel: string;
+}
+
 const DEFAULT_BATTERY_ENTITY =
   "sensor.luba_va8tp48r_batterie";
 
@@ -73,62 +89,6 @@ const stateLabels: Record<NovaMowerState, string> = {
   update: "Update verfügbar",
   offline: "Offline",
   unknown: "Unbekannt",
-};
-
-const stateHeadlines: Record<NovaMowerState, string> = {
-  mowing: "mäht",
-  docked: "ist in der Ladestation",
-  returning: "fährt zur Basis",
-  error: "benötigt Aufmerksamkeit",
-  maintenance: "ist im Wartungsmodus",
-  update: "wird aktualisiert",
-  offline: "ist offline",
-  unknown: "hat einen unbekannten Status",
-};
-
-const stateDescriptions: Record<
-  NovaMowerState,
-  [string, string]
-> = {
-  mowing: [
-    "Mähvorgang läuft.",
-    "Der Mäher arbeitet autonom.",
-  ],
-
-  docked: [
-    "Der Mäher befindet sich in der Basis.",
-    "Er ist bereit für die nächste Aufgabe.",
-  ],
-
-  returning: [
-    "Der Mäher kehrt zur Ladestation zurück.",
-    "Die aktuelle Aufgabe wird beendet.",
-  ],
-
-  error: [
-    "Der Mäher meldet eine Störung.",
-    "Bitte Status und Umgebung prüfen.",
-  ],
-
-  maintenance: [
-    "Der Wartungsmodus ist aktiv.",
-    "Automatische Aufgaben sind pausiert.",
-  ],
-
-  update: [
-    "Eine Aktualisierung wird verarbeitet.",
-    "Der Mäher steht vorübergehend nicht bereit.",
-  ],
-
-  offline: [
-    "Der Mäher ist momentan nicht erreichbar.",
-    "Es werden keine aktuellen Daten übertragen.",
-  ],
-
-  unknown: [
-    "Der Zustand konnte nicht erkannt werden.",
-    "Bitte die Verbindung und Entität prüfen.",
-  ],
 };
 
 @customElement("nova-luba-card")
@@ -337,10 +297,6 @@ export class NovaLubaCard extends LitElement {
       line-height: 1.5;
     }
 
-    /*
-     * Neuer zentraler Statusbereich
-     */
-
     .overview {
       display: grid;
       min-width: 0;
@@ -381,13 +337,9 @@ export class NovaLubaCard extends LitElement {
       line-height: 1.45;
     }
 
-    .progress-panel {
+    .glass-panel {
       display: grid;
-      grid-template-columns:
-        minmax(130px, 0.75fr)
-        minmax(0, 1.25fr);
       gap: ${unsafeCSS(theme.spacing.md)};
-      align-items: center;
       padding: ${unsafeCSS(theme.spacing.md)};
       border: 1px solid ${unsafeCSS(theme.colors.borderSoft)};
       border-radius: ${unsafeCSS(theme.radius.medium)};
@@ -403,7 +355,15 @@ export class NovaLubaCard extends LitElement {
       backdrop-filter: blur(12px);
     }
 
-    .progress-ring {
+    .progress-panel {
+      grid-template-columns:
+        minmax(130px, 0.75fr)
+        minmax(0, 1.25fr);
+      align-items: center;
+    }
+
+    .progress-ring,
+    .battery-ring {
       position: relative;
       display: grid;
       width: min(160px, 100%);
@@ -411,6 +371,12 @@ export class NovaLubaCard extends LitElement {
       place-items: center;
       justify-self: center;
       border-radius: 50%;
+      box-shadow:
+        0 0 18px var(--nova-state-glow),
+        inset 0 0 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .progress-ring {
       background:
         conic-gradient(
           var(--nova-state-color)
@@ -420,12 +386,22 @@ export class NovaLubaCard extends LitElement {
           var(--progress-angle)
           360deg
         );
-      box-shadow:
-        0 0 18px var(--nova-state-glow),
-        inset 0 0 20px rgba(0, 0, 0, 0.25);
     }
 
-    .progress-ring::before {
+    .battery-ring {
+      background:
+        conic-gradient(
+          var(--nova-state-color)
+          0deg
+          var(--battery-angle),
+          rgba(255, 255, 255, 0.09)
+          var(--battery-angle)
+          360deg
+        );
+    }
+
+    .progress-ring::before,
+    .battery-ring::before {
       position: absolute;
       inset: 12px;
       border-radius: 50%;
@@ -441,7 +417,7 @@ export class NovaLubaCard extends LitElement {
       content: "";
     }
 
-    .progress-ring-content {
+    .ring-content {
       position: relative;
       z-index: 1;
       display: grid;
@@ -450,13 +426,13 @@ export class NovaLubaCard extends LitElement {
       text-align: center;
     }
 
-    .progress-value {
+    .ring-value {
       font-size: clamp(30px, 6vw, 46px);
       font-weight: 750;
       line-height: 1;
     }
 
-    .progress-label {
+    .ring-label {
       color: ${unsafeCSS(theme.colors.textSecondary)};
       font-size: 13px;
     }
@@ -525,6 +501,47 @@ export class NovaLubaCard extends LitElement {
         width ${unsafeCSS(theme.animation.normal)} ease;
     }
 
+    .state-panel {
+      align-content: center;
+      justify-items: center;
+      min-height: 280px;
+      text-align: center;
+    }
+
+    .state-symbol {
+      display: grid;
+      width: 92px;
+      height: 92px;
+      place-items: center;
+      border: 1px solid var(--nova-state-color);
+      border-radius: 50%;
+      background: var(--nova-state-soft);
+      box-shadow:
+        0 0 24px var(--nova-state-glow),
+        inset 0 0 18px rgba(255, 255, 255, 0.035);
+    }
+
+    .state-symbol ha-icon {
+      color: var(--nova-state-color);
+      filter: drop-shadow(
+        0 0 10px
+        var(--nova-state-glow)
+      );
+      --mdc-icon-size: 46px;
+    }
+
+    .state-message {
+      max-width: 430px;
+      color: ${unsafeCSS(theme.colors.textSecondary)};
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .state-detail {
+      color: ${unsafeCSS(theme.colors.textMuted)};
+      font-size: 12px;
+    }
+
     .footer {
       display: flex;
       align-items: flex-end;
@@ -549,7 +566,6 @@ export class NovaLubaCard extends LitElement {
       border-radius: ${unsafeCSS(theme.radius.pill)};
       background: var(--nova-state-soft);
       font-weight: 600;
-      transition: all ${unsafeCSS(theme.animation.normal)} ease;
     }
 
     .dot {
@@ -585,11 +601,6 @@ export class NovaLubaCard extends LitElement {
       text-align: center;
     }
 
-    /*
-     * Breite Lovelace-Karte:
-     * Mäher links, Statusbereich rechts.
-     */
-
     @container (min-width: 760px) {
       .content-grid {
         grid-template-columns:
@@ -600,15 +611,7 @@ export class NovaLubaCard extends LitElement {
       .robot-stage {
         min-height: 390px;
       }
-
-      .overview-heading {
-        justify-items: center;
-      }
     }
-
-    /*
-     * Mobile beziehungsweise schmale Karte.
-     */
 
     @container (max-width: 759px) {
       ha-card {
@@ -678,7 +681,8 @@ export class NovaLubaCard extends LitElement {
         grid-template-columns: 1fr;
       }
 
-      .progress-ring {
+      .progress-ring,
+      .battery-ring {
         width: 145px;
       }
 
@@ -780,6 +784,492 @@ export class NovaLubaCard extends LitElement {
       100,
       Math.max(0, value),
     );
+  }
+
+  private renderMetricRow(
+    icon: string,
+    label: string,
+    value: string,
+  ) {
+    return html`
+      <div class="metric-row">
+        <ha-icon
+          class="metric-icon"
+          icon=${icon}
+        ></ha-icon>
+
+        <span class="metric-label">
+          ${label}
+        </span>
+
+        <span
+          class="metric-value"
+          title=${value}
+        >
+          ${value}
+        </span>
+      </div>
+    `;
+  }
+
+  private renderMowingView(
+    data: MowerViewData,
+  ) {
+    return html`
+      <section class="overview">
+        <div class="overview-heading">
+          <ha-icon
+            class="overview-icon"
+            icon="mdi:grass"
+          ></ha-icon>
+
+          <h3 class="overview-title">
+            ${data.name} mäht
+          </h3>
+
+          <div class="overview-description">
+            <span>Mähvorgang läuft.</span>
+            <span>Der Mäher arbeitet autonom.</span>
+          </div>
+        </div>
+
+        <div class="glass-panel progress-panel">
+          <div
+            class="progress-ring"
+            style=${styleMap({
+              "--progress-angle":
+                `${data.progress * 3.6}deg`,
+            })}
+          >
+            <div class="ring-content">
+              <span class="ring-value">
+                ${data.progressLabel}
+              </span>
+
+              <span class="ring-label">
+                Fortschritt
+              </span>
+            </div>
+          </div>
+
+          <div class="metric-list">
+            ${this.renderMetricRow(
+              "mdi:clock-outline",
+              "Verbleibende Zeit",
+              data.remainingTimeLabel,
+            )}
+
+            ${this.renderMetricRow(
+              "mdi:map-marker-outline",
+              "Aktuelle Zone",
+              data.locationLabel,
+            )}
+
+            ${this.renderMetricRow(
+              "mdi:timer-outline",
+              "Gesamtzeit",
+              data.totalTimeLabel,
+            )}
+
+            <div class="metric-row">
+              <ha-icon
+                class="metric-icon"
+                icon="mdi:battery"
+              ></ha-icon>
+
+              <span class="metric-label">
+                Akkustand
+              </span>
+
+              <span class="metric-value">
+                ${data.batteryLabel}
+              </span>
+
+              <div class="battery-track">
+                <span
+                  class="battery-fill"
+                  style=${styleMap({
+                    width:
+                      `${data.battery}%`,
+                  })}
+                ></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  private renderDockedView(
+    data: MowerViewData,
+  ) {
+    return html`
+      <section class="overview">
+        <div class="overview-heading">
+          <ha-icon
+            class="overview-icon"
+            icon="mdi:home-battery-outline"
+          ></ha-icon>
+
+          <h3 class="overview-title">
+            ${data.name} ist in der Ladestation
+          </h3>
+
+          <div class="overview-description">
+            <span>Der Mäher befindet sich sicher in der Basis.</span>
+            <span>Er ist bereit für die nächste Aufgabe.</span>
+          </div>
+        </div>
+
+        <div class="glass-panel progress-panel">
+          <div
+            class="battery-ring"
+            style=${styleMap({
+              "--battery-angle":
+                `${data.battery * 3.6}deg`,
+            })}
+          >
+            <div class="ring-content">
+              <span class="ring-value">
+                ${data.batteryLabel}
+              </span>
+
+              <span class="ring-label">
+                Akkustand
+              </span>
+            </div>
+          </div>
+
+          <div class="metric-list">
+            ${this.renderMetricRow(
+              "mdi:map-marker-outline",
+              "Aktueller Standort",
+              data.locationLabel,
+            )}
+
+            ${this.renderMetricRow(
+              "mdi:battery-charging",
+              "Ladezustand",
+              data.battery >= 100
+                ? "Vollständig geladen"
+                : "Wird geladen",
+            )}
+
+            ${this.renderMetricRow(
+              "mdi:timer-outline",
+              "Letzte Gesamtzeit",
+              data.totalTimeLabel,
+            )}
+
+            ${this.renderMetricRow(
+              "mdi:check-circle-outline",
+              "Bereitschaft",
+              "Bereit",
+            )}
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  private renderReturningView(
+    data: MowerViewData,
+  ) {
+    return html`
+      <section class="overview">
+        <div class="overview-heading">
+          <ha-icon
+            class="overview-icon"
+            icon="mdi:home-import-outline"
+          ></ha-icon>
+
+          <h3 class="overview-title">
+            ${data.name} fährt zur Basis
+          </h3>
+
+          <div class="overview-description">
+            <span>Die aktuelle Aufgabe wird beendet.</span>
+            <span>Der Mäher kehrt zur Ladestation zurück.</span>
+          </div>
+        </div>
+
+        <div class="glass-panel">
+          <div class="metric-list">
+            ${this.renderMetricRow(
+              "mdi:map-marker-outline",
+              "Aktueller Standort",
+              data.locationLabel,
+            )}
+
+            ${this.renderMetricRow(
+              "mdi:clock-outline",
+              "Verbleibende Zeit",
+              data.remainingTimeLabel,
+            )}
+
+            ${this.renderMetricRow(
+              "mdi:battery",
+              "Akkustand",
+              data.batteryLabel,
+            )}
+
+            ${this.renderMetricRow(
+              "mdi:home-outline",
+              "Ziel",
+              "Ladestation",
+            )}
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  private renderOfflineView(
+    data: MowerViewData,
+  ) {
+    return html`
+      <section class="overview">
+        <div class="overview-heading">
+          <ha-icon
+            class="overview-icon"
+            icon="mdi:power-plug-off-outline"
+          ></ha-icon>
+
+          <h3 class="overview-title">
+            ${data.name} ist offline
+          </h3>
+        </div>
+
+        <div class="glass-panel state-panel">
+          <div class="state-symbol">
+            <ha-icon
+              icon="mdi:robot-mower-outline"
+            ></ha-icon>
+          </div>
+
+          <div class="state-message">
+            Bitte schalten Sie den Mäher ein und prüfen
+            Sie die WLAN- oder Bluetooth-Verbindung.
+            Momentan werden keine aktuellen Daten übertragen.
+          </div>
+
+          <div class="state-detail">
+            Letzter Rohstatus: ${data.rawState}
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  private renderErrorView(
+    data: MowerViewData,
+  ) {
+    return html`
+      <section class="overview">
+        <div class="overview-heading">
+          <ha-icon
+            class="overview-icon"
+            icon="mdi:alert-circle-outline"
+          ></ha-icon>
+
+          <h3 class="overview-title">
+            ${data.name} benötigt Aufmerksamkeit
+          </h3>
+
+          <div class="overview-description">
+            <span>Der Mäher meldet eine Störung.</span>
+            <span>Bitte Gerät und Umgebung überprüfen.</span>
+          </div>
+        </div>
+
+        <div class="glass-panel">
+          <div class="metric-list">
+            ${this.renderMetricRow(
+              "mdi:alert-outline",
+              "Fehlerstatus",
+              data.rawState,
+            )}
+
+            ${this.renderMetricRow(
+              "mdi:map-marker-outline",
+              "Aktueller Standort",
+              data.locationLabel,
+            )}
+
+            ${this.renderMetricRow(
+              "mdi:battery",
+              "Akkustand",
+              data.batteryLabel,
+            )}
+
+            ${this.renderMetricRow(
+              "mdi:information-outline",
+              "Empfehlung",
+              "Gerät prüfen",
+            )}
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  private renderUpdateView(
+    data: MowerViewData,
+  ) {
+    return html`
+      <section class="overview">
+        <div class="overview-heading">
+          <ha-icon
+            class="overview-icon"
+            icon="mdi:update"
+          ></ha-icon>
+
+          <h3 class="overview-title">
+            Software-Update wird verarbeitet
+          </h3>
+
+          <div class="overview-description">
+            <span>${data.name} wird aktualisiert.</span>
+            <span>Bitte Gerät währenddessen nicht ausschalten.</span>
+          </div>
+        </div>
+
+        <div class="glass-panel state-panel">
+          <div class="state-symbol">
+            <ha-icon icon="mdi:download"></ha-icon>
+          </div>
+
+          <div class="state-message">
+            Der Mäher ist während des Updates
+            vorübergehend nicht einsatzbereit.
+          </div>
+
+          <div class="state-detail">
+            Akkustand: ${data.batteryLabel}
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  private renderMaintenanceView(
+    data: MowerViewData,
+  ) {
+    return html`
+      <section class="overview">
+        <div class="overview-heading">
+          <ha-icon
+            class="overview-icon"
+            icon="mdi:tools"
+          ></ha-icon>
+
+          <h3 class="overview-title">
+            Wartungsmodus ist aktiv
+          </h3>
+
+          <div class="overview-description">
+            <span>Automatische Aufgaben sind pausiert.</span>
+            <span>${data.name} kann sicher gewartet werden.</span>
+          </div>
+        </div>
+
+        <div class="glass-panel">
+          <div class="metric-list">
+            ${this.renderMetricRow(
+              "mdi:map-marker-outline",
+              "Aktueller Standort",
+              data.locationLabel,
+            )}
+
+            ${this.renderMetricRow(
+              "mdi:battery",
+              "Akkustand",
+              data.batteryLabel,
+            )}
+
+            ${this.renderMetricRow(
+              "mdi:timer-outline",
+              "Gesamtzeit",
+              data.totalTimeLabel,
+            )}
+
+            ${this.renderMetricRow(
+              "mdi:pause-circle-outline",
+              "Automatik",
+              "Pausiert",
+            )}
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  private renderUnknownView(
+    data: MowerViewData,
+  ) {
+    return html`
+      <section class="overview">
+        <div class="overview-heading">
+          <ha-icon
+            class="overview-icon"
+            icon="mdi:help-circle-outline"
+          ></ha-icon>
+
+          <h3 class="overview-title">
+            Status konnte nicht erkannt werden
+          </h3>
+        </div>
+
+        <div class="glass-panel state-panel">
+          <div class="state-symbol">
+            <ha-icon
+              icon="mdi:help"
+            ></ha-icon>
+          </div>
+
+          <div class="state-message">
+            Der aktuelle Zustand des Mähers kann
+            noch keiner bekannten Ansicht zugeordnet werden.
+          </div>
+
+          <div class="state-detail">
+            Rohstatus: ${data.rawState}
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  private renderStateContent(
+    data: MowerViewData,
+  ) {
+    switch (data.novaState) {
+      case "mowing":
+        return this.renderMowingView(data);
+
+      case "docked":
+        return this.renderDockedView(data);
+
+      case "returning":
+        return this.renderReturningView(data);
+
+      case "error":
+        return this.renderErrorView(data);
+
+      case "maintenance":
+        return this.renderMaintenanceView(data);
+
+      case "update":
+        return this.renderUpdateView(data);
+
+      case "offline":
+        return this.renderOfflineView(data);
+
+      case "unknown":
+      default:
+        return this.renderUnknownView(data);
+    }
   }
 
   private handleImageError(event: Event): void {
@@ -947,10 +1437,21 @@ export class NovaLubaCard extends LitElement {
         totalTimeEntity,
       );
 
-    const [
-      descriptionLineOne,
-      descriptionLineTwo,
-    ] = stateDescriptions[novaState];
+    const viewData: MowerViewData = {
+      name,
+      novaState,
+      rawState: mower.state,
+
+      progress,
+      progressLabel,
+
+      battery,
+      batteryLabel,
+
+      locationLabel,
+      remainingTimeLabel,
+      totalTimeLabel,
+    };
 
     const dynamicStyles = {
       "--nova-state-color":
@@ -1062,146 +1563,7 @@ export class NovaLubaCard extends LitElement {
               </div>
             </section>
 
-            <section class="overview">
-              <div class="overview-heading">
-                <ha-icon
-                  class="overview-icon"
-                  icon="mdi:grass"
-                ></ha-icon>
-
-                <h3 class="overview-title">
-                  ${name}
-                  ${stateHeadlines[novaState]}
-                </h3>
-
-                <div
-                  class="overview-description"
-                >
-                  <span>
-                    ${descriptionLineOne}
-                  </span>
-
-                  <span>
-                    ${descriptionLineTwo}
-                  </span>
-                </div>
-              </div>
-
-              <div class="progress-panel">
-                <div
-                  class="progress-ring"
-                  style=${styleMap({
-                    "--progress-angle":
-                      `${progress * 3.6}deg`,
-                  })}
-                >
-                  <div
-                    class="progress-ring-content"
-                  >
-                    <span
-                      class="progress-value"
-                    >
-                      ${progressLabel}
-                    </span>
-
-                    <span
-                      class="progress-label"
-                    >
-                      Fortschritt
-                    </span>
-                  </div>
-                </div>
-
-                <div class="metric-list">
-                  <div class="metric-row">
-                    <ha-icon
-                      class="metric-icon"
-                      icon="mdi:clock-outline"
-                    ></ha-icon>
-
-                    <span
-                      class="metric-label"
-                    >
-                      Verbleibende Zeit
-                    </span>
-
-                    <span
-                      class="metric-value"
-                    >
-                      ${remainingTimeLabel}
-                    </span>
-                  </div>
-
-                  <div class="metric-row">
-                    <ha-icon
-                      class="metric-icon"
-                      icon="mdi:map-marker-outline"
-                    ></ha-icon>
-
-                    <span
-                      class="metric-label"
-                    >
-                      Aktuelle Zone
-                    </span>
-
-                    <span
-                      class="metric-value"
-                      title=${locationLabel}
-                    >
-                      ${locationLabel}
-                    </span>
-                  </div>
-
-                  <div class="metric-row">
-                    <ha-icon
-                      class="metric-icon"
-                      icon="mdi:timer-outline"
-                    ></ha-icon>
-
-                    <span
-                      class="metric-label"
-                    >
-                      Gesamtzeit
-                    </span>
-
-                    <span
-                      class="metric-value"
-                    >
-                      ${totalTimeLabel}
-                    </span>
-                  </div>
-
-                  <div class="metric-row">
-                    <ha-icon
-                      class="metric-icon"
-                      icon="mdi:battery"
-                    ></ha-icon>
-
-                    <span
-                      class="metric-label"
-                    >
-                      Akkustand
-                    </span>
-
-                    <span
-                      class="metric-value"
-                    >
-                      ${batteryLabel}
-                    </span>
-
-                    <div class="battery-track">
-                      <span
-                        class="battery-fill"
-                        style=${styleMap({
-                          width:
-                            `${battery}%`,
-                        })}
-                      ></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
+            ${this.renderStateContent(viewData)}
           </main>
 
           <footer class="footer">
