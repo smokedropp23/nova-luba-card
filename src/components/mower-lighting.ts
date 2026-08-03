@@ -27,24 +27,42 @@ export class MowerLightingComponent extends LitElement {
       position: absolute;
       inset: 0;
       z-index: 3;
-      display: block;
+      display: grid;
+      place-items: center;
       pointer-events: none;
     }
 
+    /*
+     * Die Lichtdateien und die Mäherbilder besitzen eine
+     * quadratische Arbeitsfläche.
+     *
+     * Deshalb muss auch die Maske quadratisch bleiben.
+     * Die Höhe des Mäherbildes bestimmt dabei die Größe.
+     */
     .overlay {
       position: absolute;
-      top: 50%;
-      left: 50%;
       z-index: 3;
       display: block;
-      width: 100%;
-      max-width: var(--robot-desktop-max-width);
-      max-height: var(--robot-desktop-max-height);
-      object-fit: contain;
-      opacity: 0;
+
+      width: var(--robot-desktop-max-height);
+      height: var(--robot-desktop-max-height);
+
+      max-width: 100%;
+      max-height: 100%;
+
+      background: transparent;
+
+background-image: var(--light-asset);
+
+background-repeat: no-repeat;
+background-position: center;
+background-size: contain;
+
+
+
+      opacity: var(--light-brightness);
 
       transform:
-        translate(-50%, -50%)
         translateX(var(--robot-desktop-x))
         translateY(var(--robot-desktop-y))
         scale(var(--robot-desktop-scale));
@@ -56,41 +74,71 @@ export class MowerLightingComponent extends LitElement {
         filter 220ms ease;
     }
 
-    .overlay.visible {
-      opacity: var(--light-brightness);
-
+    /*
+     * Frontscheinwerfer:
+     * weiß, kompakt und sehr hell.
+     */
+    .overlay.front {
       filter:
-        brightness(
-          calc(
-            0.7
-            + var(--light-brightness)
-          )
+        brightness(2.2)
+        drop-shadow(
+          0 0 7px
+          var(--light-color)
         )
         drop-shadow(
-          0 0 12px
+          0 0 14px
+          var(--light-color)
+        );
+    }
+
+    /*
+     * Seitenlicht:
+     * kräftiger und dominanter als das Frontlicht.
+     */
+    .overlay.side {
+      filter:
+        brightness(2)
+        drop-shadow(
+          0 0 9px
+          var(--light-color)
+        )
+        drop-shadow(
+          0 0 18px
           var(--light-color)
         );
     }
 
     .pulse {
-      animation: pulse 1.5s ease-in-out infinite;
+      animation:
+        lighting-pulse
+        1.5s
+        ease-in-out
+        infinite;
     }
 
     .blink {
-      animation: blink 1s steps(1, end) infinite;
+      animation:
+        lighting-blink
+        1s
+        steps(1, end)
+        infinite;
     }
 
     .breathe {
-      animation: breathe 2.4s ease-in-out infinite;
+      animation:
+        lighting-breathe
+        2.4s
+        ease-in-out
+        infinite;
     }
 
-    @keyframes pulse {
+    @keyframes lighting-pulse {
       0%,
       100% {
         opacity:
           calc(
             var(--light-brightness)
-            * 0.45
+            * 0.65
           );
       }
 
@@ -99,7 +147,7 @@ export class MowerLightingComponent extends LitElement {
       }
     }
 
-    @keyframes blink {
+    @keyframes lighting-blink {
       0%,
       49% {
         opacity: var(--light-brightness);
@@ -111,13 +159,13 @@ export class MowerLightingComponent extends LitElement {
       }
     }
 
-    @keyframes breathe {
+    @keyframes lighting-breathe {
       0%,
       100% {
         opacity:
           calc(
             var(--light-brightness)
-            * 0.5
+            * 0.65
           );
       }
 
@@ -128,30 +176,40 @@ export class MowerLightingComponent extends LitElement {
 
     @media (max-width: 600px) {
       .overlay {
-        max-width: var(--robot-mobile-max-width);
-        max-height: var(--robot-mobile-max-height);
+        width: var(--robot-mobile-max-height);
+        height: var(--robot-mobile-max-height);
 
         transform:
-          translate(-50%, -50%)
           translateX(var(--robot-mobile-x))
           translateY(var(--robot-mobile-y))
           scale(var(--robot-mobile-scale));
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .pulse,
+      .blink,
+      .breathe {
+        animation: none;
       }
     }
   `;
 
   private renderOverlay(
     layer: MowerLightLayer,
-    className: string,
+    className: "front" | "side",
   ) {
-    if (!layer.asset) {
+    if (
+      !layer.asset ||
+      !layer.visible ||
+      layer.brightness <= 0
+    ) {
       return nothing;
     }
 
     const classes = [
       "overlay",
       className,
-      layer.visible ? "visible" : "",
       layer.animation !== "none"
         ? layer.animation
         : "",
@@ -160,17 +218,20 @@ export class MowerLightingComponent extends LitElement {
       .join(" ");
 
     return html`
-      <img
+      <div
         class=${classes}
-        src=${layer.asset}
-        alt=""
         aria-hidden="true"
         style=${styleMap({
-          "--light-color": layer.color,
+          "--light-color":
+            layer.color,
+
           "--light-brightness":
             String(layer.brightness),
+
+          "--light-asset":
+            `url("${layer.asset}")`,
         })}
-      />
+      ></div>
     `;
   }
 
