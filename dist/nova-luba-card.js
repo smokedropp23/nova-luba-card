@@ -1201,7 +1201,7 @@ function Ie(e) {
 		case "update": return {
 			ring: {
 				visible: !0,
-				color: "#06b6d4",
+				color: "#8b5cf6",
 				brightness: 1,
 				animation: "pulse"
 			},

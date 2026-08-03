@@ -131,7 +131,7 @@ export function resolveMowerLighting(
       return {
         ring: {
           visible: true,
-          color: "#06b6d4",
+          color: "#8b5cf6",
           brightness: 1,
           animation: "pulse",
         },
