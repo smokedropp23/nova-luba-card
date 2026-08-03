@@ -1080,6 +1080,26 @@ export class NovaLubaCard extends LitElement {
       : null;
   }
 
+  private formatLocationValue(
+    value: string,
+  ): string {
+    const normalized =
+      value.trim().toLowerCase();
+
+    if (normalized === "path") {
+      return "Auf dem Weg";
+    }
+
+    if (
+      normalized === "not working" ||
+      normalized === "not_working"
+    ) {
+      return "Ladestation";
+    }
+
+    return value;
+  }
+
   private clampPercentage(
     value: number | null,
   ): number {
@@ -2497,7 +2517,12 @@ export class NovaLubaCard extends LitElement {
     const stateTheme =
       novaState === "paused"
         ? theme.states.returning
-        : theme.states[novaState];
+        : theme.states[
+            novaState as Exclude<
+              NovaMowerState,
+              "paused"
+            >
+          ];
 
     const lighting =
       novaState === "paused"
@@ -2617,8 +2642,10 @@ export class NovaLubaCard extends LitElement {
         ),
 
       locationLabel:
-        this.formatEntityValue(
-          locationEntity,
+        this.formatLocationValue(
+          this.formatEntityValue(
+            locationEntity,
+          ),
         ),
 
       remainingTimeLabel:

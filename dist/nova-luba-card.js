@@ -2009,6 +2009,10 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_batteriezyk
 		let r = typeof n == "number" ? n : Number.parseFloat(String(n).replace(",", "."));
 		return Number.isFinite(r) ? r : null;
 	}
+	formatLocationValue(e) {
+		let t = e.trim().toLowerCase();
+		return t === "path" ? "Auf dem Weg" : t === "not working" || t === "not_working" ? "Ladestation" : e;
+	}
 	clampPercentage(e) {
 		return e === null ? 0 : Math.min(100, Math.max(0, e));
 	}
@@ -2812,7 +2816,7 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_batteriezyk
 			battery: M,
 			batteryLabel: this.formatEntityValue(r, "%"),
 			batteryCyclesLabel: this.formatEntityValue(i),
-			locationLabel: this.formatEntityValue(a),
+			locationLabel: this.formatLocationValue(this.formatEntityValue(a)),
 			remainingTimeLabel: this.formatEntityValue(s),
 			totalTimeLabel: this.formatEntityValue(c),
 			lastErrorMessageLabel: this.formatEntityValue(l),
