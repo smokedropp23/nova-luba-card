@@ -33,6 +33,12 @@ interface HomeAssistantState {
 
 interface HomeAssistant {
   states: Record<string, HomeAssistantState>;
+
+  callService(
+    domain: string,
+    service: string,
+    serviceData?: Record<string, unknown>,
+  ): Promise<unknown>;
 }
 
 interface NovaLubaCardConfig {
@@ -58,6 +64,14 @@ interface NovaLubaCardConfig {
   total_mileage_entity?: string;
 
   firmware_update_entity?: string;
+
+  emergency_push_left_entity?: string;
+  emergency_push_right_entity?: string;
+  emergency_push_backward_entity?: string;
+  emergency_push_forward_entity?: string;
+
+  relocate_charging_station_entity?: string;
+  restart_mower_entity?: string;
 }
 
 interface MowerViewData {
@@ -80,6 +94,14 @@ interface MowerViewData {
   taskDurationEntity: string;
   totalMileageEntity: string;
   firmwareUpdateEntity: string;
+
+  emergencyPushLeftEntity: string;
+  emergencyPushRightEntity: string;
+  emergencyPushBackwardEntity: string;
+  emergencyPushForwardEntity: string;
+
+  relocateChargingStationEntity: string;
+  restartMowerEntity: string;
 
   progress: number;
   progressLabel: string;
@@ -152,6 +174,24 @@ const DEFAULT_TOTAL_MILEAGE_ENTITY =
 
 const DEFAULT_FIRMWARE_UPDATE_ENTITY =
   "update.luba_va8tp48r_firmware";
+
+const DEFAULT_EMERGENCY_PUSH_LEFT_ENTITY =
+  "button.luba_va8tp48r_notfall_schub_links";
+
+const DEFAULT_EMERGENCY_PUSH_RIGHT_ENTITY =
+  "button.luba_va8tp48r_notfall_schub_rechts";
+
+const DEFAULT_EMERGENCY_PUSH_BACKWARD_ENTITY =
+  "button.luba_va8tp48r_notfall_schub_ruckwarts";
+
+const DEFAULT_EMERGENCY_PUSH_FORWARD_ENTITY =
+  "button.luba_va8tp48r_notfall_schub_vorwarts";
+
+const DEFAULT_RELOCATE_CHARGING_STATION_ENTITY =
+  "button.luba_va8tp48r_ladestation_umsetzen";
+
+const DEFAULT_RESTART_MOWER_ENTITY =
+  "button.luba_va8tp48r_restart_mower";
 
 const stateLabels: Record<NovaMowerState, string> = {
   mowing: "Mäht",
@@ -642,6 +682,114 @@ export class NovaLubaCard extends LitElement {
       font-size: 12px;
     }
 
+    .action-section {
+      display: grid;
+      width: 100%;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .action-heading {
+      color: ${unsafeCSS(theme.colors.textSecondary)};
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: 0.9px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      width: 100%;
+    }
+
+    .emergency-pad {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(72px, 1fr));
+      grid-template-areas:
+        ". forward ."
+        "left center right"
+        ". backward .";
+      gap: 10px;
+      width: min(330px, 100%);
+      justify-self: center;
+    }
+
+    .emergency-center {
+      grid-area: center;
+      display: grid;
+      place-items: center;
+      color: var(--nova-state-color);
+      opacity: 0.55;
+    }
+
+    .action-button {
+      display: inline-flex;
+      min-height: 46px;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border: 1px solid var(--nova-state-color);
+      border-radius: ${unsafeCSS(theme.radius.medium)};
+      color: ${unsafeCSS(theme.colors.text)};
+      background: var(--nova-state-soft);
+      box-shadow: 0 0 12px transparent;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition:
+        background ${unsafeCSS(theme.animation.normal)} ease,
+        box-shadow ${unsafeCSS(theme.animation.normal)} ease,
+        opacity ${unsafeCSS(theme.animation.normal)} ease,
+        transform ${unsafeCSS(theme.animation.normal)} ease;
+    }
+
+    .action-button:hover:not(:disabled),
+    .action-button:focus-visible:not(:disabled) {
+      outline: none;
+      box-shadow: 0 0 18px var(--nova-state-glow);
+      transform: translateY(-1px);
+    }
+
+    .action-button:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .action-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.32;
+      filter: grayscale(0.5);
+    }
+
+    .action-button ha-icon {
+      --mdc-icon-size: 22px;
+    }
+
+    .action-button.forward {
+      grid-area: forward;
+    }
+
+    .action-button.left {
+      grid-area: left;
+    }
+
+    .action-button.right {
+      grid-area: right;
+    }
+
+    .action-button.backward {
+      grid-area: backward;
+    }
+
+    .action-button.danger {
+      border-color: ${unsafeCSS(theme.states.error.color)};
+      background: ${unsafeCSS(theme.states.error.soft)};
+    }
+
     .footer {
       display: flex;
       align-items: flex-end;
@@ -960,6 +1108,83 @@ export class NovaLubaCard extends LitElement {
 
     event.preventDefault();
     this.openMoreInfo(entityId);
+  }
+
+  private isButtonAvailable(
+    entityId: string | undefined,
+  ): boolean {
+    const entity = this.getState(entityId);
+
+    return Boolean(
+      entity &&
+      entity.state !== "unknown" &&
+      entity.state !== "unavailable",
+    );
+  }
+
+  private async pressButton(
+    entityId: string | undefined,
+    confirmationText?: string,
+  ): Promise<void> {
+    if (
+      !this.hass ||
+      !entityId ||
+      !this.isButtonAvailable(entityId)
+    ) {
+      return;
+    }
+
+    if (
+      confirmationText &&
+      !window.confirm(confirmationText)
+    ) {
+      return;
+    }
+
+    try {
+      await this.hass.callService(
+        "button",
+        "press",
+        {
+          entity_id: entityId,
+        },
+      );
+    } catch (error) {
+      console.error(
+        `Nova UI: Button ${entityId} konnte nicht ausgelöst werden.`,
+        error,
+      );
+    }
+  }
+
+  private renderActionButton(
+    entityId: string,
+    icon: string,
+    label: string,
+    className = "",
+    confirmationText?: string,
+  ) {
+    const available =
+      this.isButtonAvailable(entityId);
+
+    return html`
+      <button
+        class=${`action-button ${className}`.trim()}
+        type="button"
+        ?disabled=${!available}
+        title=${available
+          ? label
+          : `${label} ist momentan nicht verfügbar`}
+        @click=${() =>
+          this.pressButton(
+            entityId,
+            confirmationText,
+          )}
+      >
+        <ha-icon icon=${icon}></ha-icon>
+        <span>${label}</span>
+      </button>
+    `;
   }
 
   private renderMetricRow(
@@ -1389,7 +1614,10 @@ export class NovaLubaCard extends LitElement {
 
           <div class="overview-description">
             <span>Der Mäher meldet eine Störung.</span>
-            <span>Die zuletzt gemeldeten Fehlerdaten werden angezeigt.</span>
+            <span>
+              Die zuletzt gemeldeten Fehlerdaten
+              werden angezeigt.
+            </span>
           </div>
         </div>
 
@@ -1422,6 +1650,48 @@ export class NovaLubaCard extends LitElement {
               data.activityModeLabel,
               data.activityModeEntity,
             )}
+          </div>
+
+          <div class="action-section">
+            <div class="action-heading">
+              Notfallschub
+            </div>
+
+            <div class="emergency-pad">
+              ${this.renderActionButton(
+                data.emergencyPushForwardEntity,
+                "mdi:arrow-up-bold",
+                "Vorwärts",
+                "forward",
+              )}
+
+              ${this.renderActionButton(
+                data.emergencyPushLeftEntity,
+                "mdi:arrow-left-bold",
+                "Links",
+                "left",
+              )}
+
+              <div class="emergency-center">
+                <ha-icon
+                  icon="mdi:robot-mower-outline"
+                ></ha-icon>
+              </div>
+
+              ${this.renderActionButton(
+                data.emergencyPushRightEntity,
+                "mdi:arrow-right-bold",
+                "Rechts",
+                "right",
+              )}
+
+              ${this.renderActionButton(
+                data.emergencyPushBackwardEntity,
+                "mdi:arrow-down-bold",
+                "Rückwärts",
+                "backward",
+              )}
+            </div>
           </div>
         </div>
       </section>
@@ -1714,6 +1984,30 @@ export class NovaLubaCard extends LitElement {
               data.activityModeEntity,
             )}
           </div>
+
+          <div class="action-section">
+            <div class="action-heading">
+              Erweiterte Wartungsfunktionen
+            </div>
+
+            <div class="action-grid">
+              ${this.renderActionButton(
+                data.relocateChargingStationEntity,
+                "mdi:map-marker-sync-outline",
+                "Ladestation umsetzen",
+                "",
+                "Soll die Funktion „Ladestation umsetzen“ wirklich ausgelöst werden?",
+              )}
+
+              ${this.renderActionButton(
+                data.restartMowerEntity,
+                "mdi:restart",
+                "Mäher neu starten",
+                "danger",
+                "Soll der Mäher wirklich neu gestartet werden?",
+              )}
+            </div>
+          </div>
         </div>
       </section>
     `;
@@ -1870,6 +2164,30 @@ export class NovaLubaCard extends LitElement {
       this.config.firmware_update_entity ??
       DEFAULT_FIRMWARE_UPDATE_ENTITY;
 
+    const emergencyPushLeftEntity =
+      this.config.emergency_push_left_entity ??
+      DEFAULT_EMERGENCY_PUSH_LEFT_ENTITY;
+
+    const emergencyPushRightEntity =
+      this.config.emergency_push_right_entity ??
+      DEFAULT_EMERGENCY_PUSH_RIGHT_ENTITY;
+
+    const emergencyPushBackwardEntity =
+      this.config.emergency_push_backward_entity ??
+      DEFAULT_EMERGENCY_PUSH_BACKWARD_ENTITY;
+
+    const emergencyPushForwardEntity =
+      this.config.emergency_push_forward_entity ??
+      DEFAULT_EMERGENCY_PUSH_FORWARD_ENTITY;
+
+    const relocateChargingStationEntity =
+      this.config.relocate_charging_station_entity ??
+      DEFAULT_RELOCATE_CHARGING_STATION_ENTITY;
+
+    const restartMowerEntity =
+      this.config.restart_mower_entity ??
+      DEFAULT_RESTART_MOWER_ENTITY;
+
     const resolvedModel =
       resolveMowerModel(model);
 
@@ -1998,6 +2316,14 @@ export class NovaLubaCard extends LitElement {
       taskDurationEntity,
       totalMileageEntity,
       firmwareUpdateEntity,
+
+      emergencyPushLeftEntity,
+      emergencyPushRightEntity,
+      emergencyPushBackwardEntity,
+      emergencyPushForwardEntity,
+
+      relocateChargingStationEntity,
+      restartMowerEntity,
 
       progress,
       progressLabel,
@@ -2284,6 +2610,24 @@ export class NovaLubaCard extends LitElement {
 
       firmware_update_entity:
         DEFAULT_FIRMWARE_UPDATE_ENTITY,
+
+      emergency_push_left_entity:
+        DEFAULT_EMERGENCY_PUSH_LEFT_ENTITY,
+
+      emergency_push_right_entity:
+        DEFAULT_EMERGENCY_PUSH_RIGHT_ENTITY,
+
+      emergency_push_backward_entity:
+        DEFAULT_EMERGENCY_PUSH_BACKWARD_ENTITY,
+
+      emergency_push_forward_entity:
+        DEFAULT_EMERGENCY_PUSH_FORWARD_ENTITY,
+
+      relocate_charging_station_entity:
+        DEFAULT_RELOCATE_CHARGING_STATION_ENTITY,
+
+      restart_mower_entity:
+        DEFAULT_RESTART_MOWER_ENTITY,
     };
   }
 }
