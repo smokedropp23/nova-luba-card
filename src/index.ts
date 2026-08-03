@@ -65,6 +65,22 @@ interface MowerViewData {
   novaState: NovaMowerState;
   rawState: string;
 
+  mowerEntity: string;
+  batteryEntity: string;
+  batteryCyclesEntity: string;
+  locationEntity: string;
+  progressEntity: string;
+  remainingTimeEntity: string;
+  totalTimeEntity: string;
+  lastErrorMessageEntity: string;
+  lastErrorTimeEntity: string;
+  lastErrorCodeEntity: string;
+  activityModeEntity: string;
+  bladeWearWarningTimeEntity: string;
+  taskDurationEntity: string;
+  totalMileageEntity: string;
+  firmwareUpdateEntity: string;
+
   progress: number;
   progressLabel: string;
 
@@ -509,6 +525,45 @@ export class NovaLubaCard extends LitElement {
       border-bottom: 0;
     }
 
+    .metric-row.clickable {
+      margin: 0 -8px;
+      padding-right: 8px;
+      padding-left: 8px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition:
+        background ${unsafeCSS(theme.animation.normal)} ease,
+        box-shadow ${unsafeCSS(theme.animation.normal)} ease,
+        transform ${unsafeCSS(theme.animation.normal)} ease;
+    }
+
+    .metric-row.clickable:hover,
+    .metric-row.clickable:focus-visible {
+      outline: none;
+      background: var(--nova-state-soft);
+      box-shadow: 0 0 14px var(--nova-state-glow);
+      transform: translateX(2px);
+    }
+
+    .progress-ring.clickable,
+    .battery-ring.clickable {
+      cursor: pointer;
+      transition:
+        box-shadow ${unsafeCSS(theme.animation.normal)} ease,
+        transform ${unsafeCSS(theme.animation.normal)} ease;
+    }
+
+    .progress-ring.clickable:hover,
+    .progress-ring.clickable:focus-visible,
+    .battery-ring.clickable:hover,
+    .battery-ring.clickable:focus-visible {
+      outline: none;
+      box-shadow:
+        0 0 28px var(--nova-state-glow),
+        inset 0 0 20px rgba(0, 0, 0, 0.25);
+      transform: scale(1.025);
+    }
+
     .metric-icon {
       color: var(--nova-state-color);
       filter: drop-shadow(0 0 7px var(--nova-state-glow));
@@ -874,13 +929,72 @@ export class NovaLubaCard extends LitElement {
     return Math.min(100, Math.max(0, value));
   }
 
+  private openMoreInfo(
+    entityId: string | undefined,
+  ): void {
+    if (!entityId) {
+      return;
+    }
+
+    this.dispatchEvent(
+      new CustomEvent("hass-more-info", {
+        detail: {
+          entityId,
+        },
+        bubbles: true,
+        composed: true,
+      }),
+    );
+  }
+
+  private handleEntityKeydown(
+    event: KeyboardEvent,
+    entityId: string | undefined,
+  ): void {
+    if (
+      event.key !== "Enter" &&
+      event.key !== " "
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+    this.openMoreInfo(entityId);
+  }
+
   private renderMetricRow(
     icon: string,
     label: string,
     value: string,
+    entityId?: string,
   ) {
+    const clickable = Boolean(entityId);
+
     return html`
-      <div class="metric-row">
+      <div
+        class=${clickable
+          ? "metric-row clickable"
+          : "metric-row"}
+        role=${clickable
+          ? "button"
+          : "presentation"}
+        tabindex=${clickable
+          ? "0"
+          : "-1"}
+        title=${clickable
+          ? `${label} öffnen`
+          : value}
+        @click=${clickable
+          ? () => this.openMoreInfo(entityId)
+          : nothing}
+        @keydown=${clickable
+          ? (event: KeyboardEvent) =>
+              this.handleEntityKeydown(
+                event,
+                entityId,
+              )
+          : nothing}
+      >
         <ha-icon
           class="metric-icon"
           icon=${icon}
@@ -923,11 +1037,25 @@ export class NovaLubaCard extends LitElement {
 
         <div class="glass-panel progress-panel">
           <div
-            class="progress-ring"
+            class="progress-ring clickable"
+            role="button"
+            tabindex="0"
+            title="Fortschritt öffnen"
             style=${styleMap({
               "--progress-angle":
                 `${data.progress * 3.6}deg`,
             })}
+            @click=${() =>
+              this.openMoreInfo(
+                data.progressEntity,
+              )}
+            @keydown=${(
+              event: KeyboardEvent,
+            ) =>
+              this.handleEntityKeydown(
+                event,
+                data.progressEntity,
+              )}
           >
             <div class="ring-content">
               <span class="ring-value">
@@ -945,21 +1073,40 @@ export class NovaLubaCard extends LitElement {
               "mdi:clock-outline",
               "Verbleibende Zeit",
               data.remainingTimeLabel,
+              data.remainingTimeEntity,
             )}
 
             ${this.renderMetricRow(
               "mdi:map-marker-outline",
               "Aktuelle Zone",
               data.locationLabel,
+              data.locationEntity,
             )}
 
             ${this.renderMetricRow(
               "mdi:timer-outline",
               "Gesamtzeit",
               data.totalTimeLabel,
+              data.totalTimeEntity,
             )}
 
-            <div class="metric-row">
+            <div
+              class="metric-row clickable"
+              role="button"
+              tabindex="0"
+              title="Akkustand öffnen"
+              @click=${() =>
+                this.openMoreInfo(
+                  data.batteryEntity,
+                )}
+              @keydown=${(
+                event: KeyboardEvent,
+              ) =>
+                this.handleEntityKeydown(
+                  event,
+                  data.batteryEntity,
+                )}
+            >
               <ha-icon
                 class="metric-icon"
                 icon="mdi:battery"
@@ -1011,11 +1158,25 @@ export class NovaLubaCard extends LitElement {
 
         <div class="glass-panel progress-panel">
           <div
-            class="battery-ring"
+            class="battery-ring clickable"
+            role="button"
+            tabindex="0"
+            title="Akkustand öffnen"
             style=${styleMap({
               "--battery-angle":
                 `${data.battery * 3.6}deg`,
             })}
+            @click=${() =>
+              this.openMoreInfo(
+                data.batteryEntity,
+              )}
+            @keydown=${(
+              event: KeyboardEvent,
+            ) =>
+              this.handleEntityKeydown(
+                event,
+                data.batteryEntity,
+              )}
           >
             <div class="ring-content">
               <span class="ring-value">
@@ -1033,6 +1194,7 @@ export class NovaLubaCard extends LitElement {
               "mdi:map-marker-outline",
               "Aktueller Standort",
               data.locationLabel,
+              data.locationEntity,
             )}
 
             ${this.renderMetricRow(
@@ -1047,6 +1209,7 @@ export class NovaLubaCard extends LitElement {
               "mdi:battery-sync-outline",
               "Batteriezyklen",
               data.batteryCyclesLabel,
+              data.batteryCyclesEntity,
             )}
 
             ${this.renderMetricRow(
@@ -1083,11 +1246,25 @@ export class NovaLubaCard extends LitElement {
 
         <div class="glass-panel progress-panel">
           <div
-            class="battery-ring"
+            class="battery-ring clickable"
+            role="button"
+            tabindex="0"
+            title="Akkustand öffnen"
             style=${styleMap({
               "--battery-angle":
                 `${data.battery * 3.6}deg`,
             })}
+            @click=${() =>
+              this.openMoreInfo(
+                data.batteryEntity,
+              )}
+            @keydown=${(
+              event: KeyboardEvent,
+            ) =>
+              this.handleEntityKeydown(
+                event,
+                data.batteryEntity,
+              )}
           >
             <div class="ring-content">
               <span class="ring-value">
@@ -1105,18 +1282,21 @@ export class NovaLubaCard extends LitElement {
               "mdi:map-marker-outline",
               "Aktueller Standort",
               data.locationLabel,
+              data.locationEntity,
             )}
 
             ${this.renderMetricRow(
               "mdi:clock-outline",
               "Verbleibende Zeit",
               data.remainingTimeLabel,
+              data.remainingTimeEntity,
             )}
 
             ${this.renderMetricRow(
               "mdi:progress-clock",
               "Aufgabenfortschritt",
               data.progressLabel,
+              data.progressEntity,
             )}
 
             ${this.renderMetricRow(
@@ -1219,24 +1399,28 @@ export class NovaLubaCard extends LitElement {
               "mdi:message-alert-outline",
               "Fehlermeldung",
               data.lastErrorMessageLabel,
+              data.lastErrorMessageEntity,
             )}
 
             ${this.renderMetricRow(
               "mdi:numeric",
               "Fehlercode",
               data.lastErrorCodeLabel,
+              data.lastErrorCodeEntity,
             )}
 
             ${this.renderMetricRow(
               "mdi:clock-alert-outline",
               "Fehlerzeitpunkt",
               data.lastErrorTimeLabel,
+              data.lastErrorTimeEntity,
             )}
 
             ${this.renderMetricRow(
               "mdi:robot-mower-outline",
               "Aktivitätsmodus",
               data.activityModeLabel,
+              data.activityModeEntity,
             )}
           </div>
         </div>
@@ -1277,11 +1461,25 @@ export class NovaLubaCard extends LitElement {
 
           <div class="glass-panel progress-panel">
             <div
-              class="progress-ring"
+              class="progress-ring clickable"
+              role="button"
+              tabindex="0"
+              title="Firmware-Update öffnen"
               style=${styleMap({
                 "--progress-angle":
                   `${updateProgress * 3.6}deg`,
               })}
+              @click=${() =>
+                this.openMoreInfo(
+                  data.firmwareUpdateEntity,
+                )}
+              @keydown=${(
+                event: KeyboardEvent,
+              ) =>
+                this.handleEntityKeydown(
+                  event,
+                  data.firmwareUpdateEntity,
+                )}
             >
               <div class="ring-content">
                 <span class="ring-value">
@@ -1299,18 +1497,21 @@ export class NovaLubaCard extends LitElement {
                 "mdi:package-down",
                 "Installierte Version",
                 data.firmwareInstalledVersionLabel,
+                data.firmwareUpdateEntity,
               )}
 
               ${this.renderMetricRow(
                 "mdi:package-up",
                 "Neue Version",
                 data.firmwareLatestVersionLabel,
+                data.firmwareUpdateEntity,
               )}
 
               ${this.renderMetricRow(
                 "mdi:progress-clock",
                 "Fortschritt",
                 data.firmwareUpdatePercentageLabel,
+                data.firmwareUpdateEntity,
               )}
 
               ${this.renderMetricRow(
@@ -1362,24 +1563,28 @@ export class NovaLubaCard extends LitElement {
                 "mdi:package-down",
                 "Installierte Version",
                 data.firmwareInstalledVersionLabel,
+                data.firmwareUpdateEntity,
               )}
 
               ${this.renderMetricRow(
                 "mdi:package-up",
                 "Neue Version",
                 data.firmwareLatestVersionLabel,
+                data.firmwareUpdateEntity,
               )}
 
               ${this.renderMetricRow(
                 "mdi:text-box-outline",
                 "Release-Information",
                 data.firmwareReleaseSummaryLabel,
+                data.firmwareUpdateEntity,
               )}
 
               ${this.renderMetricRow(
                 "mdi:update-auto",
                 "Automatische Updates",
                 data.firmwareAutoUpdateLabel,
+                data.firmwareUpdateEntity,
               )}
             </div>
           </div>
@@ -1423,24 +1628,28 @@ export class NovaLubaCard extends LitElement {
               "mdi:package-check",
               "Installierte Version",
               data.firmwareInstalledVersionLabel,
+              data.firmwareUpdateEntity,
             )}
 
             ${this.renderMetricRow(
               "mdi:package-variant-closed-check",
               "Neueste Version",
               data.firmwareLatestVersionLabel,
+              data.firmwareUpdateEntity,
             )}
 
             ${this.renderMetricRow(
               "mdi:check-circle-outline",
               "Firmwarestatus",
               "Aktuell",
+              data.firmwareUpdateEntity,
             )}
 
             ${this.renderMetricRow(
               "mdi:update-auto",
               "Automatische Updates",
               data.firmwareAutoUpdateLabel,
+              data.firmwareUpdateEntity,
             )}
           </div>
         </div>
@@ -1481,24 +1690,28 @@ export class NovaLubaCard extends LitElement {
               "mdi:blade",
               "Messerverschleiß-Warnzeit",
               data.bladeWearWarningTimeLabel,
+              data.bladeWearWarningTimeEntity,
             )}
 
             ${this.renderMetricRow(
               "mdi:timer-outline",
               "Aufgabendauer gesamt",
               data.taskDurationLabel,
+              data.taskDurationEntity,
             )}
 
             ${this.renderMetricRow(
               "mdi:map-marker-distance",
               "Gesamtkilometerstand",
               data.totalMileageLabel,
+              data.totalMileageEntity,
             )}
 
             ${this.renderMetricRow(
               "mdi:robot-mower-outline",
               "Aktivitätsmodus",
               data.activityModeLabel,
+              data.activityModeEntity,
             )}
           </div>
         </div>
@@ -1769,6 +1982,22 @@ export class NovaLubaCard extends LitElement {
       name,
       novaState,
       rawState: mower.state,
+
+      mowerEntity: this.config.entity,
+      batteryEntity,
+      batteryCyclesEntity,
+      locationEntity,
+      progressEntity,
+      remainingTimeEntity,
+      totalTimeEntity,
+      lastErrorMessageEntity,
+      lastErrorTimeEntity,
+      lastErrorCodeEntity,
+      activityModeEntity,
+      bladeWearWarningTimeEntity,
+      taskDurationEntity,
+      totalMileageEntity,
+      firmwareUpdateEntity,
 
       progress,
       progressLabel,
