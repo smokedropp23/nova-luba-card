@@ -80,12 +80,21 @@ interface NovaLubaCardConfig {
   mobile_rssi_entity?: string;
   wifi_rssi_entity?: string;
   connection_type_entity?: string;
+
+  retain_last_state?: boolean;
+  show_stale_warning?: boolean;
+  disable_controls_when_stale?: boolean;
+  stale_after?: number;
+  stale_text?: string;
 }
 
 interface MowerViewData {
   name: string;
   novaState: NovaMowerState;
   rawState: string;
+  stale: boolean;
+  cachedAt: number | null;
+  controlsAvailable: boolean;
 
   mowerEntity: string;
   batteryEntity: string;
@@ -147,6 +156,12 @@ interface MowerViewData {
   firmwareUpdateInProgress: boolean;
   firmwareUpdatePercentage: number | null;
   firmwareUpdatePercentageLabel: string;
+}
+
+interface CachedMowerState {
+  novaState: NovaMowerState;
+  rawState: string;
+  cachedAt: number;
 }
 
 const DEFAULT_BATTERY_ENTITY =
@@ -246,6 +261,8 @@ export class NovaLubaCard extends LitElement {
 
   @state()
   private config?: NovaLubaCardConfig;
+
+  private controlsAvailable = true;
 
   static styles = css`
     :host {
@@ -897,6 +914,39 @@ export class NovaLubaCard extends LitElement {
       background: ${unsafeCSS(theme.states.error.soft)};
     }
 
+
+    .stale-warning {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 1px solid rgba(242, 201, 76, 0.68);
+      border-radius: 14px;
+      color: #f2c94c;
+      background: rgba(242, 201, 76, 0.09);
+      box-shadow: 0 0 16px rgba(242, 201, 76, 0.12);
+      font-size: 13px;
+      font-weight: 650;
+      line-height: 1.35;
+      text-align: center;
+    }
+
+    .stale-warning.confirmed-stale {
+      border-color: rgba(255, 171, 64, 0.78);
+      color: #ffab40;
+      background: rgba(255, 171, 64, 0.1);
+    }
+
+    .stale-warning ha-icon {
+      flex: 0 0 auto;
+      --mdc-icon-size: 21px;
+    }
+
+    .card-layout.stale .content-grid {
+      opacity: 0.86;
+    }
+
     .footer {
       display: flex;
       align-items: flex-end;
@@ -980,11 +1030,6 @@ export class NovaLubaCard extends LitElement {
       .led-placeholder {
         width: 44px;
         height: 44px;
-      }
-
-      .connectivity-bar {
-        width: 100%;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .robot-stage {
@@ -1324,6 +1369,224 @@ export class NovaLubaCard extends LitElement {
     }
   }
 
+
+  private isValidMainState(
+    stateObj: HomeAssistantState | undefined,
+  ): boolean {
+    if (!stateObj) {
+      return false;
+    }
+
+    const rawState = String(stateObj.state ?? "")
+      .trim()
+      .toLowerCase();
+
+    if (["", "unknown", "unavailable", "none"].includes(rawState)) {
+      return false;
+    }
+
+    return resolveMowerState(rawState) !== "unknown";
+  }
+
+  private getMowerCacheKey(): string | null {
+    if (!this.config?.entity) {
+      return null;
+    }
+
+    return `nova-luba-cache-${this.config.entity}`;
+  }
+
+  private saveLastValidMowerState(
+    cachedState: CachedMowerState,
+  ): void {
+    const cacheKey = this.getMowerCacheKey();
+
+    if (!cacheKey) {
+      return;
+    }
+
+    try {
+      window.localStorage.setItem(
+        cacheKey,
+        JSON.stringify(cachedState),
+      );
+    } catch (error) {
+      console.warn(
+        "Nova UI: Der letzte Mäherstatus konnte nicht gespeichert werden.",
+        error,
+      );
+    }
+  }
+
+  private loadLastValidMowerState(): CachedMowerState | null {
+    const cacheKey = this.getMowerCacheKey();
+
+    if (!cacheKey) {
+      return null;
+    }
+
+    try {
+      const cachedValue = window.localStorage.getItem(cacheKey);
+
+      if (!cachedValue) {
+        return null;
+      }
+
+      const parsed = JSON.parse(cachedValue) as Partial<CachedMowerState>;
+      const validStates: NovaMowerState[] = [
+        "mowing",
+        "paused",
+        "docked",
+        "returning",
+        "error",
+        "maintenance",
+        "update",
+        "offline",
+      ];
+
+      if (
+        !parsed.novaState ||
+        !validStates.includes(parsed.novaState) ||
+        typeof parsed.rawState !== "string" ||
+        typeof parsed.cachedAt !== "number" ||
+        !Number.isFinite(parsed.cachedAt)
+      ) {
+        return null;
+      }
+
+      return {
+        novaState: parsed.novaState,
+        rawState: parsed.rawState,
+        cachedAt: parsed.cachedAt,
+      };
+    } catch (error) {
+      console.warn(
+        "Nova UI: Der gespeicherte Mäherstatus konnte nicht gelesen werden.",
+        error,
+      );
+      return null;
+    }
+  }
+
+  private resolveDisplayedMowerState(
+    mower: HomeAssistantState,
+  ): {
+    novaState: NovaMowerState;
+    liveRawState: string;
+    stale: boolean;
+    cachedAt: number | null;
+  } {
+    const liveRawState = String(mower.state ?? "unknown");
+
+    if (this.isValidMainState(mower)) {
+      const novaState = resolveMowerState(liveRawState);
+
+      this.saveLastValidMowerState({
+        novaState,
+        rawState: liveRawState,
+        cachedAt: Date.now(),
+      });
+
+      return {
+        novaState,
+        liveRawState,
+        stale: false,
+        cachedAt: null,
+      };
+    }
+
+    const retainLastState =
+      this.config?.retain_last_state ?? true;
+    const cached = retainLastState
+      ? this.loadLastValidMowerState()
+      : null;
+
+    return {
+      novaState: cached?.novaState ?? "unknown",
+      liveRawState,
+      stale: true,
+      cachedAt: cached?.cachedAt ?? null,
+    };
+  }
+
+  private formatRelativeTime(timestamp: number | null): string {
+    if (!timestamp) {
+      return "zu einem unbekannten Zeitpunkt";
+    }
+
+    const elapsedSeconds = Math.max(0, Math.floor((Date.now() - timestamp) / 1000));
+
+    if (elapsedSeconds < 10) {
+      return "vor wenigen Sekunden";
+    }
+
+    if (elapsedSeconds < 60) {
+      return `vor ${elapsedSeconds} Sekunden`;
+    }
+
+    const elapsedMinutes = Math.floor(elapsedSeconds / 60);
+
+    if (elapsedMinutes === 1) {
+      return "vor einer Minute";
+    }
+
+    if (elapsedMinutes < 60) {
+      return `vor ${elapsedMinutes} Minuten`;
+    }
+
+    const elapsedHours = Math.floor(elapsedMinutes / 60);
+
+    if (elapsedHours === 1) {
+      return "vor einer Stunde";
+    }
+
+    if (elapsedHours < 24) {
+      return `vor ${elapsedHours} Stunden`;
+    }
+
+    const elapsedDays = Math.floor(elapsedHours / 24);
+    return elapsedDays === 1
+      ? "vor einem Tag"
+      : `vor ${elapsedDays} Tagen`;
+  }
+
+  private renderStaleWarning(data: MowerViewData) {
+    if (!data.stale || !(this.config?.show_stale_warning ?? true)) {
+      return nothing;
+    }
+
+    const staleAfterSeconds = Math.max(
+      0,
+      Number(this.config?.stale_after ?? 120),
+    );
+    const ageSeconds = data.cachedAt
+      ? Math.max(0, Math.floor((Date.now() - data.cachedAt) / 1000))
+      : Number.POSITIVE_INFINITY;
+    const confirmedStale = ageSeconds >= staleAfterSeconds;
+    const configuredText =
+      this.config?.stale_text?.trim() ||
+      "Keine aktuellen Mammotion-Daten";
+    const message = data.cachedAt
+      ? confirmedStale
+        ? `${configuredText} · letzter bestätigter Zustand ${this.formatRelativeTime(data.cachedAt)}`
+        : `Status wird aktualisiert · letzter bestätigter Zustand ${this.formatRelativeTime(data.cachedAt)}`
+      : "Keine aktuellen Statusdaten und noch kein letzter gültiger Zustand gespeichert";
+
+    return html`
+      <div
+        class=${`stale-warning${confirmedStale ? " confirmed-stale" : ""}`}
+        role="status"
+      >
+        <ha-icon
+          icon=${confirmedStale
+            ? "mdi:cloud-alert-outline"
+            : "mdi:cloud-sync-outline"}
+        ></ha-icon>
+        <span>${message}</span>
+      </div>
+    `;
+  }
+
   private getRssiPresentation(entityId: string): {
     value: string;
     quality: "excellent" | "good" | "weak" | "poor" | "unknown";
@@ -1485,7 +1748,8 @@ export class NovaLubaCard extends LitElement {
       mower &&
       mower.state !== "unknown" &&
       mower.state !== "unavailable" &&
-      mower.state !== "offline",
+      mower.state !== "offline" &&
+      this.controlsAvailable,
     );
 
     return html`
@@ -1516,7 +1780,8 @@ export class NovaLubaCard extends LitElement {
     confirmationText?: string,
   ) {
     const available =
-      this.isButtonAvailable(entityId);
+      this.isButtonAvailable(entityId) &&
+      this.controlsAvailable;
 
     return html`
       <button
@@ -2785,8 +3050,16 @@ export class NovaLubaCard extends LitElement {
       `;
     }
 
-    const novaState =
-      resolveMowerState(mower.state);
+    const resolvedState =
+      this.resolveDisplayedMowerState(mower);
+
+    const novaState = resolvedState.novaState;
+    const disableControlsWhenStale =
+      this.config.disable_controls_when_stale ?? true;
+
+    this.controlsAvailable =
+      !resolvedState.stale ||
+      !disableControlsWhenStale;
 
     const stateTheme =
       novaState === "paused"
@@ -2871,7 +3144,10 @@ export class NovaLubaCard extends LitElement {
     const viewData: MowerViewData = {
       name,
       novaState,
-      rawState: mower.state,
+      rawState: resolvedState.liveRawState,
+      stale: resolvedState.stale,
+      cachedAt: resolvedState.cachedAt,
+      controlsAvailable: this.controlsAvailable,
 
       mowerEntity: this.config.entity,
       batteryEntity,
@@ -3051,7 +3327,7 @@ export class NovaLubaCard extends LitElement {
 
     return html`
       <ha-card style=${styleMap(dynamicStyles)}>
-        <div class="card-layout">
+        <div class=${`card-layout${viewData.stale ? " stale" : ""}`}>
           <header class="header">
             <div class="brand">
               <div class="eyebrow">
@@ -3065,6 +3341,8 @@ export class NovaLubaCard extends LitElement {
               </div>
             </div>
 
+            ${this.renderConnectivityBar(viewData)}
+
             <div
               class="led-placeholder"
               title="Statusanzeige"
@@ -3073,7 +3351,7 @@ export class NovaLubaCard extends LitElement {
             </div>
           </header>
 
-          ${this.renderConnectivityBar(viewData)}
+          ${this.renderStaleWarning(viewData)}
 
           <main class="content-grid">
             <section class="hero">
@@ -3118,12 +3396,14 @@ export class NovaLubaCard extends LitElement {
                 <span class="dot"></span>
 
                 <span>
-                  ${stateLabels[novaState]}
+                  ${viewData.stale
+                    ? `Letzter Stand: ${stateLabels[novaState]}`
+                    : stateLabels[novaState]}
                 </span>
               </div>
 
               <div class="raw-state">
-                Rohstatus: ${mower.state}
+                Rohstatus: ${viewData.rawState}
               </div>
             </div>
 
@@ -3218,6 +3498,13 @@ export class NovaLubaCard extends LitElement {
 
       undock_entity:
         DEFAULT_UNDOCK_ENTITY,
+
+      retain_last_state: true,
+      show_stale_warning: true,
+      disable_controls_when_stale: true,
+      stale_after: 120,
+      stale_text:
+        "Keine aktuellen Mammotion-Daten",
     };
   }
 }
