@@ -38,7 +38,6 @@ interface HomeAssistant {
 interface NovaLubaCardConfig {
   type: string;
   entity: string;
-
   name?: string;
   model?: string;
 
@@ -48,6 +47,11 @@ interface NovaLubaCardConfig {
   progress_entity?: string;
   remaining_time_entity?: string;
   total_time_entity?: string;
+
+  last_error_message_entity?: string;
+  last_error_time_entity?: string;
+  last_error_code_entity?: string;
+  activity_mode_entity?: string;
 }
 
 interface MowerViewData {
@@ -65,6 +69,11 @@ interface MowerViewData {
   locationLabel: string;
   remainingTimeLabel: string;
   totalTimeLabel: string;
+
+  lastErrorMessageLabel: string;
+  lastErrorTimeLabel: string;
+  lastErrorCodeLabel: string;
+  activityModeLabel: string;
 }
 
 const DEFAULT_BATTERY_ENTITY =
@@ -84,6 +93,18 @@ const DEFAULT_REMAINING_TIME_ENTITY =
 
 const DEFAULT_TOTAL_TIME_ENTITY =
   "sensor.luba_va8tp48r_gesamtzeit";
+
+const DEFAULT_LAST_ERROR_MESSAGE_ENTITY =
+  "sensor.luba_va8tp48r_letzte_fehlermeldung";
+
+const DEFAULT_LAST_ERROR_TIME_ENTITY =
+  "sensor.luba_va8tp48r_letzter_fehlerzeitpunkt";
+
+const DEFAULT_LAST_ERROR_CODE_ENTITY =
+  "sensor.luba_va8tp48r_letzter_fehlercode";
+
+const DEFAULT_ACTIVITY_MODE_ENTITY =
+  "sensor.luba_va8tp48r_aktivitatsmodus";
 
 const stateLabels: Record<NovaMowerState, string> = {
   mowing: "Mäht",
@@ -321,11 +342,7 @@ export class NovaLubaCard extends LitElement {
 
     .overview-icon {
       color: var(--nova-state-color);
-      filter:
-        drop-shadow(
-          0 0 10px
-          var(--nova-state-glow)
-        );
+      filter: drop-shadow(0 0 10px var(--nova-state-glow));
       --mdc-icon-size: 46px;
     }
 
@@ -418,8 +435,7 @@ export class NovaLubaCard extends LitElement {
           transparent 52%
         ),
         ${unsafeCSS(theme.colors.backgroundDeep)};
-      box-shadow:
-        inset 0 0 18px rgba(0, 0, 0, 0.45);
+      box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.45);
       content: "";
     }
 
@@ -450,10 +466,7 @@ export class NovaLubaCard extends LitElement {
 
     .metric-row {
       display: grid;
-      grid-template-columns:
-        34px
-        minmax(0, 1fr)
-        auto;
+      grid-template-columns: 34px minmax(0, 1fr) auto;
       gap: 10px;
       align-items: center;
       min-height: 49px;
@@ -467,11 +480,7 @@ export class NovaLubaCard extends LitElement {
 
     .metric-icon {
       color: var(--nova-state-color);
-      filter:
-        drop-shadow(
-          0 0 7px
-          var(--nova-state-glow)
-        );
+      filter: drop-shadow(0 0 7px var(--nova-state-glow));
       --mdc-icon-size: 24px;
     }
 
@@ -507,8 +516,6 @@ export class NovaLubaCard extends LitElement {
       border-radius: inherit;
       background: var(--nova-state-color);
       box-shadow: 0 0 8px var(--nova-state-glow);
-      transition:
-        width ${unsafeCSS(theme.animation.normal)} ease;
     }
 
     .state-panel {
@@ -533,11 +540,7 @@ export class NovaLubaCard extends LitElement {
 
     .state-symbol ha-icon {
       color: var(--nova-state-color);
-      filter:
-        drop-shadow(
-          0 0 10px
-          var(--nova-state-glow)
-        );
+      filter: drop-shadow(0 0 10px var(--nova-state-glow));
       --mdc-icon-size: 46px;
     }
 
@@ -666,10 +669,7 @@ export class NovaLubaCard extends LitElement {
       }
 
       .metric-row {
-        grid-template-columns:
-          29px
-          minmax(0, 1fr)
-          auto;
+        grid-template-columns: 29px minmax(0, 1fr) auto;
         gap: 8px;
       }
 
@@ -703,9 +703,7 @@ export class NovaLubaCard extends LitElement {
     }
   `;
 
-  public setConfig(
-    config: NovaLubaCardConfig,
-  ): void {
+  public setConfig(config: NovaLubaCardConfig): void {
     if (!config) {
       throw new Error(
         "Nova UI: Kartenkonfiguration fehlt.",
@@ -721,15 +719,12 @@ export class NovaLubaCard extends LitElement {
     this.config = config;
   }
 
-  private get mowerState():
-    HomeAssistantState | undefined {
+  private get mowerState(): HomeAssistantState | undefined {
     if (!this.hass || !this.config) {
       return undefined;
     }
 
-    return this.hass.states[
-      this.config.entity
-    ];
+    return this.hass.states[this.config.entity];
   }
 
   private getState(
@@ -745,20 +740,15 @@ export class NovaLubaCard extends LitElement {
   private getNumericValue(
     entityId: string | undefined,
   ): number | null {
-    const entity =
-      this.getState(entityId);
+    const entity = this.getState(entityId);
 
     if (!entity) {
       return null;
     }
 
-    const normalized =
-      entity.state
-        .trim()
-        .replace(",", ".");
-
-    const value =
-      Number.parseFloat(normalized);
+    const value = Number.parseFloat(
+      entity.state.trim().replace(",", "."),
+    );
 
     return Number.isFinite(value)
       ? value
@@ -769,8 +759,7 @@ export class NovaLubaCard extends LitElement {
     entityId: string | undefined,
     fallbackUnit = "",
   ): string {
-    const entity =
-      this.getState(entityId);
+    const entity = this.getState(entityId);
 
     if (
       !entity ||
@@ -781,10 +770,8 @@ export class NovaLubaCard extends LitElement {
     }
 
     const unit =
-      typeof entity.attributes
-        .unit_of_measurement === "string"
-        ? entity.attributes
-            .unit_of_measurement
+      typeof entity.attributes.unit_of_measurement === "string"
+        ? entity.attributes.unit_of_measurement
         : fallbackUnit;
 
     return unit
@@ -799,10 +786,7 @@ export class NovaLubaCard extends LitElement {
       return 0;
     }
 
-    return Math.min(
-      100,
-      Math.max(0, value),
-    );
+    return Math.min(100, Math.max(0, value));
   }
 
   private renderMetricRow(
@@ -847,19 +831,12 @@ export class NovaLubaCard extends LitElement {
           </h3>
 
           <div class="overview-description">
-            <span>
-              Mähvorgang läuft.
-            </span>
-
-            <span>
-              Der Mäher arbeitet autonom.
-            </span>
+            <span>Mähvorgang läuft.</span>
+            <span>Der Mäher arbeitet autonom.</span>
           </div>
         </div>
 
-        <div
-          class="glass-panel progress-panel"
-        >
+        <div class="glass-panel progress-panel">
           <div
             class="progress-ring"
             style=${styleMap({
@@ -915,8 +892,7 @@ export class NovaLubaCard extends LitElement {
                 <span
                   class="battery-fill"
                   style=${styleMap({
-                    width:
-                      `${data.battery}%`,
+                    width: `${data.battery}%`,
                   })}
                 ></span>
               </div>
@@ -939,26 +915,16 @@ export class NovaLubaCard extends LitElement {
           ></ha-icon>
 
           <h3 class="overview-title">
-            ${data.name}
-            ist in der Ladestation
+            ${data.name} ist in der Ladestation
           </h3>
 
           <div class="overview-description">
-            <span>
-              Der Mäher befindet sich
-              sicher in der Basis.
-            </span>
-
-            <span>
-              Er ist bereit für die
-              nächste Aufgabe.
-            </span>
+            <span>Der Mäher befindet sich sicher in der Basis.</span>
+            <span>Er ist bereit für die nächste Aufgabe.</span>
           </div>
         </div>
 
-        <div
-          class="glass-panel progress-panel"
-        >
+        <div class="glass-panel progress-panel">
           <div
             class="battery-ring"
             style=${styleMap({
@@ -1021,27 +987,16 @@ export class NovaLubaCard extends LitElement {
           ></ha-icon>
 
           <h3 class="overview-title">
-            ${data.name}
-            fährt zur Ladestation
+            ${data.name} fährt zur Ladestation
           </h3>
 
           <div class="overview-description">
-            <span>
-              Die aktuelle Aufgabe
-              wird beendet.
-            </span>
-
-            <span>
-              Der Mäher kehrt
-              selbstständig zur Basis
-              zurück.
-            </span>
+            <span>Die aktuelle Aufgabe wird beendet.</span>
+            <span>Der Mäher kehrt selbstständig zur Basis zurück.</span>
           </div>
         </div>
 
-        <div
-          class="glass-panel progress-panel"
-        >
+        <div class="glass-panel progress-panel">
           <div
             class="battery-ring"
             style=${styleMap({
@@ -1104,11 +1059,14 @@ export class NovaLubaCard extends LitElement {
           <h3 class="overview-title">
             ${data.name} ist offline
           </h3>
+
+          <div class="overview-description">
+            <span>Der Mäher ist momentan nicht erreichbar.</span>
+            <span>Es werden keine aktuellen Daten übertragen.</span>
+          </div>
         </div>
 
-        <div
-          class="glass-panel state-panel"
-        >
+        <div class="glass-panel state-panel">
           <div class="state-symbol">
             <ha-icon
               icon="mdi:robot-mower-outline"
@@ -1116,16 +1074,33 @@ export class NovaLubaCard extends LitElement {
           </div>
 
           <div class="state-message">
-            Bitte schalten Sie den Mäher
-            ein und prüfen Sie die WLAN-
-            oder Bluetooth-Verbindung.
-            Momentan werden keine
-            aktuellen Daten übertragen.
+            Bitte schalten Sie den Mäher ein und
+            überprüfen Sie anschließend die Verbindung
+            zur Mammotion-Integration.
+          </div>
+
+          <div class="metric-list">
+            ${this.renderMetricRow(
+              "mdi:power",
+              "Gerätestatus",
+              "Ausgeschaltet oder nicht erreichbar",
+            )}
+
+            ${this.renderMetricRow(
+              "mdi:access-point-off",
+              "Verbindung",
+              "Nicht verfügbar",
+            )}
+
+            ${this.renderMetricRow(
+              "mdi:information-outline",
+              "Empfehlung",
+              "Mäher einschalten",
+            )}
           </div>
 
           <div class="state-detail">
-            Letzter Rohstatus:
-            ${data.rawState}
+            Gemeldeter Rohstatus: ${data.rawState}
           </div>
         </div>
       </section>
@@ -1144,47 +1119,39 @@ export class NovaLubaCard extends LitElement {
           ></ha-icon>
 
           <h3 class="overview-title">
-            ${data.name}
-            benötigt Aufmerksamkeit
+            ${data.name} benötigt Aufmerksamkeit
           </h3>
 
           <div class="overview-description">
-            <span>
-              Der Mäher meldet
-              eine Störung.
-            </span>
-
-            <span>
-              Bitte Gerät und Umgebung
-              überprüfen.
-            </span>
+            <span>Der Mäher meldet eine Störung.</span>
+            <span>Die zuletzt gemeldeten Fehlerdaten werden angezeigt.</span>
           </div>
         </div>
 
         <div class="glass-panel">
           <div class="metric-list">
             ${this.renderMetricRow(
-              "mdi:alert-outline",
-              "Fehlerstatus",
-              data.rawState,
+              "mdi:message-alert-outline",
+              "Fehlermeldung",
+              data.lastErrorMessageLabel,
             )}
 
             ${this.renderMetricRow(
-              "mdi:map-marker-outline",
-              "Aktueller Standort",
-              data.locationLabel,
+              "mdi:numeric",
+              "Fehlercode",
+              data.lastErrorCodeLabel,
             )}
 
             ${this.renderMetricRow(
-              "mdi:battery",
-              "Akkustand",
-              data.batteryLabel,
+              "mdi:clock-alert-outline",
+              "Fehlerzeitpunkt",
+              data.lastErrorTimeLabel,
             )}
 
             ${this.renderMetricRow(
-              "mdi:information-outline",
-              "Empfehlung",
-              "Gerät prüfen",
+              "mdi:robot-mower-outline",
+              "Aktivitätsmodus",
+              data.activityModeLabel,
             )}
           </div>
         </div>
@@ -1204,26 +1171,16 @@ export class NovaLubaCard extends LitElement {
           ></ha-icon>
 
           <h3 class="overview-title">
-            Software-Update
-            wird verarbeitet
+            Software-Update wird verarbeitet
           </h3>
 
           <div class="overview-description">
-            <span>
-              ${data.name}
-              wird aktualisiert.
-            </span>
-
-            <span>
-              Bitte Gerät währenddessen
-              nicht ausschalten.
-            </span>
+            <span>${data.name} wird aktualisiert.</span>
+            <span>Bitte Gerät währenddessen nicht ausschalten.</span>
           </div>
         </div>
 
-        <div
-          class="glass-panel state-panel"
-        >
+        <div class="glass-panel state-panel">
           <div class="state-symbol">
             <ha-icon
               icon="mdi:download"
@@ -1231,14 +1188,12 @@ export class NovaLubaCard extends LitElement {
           </div>
 
           <div class="state-message">
-            Der Mäher ist während
-            des Updates vorübergehend
-            nicht einsatzbereit.
+            Der Mäher ist während des Updates
+            vorübergehend nicht einsatzbereit.
           </div>
 
           <div class="state-detail">
-            Akkustand:
-            ${data.batteryLabel}
+            Akkustand: ${data.batteryLabel}
           </div>
         </div>
       </section>
@@ -1261,15 +1216,8 @@ export class NovaLubaCard extends LitElement {
           </h3>
 
           <div class="overview-description">
-            <span>
-              Automatische Aufgaben
-              sind pausiert.
-            </span>
-
-            <span>
-              ${data.name} kann sicher
-              gewartet werden.
-            </span>
+            <span>Automatische Aufgaben sind pausiert.</span>
+            <span>${data.name} kann sicher gewartet werden.</span>
           </div>
         </div>
 
@@ -1316,14 +1264,11 @@ export class NovaLubaCard extends LitElement {
           ></ha-icon>
 
           <h3 class="overview-title">
-            Status konnte nicht
-            erkannt werden
+            Status konnte nicht erkannt werden
           </h3>
         </div>
 
-        <div
-          class="glass-panel state-panel"
-        >
+        <div class="glass-panel state-panel">
           <div class="state-symbol">
             <ha-icon
               icon="mdi:help"
@@ -1331,15 +1276,12 @@ export class NovaLubaCard extends LitElement {
           </div>
 
           <div class="state-message">
-            Der aktuelle Zustand des
-            Mähers kann noch keiner
-            bekannten Ansicht
-            zugeordnet werden.
+            Der aktuelle Zustand des Mähers kann noch
+            keiner bekannten Ansicht zugeordnet werden.
           </div>
 
           <div class="state-detail">
-            Rohstatus:
-            ${data.rawState}
+            Rohstatus: ${data.rawState}
           </div>
         </div>
       </section>
@@ -1351,45 +1293,29 @@ export class NovaLubaCard extends LitElement {
   ) {
     switch (data.novaState) {
       case "mowing":
-        return this.renderMowingView(
-          data,
-        );
+        return this.renderMowingView(data);
 
       case "docked":
-        return this.renderDockedView(
-          data,
-        );
+        return this.renderDockedView(data);
 
       case "returning":
-        return this.renderReturningView(
-          data,
-        );
+        return this.renderReturningView(data);
 
       case "error":
-        return this.renderErrorView(
-          data,
-        );
+        return this.renderErrorView(data);
 
       case "maintenance":
-        return this.renderMaintenanceView(
-          data,
-        );
+        return this.renderMaintenanceView(data);
 
       case "update":
-        return this.renderUpdateView(
-          data,
-        );
+        return this.renderUpdateView(data);
 
       case "offline":
-        return this.renderOfflineView(
-          data,
-        );
+        return this.renderOfflineView(data);
 
       case "unknown":
       default:
-        return this.renderUnknownView(
-          data,
-        );
+        return this.renderUnknownView(data);
     }
   }
 
@@ -1401,11 +1327,8 @@ export class NovaLubaCard extends LitElement {
 
     image.style.display = "none";
 
-    const stage =
-      image.parentElement;
-
     const fallback =
-      stage?.querySelector<HTMLElement>(
+      image.parentElement?.querySelector<HTMLElement>(
         ".robot-fallback",
       );
 
@@ -1419,24 +1342,17 @@ export class NovaLubaCard extends LitElement {
       return nothing;
     }
 
-    const mower =
-      this.mowerState;
-
-    const name =
-      this.config.name ??
-      "Luba";
-
+    const mower = this.mowerState;
+    const name = this.config.name ?? "Luba";
     const model =
-      this.config.model ??
-      "Luba 3 AWD LiDAR";
+      this.config.model ?? "Luba 3 AWD LiDAR";
 
     const batteryEntity =
       this.config.battery_entity ??
       DEFAULT_BATTERY_ENTITY;
 
     const batteryCyclesEntity =
-      this.config
-        .battery_cycles_entity ??
+      this.config.battery_cycles_entity ??
       DEFAULT_BATTERY_CYCLES_ENTITY;
 
     const locationEntity =
@@ -1448,13 +1364,28 @@ export class NovaLubaCard extends LitElement {
       DEFAULT_PROGRESS_ENTITY;
 
     const remainingTimeEntity =
-      this.config
-        .remaining_time_entity ??
+      this.config.remaining_time_entity ??
       DEFAULT_REMAINING_TIME_ENTITY;
 
     const totalTimeEntity =
       this.config.total_time_entity ??
       DEFAULT_TOTAL_TIME_ENTITY;
+
+    const lastErrorMessageEntity =
+      this.config.last_error_message_entity ??
+      DEFAULT_LAST_ERROR_MESSAGE_ENTITY;
+
+    const lastErrorTimeEntity =
+      this.config.last_error_time_entity ??
+      DEFAULT_LAST_ERROR_TIME_ENTITY;
+
+    const lastErrorCodeEntity =
+      this.config.last_error_code_entity ??
+      DEFAULT_LAST_ERROR_CODE_ENTITY;
+
+    const activityModeEntity =
+      this.config.activity_mode_entity ??
+      DEFAULT_ACTIVITY_MODE_ENTITY;
 
     const resolvedModel =
       resolveMowerModel(model);
@@ -1463,37 +1394,26 @@ export class NovaLubaCard extends LitElement {
       getMowerImage(resolvedModel);
 
     const presentation =
-      getMowerPresentation(
-        resolvedModel,
-      );
+      getMowerPresentation(resolvedModel);
 
     if (!mower) {
-      const errorTheme =
-        theme.states.error;
+      const errorTheme = theme.states.error;
 
       return html`
         <ha-card
           style=${styleMap({
-            "--nova-state-color":
-              errorTheme.color,
-
-            "--nova-state-soft":
-              errorTheme.soft,
-
-            "--nova-state-glow":
-              errorTheme.glow,
+            "--nova-state-color": errorTheme.color,
+            "--nova-state-soft": errorTheme.soft,
+            "--nova-state-glow": errorTheme.glow,
           })}
         >
           <div class="entity-error">
             <div>
-              <strong>
-                Entität nicht gefunden
-              </strong>
+              <strong>Entität nicht gefunden</strong>
 
               <p>
-                „${this.config.entity}“
-                ist in Home Assistant
-                nicht vorhanden.
+                „${this.config.entity}“ ist in
+                Home Assistant nicht vorhanden.
               </p>
             </div>
           </div>
@@ -1502,48 +1422,36 @@ export class NovaLubaCard extends LitElement {
     }
 
     const novaState =
-      resolveMowerState(
-        mower.state,
-      );
+      resolveMowerState(mower.state);
 
     const stateTheme =
       theme.states[novaState];
 
     const lighting =
-      resolveMowerLighting(
-        novaState,
-      );
+      resolveMowerLighting(novaState);
 
     const lightingAssets =
-      getMowerLightingAssets(
-        resolvedModel,
-      );
+      getMowerLightingAssets(resolvedModel);
 
     const lightingWithAssets = {
       ...lighting,
 
       front: {
         ...lighting.front,
-        asset:
-          lightingAssets.front,
+        asset: lightingAssets.front,
       },
 
       side: {
         ...lighting.side,
-        asset:
-          lightingAssets.side,
+        asset: lightingAssets.side,
       },
     };
 
     const progressRaw =
-      this.getNumericValue(
-        progressEntity,
-      );
+      this.getNumericValue(progressEntity);
 
     const progress =
-      this.clampPercentage(
-        progressRaw,
-      );
+      this.clampPercentage(progressRaw);
 
     const progressLabel =
       progressRaw === null
@@ -1551,58 +1459,66 @@ export class NovaLubaCard extends LitElement {
         : `${Math.round(progress)} %`;
 
     const batteryRaw =
-      this.getNumericValue(
-        batteryEntity,
-      );
+      this.getNumericValue(batteryEntity);
 
     const battery =
-      this.clampPercentage(
-        batteryRaw,
-      );
+      this.clampPercentage(batteryRaw);
 
-    const batteryLabel =
-      this.formatEntityValue(
-        batteryEntity,
-        "%",
-      );
+    const viewData: MowerViewData = {
+      name,
+      novaState,
+      rawState: mower.state,
 
-    const batteryCyclesLabel =
-      this.formatEntityValue(
-        batteryCyclesEntity,
-      );
+      progress,
+      progressLabel,
 
-    const locationLabel =
-      this.formatEntityValue(
-        locationEntity,
-      );
+      battery,
+      batteryLabel:
+        this.formatEntityValue(
+          batteryEntity,
+          "%",
+        ),
 
-    const remainingTimeLabel =
-      this.formatEntityValue(
-        remainingTimeEntity,
-      );
+      batteryCyclesLabel:
+        this.formatEntityValue(
+          batteryCyclesEntity,
+        ),
 
-    const totalTimeLabel =
-      this.formatEntityValue(
-        totalTimeEntity,
-      );
+      locationLabel:
+        this.formatEntityValue(
+          locationEntity,
+        ),
 
-    const viewData:
-      MowerViewData = {
-        name,
-        novaState,
-        rawState: mower.state,
+      remainingTimeLabel:
+        this.formatEntityValue(
+          remainingTimeEntity,
+        ),
 
-        progress,
-        progressLabel,
+      totalTimeLabel:
+        this.formatEntityValue(
+          totalTimeEntity,
+        ),
 
-        battery,
-        batteryLabel,
-        batteryCyclesLabel,
+      lastErrorMessageLabel:
+        this.formatEntityValue(
+          lastErrorMessageEntity,
+        ),
 
-        locationLabel,
-        remainingTimeLabel,
-        totalTimeLabel,
-      };
+      lastErrorTimeLabel:
+        this.formatEntityValue(
+          lastErrorTimeEntity,
+        ),
+
+      lastErrorCodeLabel:
+        this.formatEntityValue(
+          lastErrorCodeEntity,
+        ),
+
+      activityModeLabel:
+        this.formatEntityValue(
+          activityModeEntity,
+        ),
+    };
 
     const dynamicStyles = {
       "--nova-state-color":
@@ -1615,58 +1531,38 @@ export class NovaLubaCard extends LitElement {
         stateTheme.glow,
 
       "--robot-desktop-scale":
-        String(
-          presentation
-            .desktop
-            .scale,
-        ),
+        String(presentation.desktop.scale),
 
       "--robot-desktop-x":
-        `${presentation.desktop
-          .translateX}px`,
+        `${presentation.desktop.translateX}px`,
 
       "--robot-desktop-y":
-        `${presentation.desktop
-          .translateY}px`,
+        `${presentation.desktop.translateY}px`,
 
       "--robot-desktop-max-width":
-        `${presentation.desktop
-          .maxWidth}px`,
+        `${presentation.desktop.maxWidth}px`,
 
       "--robot-desktop-max-height":
-        `${presentation.desktop
-          .maxHeight}px`,
+        `${presentation.desktop.maxHeight}px`,
 
       "--robot-mobile-scale":
-        String(
-          presentation
-            .mobile
-            .scale,
-        ),
+        String(presentation.mobile.scale),
 
       "--robot-mobile-x":
-        `${presentation.mobile
-          .translateX}px`,
+        `${presentation.mobile.translateX}px`,
 
       "--robot-mobile-y":
-        `${presentation.mobile
-          .translateY}px`,
+        `${presentation.mobile.translateY}px`,
 
       "--robot-mobile-max-width":
-        `${presentation.mobile
-          .maxWidth}px`,
+        `${presentation.mobile.maxWidth}px`,
 
       "--robot-mobile-max-height":
-        `${presentation.mobile
-          .maxHeight}px`,
+        `${presentation.mobile.maxHeight}px`,
     };
 
     return html`
-      <ha-card
-        style=${styleMap(
-          dynamicStyles,
-        )}
-      >
+      <ha-card style=${styleMap(dynamicStyles)}>
         <div class="card-layout">
           <header class="header">
             <div class="brand">
@@ -1674,9 +1570,7 @@ export class NovaLubaCard extends LitElement {
                 Nova UI
               </div>
 
-              <h2>
-                ${name}
-              </h2>
+              <h2>${name}</h2>
 
               <div class="model">
                 ${model}
@@ -1687,9 +1581,7 @@ export class NovaLubaCard extends LitElement {
               class="led-placeholder"
               title="Statusanzeige"
             >
-              <span
-                class="led-core"
-              ></span>
+              <span class="led-core"></span>
             </div>
           </header>
 
@@ -1701,73 +1593,47 @@ export class NovaLubaCard extends LitElement {
                   src=${mowerImage}
                   alt=${model}
                   loading="eager"
-                  @error=${
-                    this.handleImageError
-                  }
+                  @error=${this.handleImageError}
                 />
 
                 <mower-lighting
-                  .lighting=${
-                    lightingWithAssets
-                  }
+                  .lighting=${lightingWithAssets}
                 ></mower-lighting>
 
                 <div
                   class="robot-fallback"
                   hidden
                 >
-                  <div
-                    class="
-                      robot-fallback-symbol
-                    "
-                  >
+                  <div class="robot-fallback-symbol">
                     ◆
                   </div>
 
-                  <div
-                    class="
-                      robot-fallback-title
-                    "
-                  >
-                    Gerätebild konnte
-                    nicht geladen werden
+                  <div class="robot-fallback-title">
+                    Gerätebild konnte nicht geladen werden
                   </div>
 
-                  <div
-                    class="
-                      robot-fallback-path
-                    "
-                  >
+                  <div class="robot-fallback-path">
                     ${mowerImage}
                   </div>
                 </div>
               </div>
             </section>
 
-            ${this.renderStateContent(
-              viewData,
-            )}
+            ${this.renderStateContent(viewData)}
           </main>
 
           <footer class="footer">
             <div class="status-group">
               <div class="status">
-                <span
-                  class="dot"
-                ></span>
+                <span class="dot"></span>
 
                 <span>
-                  ${
-                    stateLabels[
-                      novaState
-                    ]
-                  }
+                  ${stateLabels[novaState]}
                 </span>
               </div>
 
               <div class="raw-state">
-                Rohstatus:
-                ${mower.state}
+                Rohstatus: ${mower.state}
               </div>
             </div>
 
@@ -1787,14 +1653,12 @@ export class NovaLubaCard extends LitElement {
   public static getStubConfig():
     NovaLubaCardConfig {
     return {
-      type:
-        "custom:nova-luba-card",
+      type: "custom:nova-luba-card",
 
       entity:
         "lawn_mower.luba_va8tp48r",
 
-      name:
-        "Luba",
+      name: "Luba",
 
       model:
         "Luba 3 AWD LiDAR",
@@ -1816,6 +1680,18 @@ export class NovaLubaCard extends LitElement {
 
       total_time_entity:
         DEFAULT_TOTAL_TIME_ENTITY,
+
+      last_error_message_entity:
+        DEFAULT_LAST_ERROR_MESSAGE_ENTITY,
+
+      last_error_time_entity:
+        DEFAULT_LAST_ERROR_TIME_ENTITY,
+
+      last_error_code_entity:
+        DEFAULT_LAST_ERROR_CODE_ENTITY,
+
+      activity_mode_entity:
+        DEFAULT_ACTIVITY_MODE_ENTITY,
     };
   }
 }
@@ -1832,15 +1708,9 @@ window.customCards =
   window.customCards || [];
 
 window.customCards.push({
-  type:
-    "nova-luba-card",
-
-  name:
-    "Nova UI - Luba Card",
-
+  type: "nova-luba-card",
+  name: "Nova UI - Luba Card",
   description:
     "A dynamic Mammotion mower card for Home Assistant.",
-
-  preview:
-    true,
+  preview: true,
 });
