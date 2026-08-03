@@ -52,6 +52,12 @@ interface NovaLubaCardConfig {
   last_error_time_entity?: string;
   last_error_code_entity?: string;
   activity_mode_entity?: string;
+
+  blade_wear_warning_time_entity?: string;
+  task_duration_entity?: string;
+  total_mileage_entity?: string;
+
+  firmware_update_entity?: string;
 }
 
 interface MowerViewData {
@@ -74,6 +80,19 @@ interface MowerViewData {
   lastErrorTimeLabel: string;
   lastErrorCodeLabel: string;
   activityModeLabel: string;
+
+  bladeWearWarningTimeLabel: string;
+  taskDurationLabel: string;
+  totalMileageLabel: string;
+
+  firmwareInstalledVersionLabel: string;
+  firmwareLatestVersionLabel: string;
+  firmwareAutoUpdateLabel: string;
+  firmwareReleaseSummaryLabel: string;
+  firmwareUpdateAvailable: boolean;
+  firmwareUpdateInProgress: boolean;
+  firmwareUpdatePercentage: number | null;
+  firmwareUpdatePercentageLabel: string;
 }
 
 const DEFAULT_BATTERY_ENTITY =
@@ -105,6 +124,18 @@ const DEFAULT_LAST_ERROR_CODE_ENTITY =
 
 const DEFAULT_ACTIVITY_MODE_ENTITY =
   "sensor.luba_va8tp48r_aktivitatsmodus";
+
+const DEFAULT_BLADE_WEAR_WARNING_TIME_ENTITY =
+  "sensor.luba_va8tp48r_messerverschleiss_warnzeit";
+
+const DEFAULT_TASK_DURATION_ENTITY =
+  "sensor.luba_va8tp48r_aufgabendauer";
+
+const DEFAULT_TOTAL_MILEAGE_ENTITY =
+  "sensor.luba_va8tp48r_gesamtkilometerstand";
+
+const DEFAULT_FIRMWARE_UPDATE_ENTITY =
+  "update.luba_va8tp48r_firmware";
 
 const stateLabels: Record<NovaMowerState, string> = {
   mowing: "Mäht",
@@ -779,6 +810,60 @@ export class NovaLubaCard extends LitElement {
       : entity.state;
   }
 
+  private getAttributeString(
+    entityId: string | undefined,
+    attributeName: string,
+    fallback = "—",
+  ): string {
+    const entity = this.getState(entityId);
+    const value = entity?.attributes[attributeName];
+
+    if (
+      value === null ||
+      value === undefined ||
+      value === ""
+    ) {
+      return fallback;
+    }
+
+    return String(value);
+  }
+
+  private getAttributeBoolean(
+    entityId: string | undefined,
+    attributeName: string,
+  ): boolean {
+    const entity = this.getState(entityId);
+    const value = entity?.attributes[attributeName];
+
+    return value === true ||
+      value === "true" ||
+      value === "on";
+  }
+
+  private getAttributeNumber(
+    entityId: string | undefined,
+    attributeName: string,
+  ): number | null {
+    const entity = this.getState(entityId);
+    const value = entity?.attributes[attributeName];
+
+    if (value === null || value === undefined) {
+      return null;
+    }
+
+    const numberValue =
+      typeof value === "number"
+        ? value
+        : Number.parseFloat(
+            String(value).replace(",", "."),
+          );
+
+    return Number.isFinite(numberValue)
+      ? numberValue
+      : null;
+  }
+
   private clampPercentage(
     value: number | null,
   ): number {
@@ -1162,38 +1247,201 @@ export class NovaLubaCard extends LitElement {
   private renderUpdateView(
     data: MowerViewData,
   ) {
+    if (data.firmwareUpdateInProgress) {
+      const updateProgress =
+        data.firmwareUpdatePercentage ?? 0;
+
+      return html`
+        <section class="overview">
+          <div class="overview-heading">
+            <ha-icon
+              class="overview-icon"
+              icon="mdi:update"
+            ></ha-icon>
+
+            <h3 class="overview-title">
+              Software-Update wird installiert
+            </h3>
+
+            <div class="overview-description">
+              <span>
+                ${data.name} wird gerade aktualisiert.
+              </span>
+
+              <span>
+                Bitte den Mäher währenddessen
+                nicht ausschalten.
+              </span>
+            </div>
+          </div>
+
+          <div class="glass-panel progress-panel">
+            <div
+              class="progress-ring"
+              style=${styleMap({
+                "--progress-angle":
+                  `${updateProgress * 3.6}deg`,
+              })}
+            >
+              <div class="ring-content">
+                <span class="ring-value">
+                  ${data.firmwareUpdatePercentageLabel}
+                </span>
+
+                <span class="ring-label">
+                  Update
+                </span>
+              </div>
+            </div>
+
+            <div class="metric-list">
+              ${this.renderMetricRow(
+                "mdi:package-down",
+                "Installierte Version",
+                data.firmwareInstalledVersionLabel,
+              )}
+
+              ${this.renderMetricRow(
+                "mdi:package-up",
+                "Neue Version",
+                data.firmwareLatestVersionLabel,
+              )}
+
+              ${this.renderMetricRow(
+                "mdi:progress-clock",
+                "Fortschritt",
+                data.firmwareUpdatePercentageLabel,
+              )}
+
+              ${this.renderMetricRow(
+                "mdi:battery",
+                "Akkustand",
+                data.batteryLabel,
+              )}
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    if (data.firmwareUpdateAvailable) {
+      return html`
+        <section class="overview">
+          <div class="overview-heading">
+            <ha-icon
+              class="overview-icon"
+              icon="mdi:cloud-download-outline"
+            ></ha-icon>
+
+            <h3 class="overview-title">
+              Firmware-Update verfügbar
+            </h3>
+
+            <div class="overview-description">
+              <span>
+                Für ${data.name} steht eine neue
+                Firmware-Version bereit.
+              </span>
+
+              <span>
+                Das Update kann über Home Assistant
+                gestartet werden.
+              </span>
+            </div>
+          </div>
+
+          <div class="glass-panel state-panel">
+            <div class="state-symbol">
+              <ha-icon
+                icon="mdi:download"
+              ></ha-icon>
+            </div>
+
+            <div class="metric-list">
+              ${this.renderMetricRow(
+                "mdi:package-down",
+                "Installierte Version",
+                data.firmwareInstalledVersionLabel,
+              )}
+
+              ${this.renderMetricRow(
+                "mdi:package-up",
+                "Neue Version",
+                data.firmwareLatestVersionLabel,
+              )}
+
+              ${this.renderMetricRow(
+                "mdi:text-box-outline",
+                "Release-Information",
+                data.firmwareReleaseSummaryLabel,
+              )}
+
+              ${this.renderMetricRow(
+                "mdi:update-auto",
+                "Automatische Updates",
+                data.firmwareAutoUpdateLabel,
+              )}
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
     return html`
       <section class="overview">
         <div class="overview-heading">
           <ha-icon
             class="overview-icon"
-            icon="mdi:update"
+            icon="mdi:check-decagram-outline"
           ></ha-icon>
 
           <h3 class="overview-title">
-            Software-Update wird verarbeitet
+            Firmware ist aktuell
           </h3>
 
           <div class="overview-description">
-            <span>${data.name} wird aktualisiert.</span>
-            <span>Bitte Gerät währenddessen nicht ausschalten.</span>
+            <span>
+              ${data.name} verwendet bereits
+              die neueste Firmware.
+            </span>
+
+            <span>
+              Es ist momentan kein Update erforderlich.
+            </span>
           </div>
         </div>
 
         <div class="glass-panel state-panel">
           <div class="state-symbol">
             <ha-icon
-              icon="mdi:download"
+              icon="mdi:check"
             ></ha-icon>
           </div>
 
-          <div class="state-message">
-            Der Mäher ist während des Updates
-            vorübergehend nicht einsatzbereit.
-          </div>
+          <div class="metric-list">
+            ${this.renderMetricRow(
+              "mdi:package-check",
+              "Installierte Version",
+              data.firmwareInstalledVersionLabel,
+            )}
 
-          <div class="state-detail">
-            Akkustand: ${data.batteryLabel}
+            ${this.renderMetricRow(
+              "mdi:package-variant-closed-check",
+              "Neueste Version",
+              data.firmwareLatestVersionLabel,
+            )}
+
+            ${this.renderMetricRow(
+              "mdi:check-circle-outline",
+              "Firmwarestatus",
+              "Aktuell",
+            )}
+
+            ${this.renderMetricRow(
+              "mdi:update-auto",
+              "Automatische Updates",
+              data.firmwareAutoUpdateLabel,
+            )}
           </div>
         </div>
       </section>
@@ -1212,39 +1460,45 @@ export class NovaLubaCard extends LitElement {
           ></ha-icon>
 
           <h3 class="overview-title">
-            Wartungsmodus ist aktiv
+            Wartungsübersicht
           </h3>
 
           <div class="overview-description">
-            <span>Automatische Aufgaben sind pausiert.</span>
-            <span>${data.name} kann sicher gewartet werden.</span>
+            <span>
+              Die wichtigsten Wartungs- und
+              Laufzeitdaten von ${data.name}.
+            </span>
+
+            <span>
+              Messer und Mähwerk regelmäßig prüfen.
+            </span>
           </div>
         </div>
 
         <div class="glass-panel">
           <div class="metric-list">
             ${this.renderMetricRow(
-              "mdi:map-marker-outline",
-              "Aktueller Standort",
-              data.locationLabel,
-            )}
-
-            ${this.renderMetricRow(
-              "mdi:battery",
-              "Akkustand",
-              data.batteryLabel,
+              "mdi:blade",
+              "Messerverschleiß-Warnzeit",
+              data.bladeWearWarningTimeLabel,
             )}
 
             ${this.renderMetricRow(
               "mdi:timer-outline",
-              "Gesamtzeit",
-              data.totalTimeLabel,
+              "Aufgabendauer gesamt",
+              data.taskDurationLabel,
             )}
 
             ${this.renderMetricRow(
-              "mdi:pause-circle-outline",
-              "Automatik",
-              "Pausiert",
+              "mdi:map-marker-distance",
+              "Gesamtkilometerstand",
+              data.totalMileageLabel,
+            )}
+
+            ${this.renderMetricRow(
+              "mdi:robot-mower-outline",
+              "Aktivitätsmodus",
+              data.activityModeLabel,
             )}
           </div>
         </div>
@@ -1387,6 +1641,22 @@ export class NovaLubaCard extends LitElement {
       this.config.activity_mode_entity ??
       DEFAULT_ACTIVITY_MODE_ENTITY;
 
+    const bladeWearWarningTimeEntity =
+      this.config.blade_wear_warning_time_entity ??
+      DEFAULT_BLADE_WEAR_WARNING_TIME_ENTITY;
+
+    const taskDurationEntity =
+      this.config.task_duration_entity ??
+      DEFAULT_TASK_DURATION_ENTITY;
+
+    const totalMileageEntity =
+      this.config.total_mileage_entity ??
+      DEFAULT_TOTAL_MILEAGE_ENTITY;
+
+    const firmwareUpdateEntity =
+      this.config.firmware_update_entity ??
+      DEFAULT_FIRMWARE_UPDATE_ENTITY;
+
     const resolvedModel =
       resolveMowerModel(model);
 
@@ -1464,6 +1734,37 @@ export class NovaLubaCard extends LitElement {
     const battery =
       this.clampPercentage(batteryRaw);
 
+    const firmwareEntity =
+      this.getState(firmwareUpdateEntity);
+
+    const firmwareUpdateAvailable =
+      firmwareEntity?.state === "on";
+
+    const firmwareUpdateInProgress =
+      this.getAttributeBoolean(
+        firmwareUpdateEntity,
+        "in_progress",
+      );
+
+    const firmwareUpdatePercentageRaw =
+      this.getAttributeNumber(
+        firmwareUpdateEntity,
+        "update_percentage",
+      );
+
+    const firmwareUpdatePercentage =
+      firmwareUpdatePercentageRaw === null
+        ? null
+        : this.clampPercentage(
+            firmwareUpdatePercentageRaw,
+          );
+
+    const firmwareAutoUpdate =
+      this.getAttributeBoolean(
+        firmwareUpdateEntity,
+        "auto_update",
+      );
+
     const viewData: MowerViewData = {
       name,
       novaState,
@@ -1518,6 +1819,56 @@ export class NovaLubaCard extends LitElement {
         this.formatEntityValue(
           activityModeEntity,
         ),
+
+      bladeWearWarningTimeLabel:
+        this.formatEntityValue(
+          bladeWearWarningTimeEntity,
+        ),
+
+      taskDurationLabel:
+        this.formatEntityValue(
+          taskDurationEntity,
+        ),
+
+      totalMileageLabel:
+        this.formatEntityValue(
+          totalMileageEntity,
+        ),
+
+      firmwareInstalledVersionLabel:
+        this.getAttributeString(
+          firmwareUpdateEntity,
+          "installed_version",
+        ),
+
+      firmwareLatestVersionLabel:
+        this.getAttributeString(
+          firmwareUpdateEntity,
+          "latest_version",
+        ),
+
+      firmwareAutoUpdateLabel:
+        firmwareAutoUpdate
+          ? "Aktiviert"
+          : "Deaktiviert",
+
+      firmwareReleaseSummaryLabel:
+        this.getAttributeString(
+          firmwareUpdateEntity,
+          "release_summary",
+          "Keine Angaben",
+        ),
+
+      firmwareUpdateAvailable,
+      firmwareUpdateInProgress,
+      firmwareUpdatePercentage,
+
+      firmwareUpdatePercentageLabel:
+        firmwareUpdatePercentage === null
+          ? "—"
+          : `${Math.round(
+              firmwareUpdatePercentage,
+            )} %`,
     };
 
     const dynamicStyles = {
@@ -1692,6 +2043,18 @@ export class NovaLubaCard extends LitElement {
 
       activity_mode_entity:
         DEFAULT_ACTIVITY_MODE_ENTITY,
+
+      blade_wear_warning_time_entity:
+        DEFAULT_BLADE_WEAR_WARNING_TIME_ENTITY,
+
+      task_duration_entity:
+        DEFAULT_TASK_DURATION_ENTITY,
+
+      total_mileage_entity:
+        DEFAULT_TOTAL_MILEAGE_ENTITY,
+
+      firmware_update_entity:
+        DEFAULT_FIRMWARE_UPDATE_ENTITY,
     };
   }
 }

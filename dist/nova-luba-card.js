@@ -29,11 +29,11 @@ var e = globalThis, t = e.ShadowRoot && (e.ShadyCSS === void 0 || e.ShadyCSS.nat
 	let t = "";
 	for (let n of e.cssRules) t += n.cssText;
 	return a(t);
-})(e) : e, { is: l, defineProperty: u, getOwnPropertyDescriptor: d, getOwnPropertyNames: ee, getOwnPropertySymbols: f, getPrototypeOf: p } = Object, m = globalThis, h = m.trustedTypes, g = h ? h.emptyScript : "", _ = m.reactiveElementPolyfillSupport, v = (e, t) => e, y = {
+})(e) : e, { is: l, defineProperty: u, getOwnPropertyDescriptor: d, getOwnPropertyNames: ee, getOwnPropertySymbols: f, getPrototypeOf: te } = Object, p = globalThis, m = p.trustedTypes, h = m ? m.emptyScript : "", g = p.reactiveElementPolyfillSupport, _ = (e, t) => e, v = {
 	toAttribute(e, t) {
 		switch (t) {
 			case Boolean:
-				e = e ? g : null;
+				e = e ? h : null;
 				break;
 			case Object:
 			case Array: e = e == null ? e : JSON.stringify(e);
@@ -58,23 +58,23 @@ var e = globalThis, t = e.ShadowRoot && (e.ShadyCSS === void 0 || e.ShadyCSS.nat
 		}
 		return n;
 	}
-}, b = (e, t) => !l(e, t), x = {
+}, y = (e, t) => !l(e, t), b = {
 	attribute: !0,
 	type: String,
-	converter: y,
+	converter: v,
 	reflect: !1,
 	useDefault: !1,
-	hasChanged: b
+	hasChanged: y
 };
-Symbol.metadata ??= Symbol("metadata"), m.litPropertyMetadata ??= /* @__PURE__ */ new WeakMap();
-var S = class extends HTMLElement {
+Symbol.metadata ??= Symbol("metadata"), p.litPropertyMetadata ??= /* @__PURE__ */ new WeakMap();
+var x = class extends HTMLElement {
 	static addInitializer(e) {
 		this._$Ei(), (this.l ??= []).push(e);
 	}
 	static get observedAttributes() {
 		return this.finalize(), this._$Eh && [...this._$Eh.keys()];
 	}
-	static createProperty(e, t = x) {
+	static createProperty(e, t = b) {
 		if (t.state && (t.attribute = !1), this._$Ei(), this.prototype.hasOwnProperty(e) && ((t = Object.create(t)).wrapped = !0), this.elementProperties.set(e, t), !t.noAccessor) {
 			let n = Symbol(), r = this.getPropertyDescriptor(e, n, t);
 			r !== void 0 && u(this.prototype, e, r);
@@ -100,16 +100,16 @@ var S = class extends HTMLElement {
 		};
 	}
 	static getPropertyOptions(e) {
-		return this.elementProperties.get(e) ?? x;
+		return this.elementProperties.get(e) ?? b;
 	}
 	static _$Ei() {
-		if (this.hasOwnProperty(v("elementProperties"))) return;
-		let e = p(this);
+		if (this.hasOwnProperty(_("elementProperties"))) return;
+		let e = te(this);
 		e.finalize(), e.l !== void 0 && (this.l = [...e.l]), this.elementProperties = new Map(e.elementProperties);
 	}
 	static finalize() {
-		if (this.hasOwnProperty(v("finalized"))) return;
-		if (this.finalized = !0, this._$Ei(), this.hasOwnProperty(v("properties"))) {
+		if (this.hasOwnProperty(_("finalized"))) return;
+		if (this.finalized = !0, this._$Ei(), this.hasOwnProperty(_("properties"))) {
 			let e = this.properties, t = [...ee(e), ...f(e)];
 			for (let n of t) this.createProperty(n, e[n]);
 		}
@@ -171,14 +171,14 @@ var S = class extends HTMLElement {
 	_$ET(e, t) {
 		let n = this.constructor.elementProperties.get(e), r = this.constructor._$Eu(e, n);
 		if (r !== void 0 && !0 === n.reflect) {
-			let i = (n.converter?.toAttribute === void 0 ? y : n.converter).toAttribute(t, n.type);
+			let i = (n.converter?.toAttribute === void 0 ? v : n.converter).toAttribute(t, n.type);
 			this._$Em = e, i == null ? this.removeAttribute(r) : this.setAttribute(r, i), this._$Em = null;
 		}
 	}
 	_$AK(e, t) {
 		let n = this.constructor, r = n._$Eh.get(e);
 		if (r !== void 0 && this._$Em !== r) {
-			let e = n.getPropertyOptions(r), i = typeof e.converter == "function" ? { fromAttribute: e.converter } : e.converter?.fromAttribute === void 0 ? y : e.converter;
+			let e = n.getPropertyOptions(r), i = typeof e.converter == "function" ? { fromAttribute: e.converter } : e.converter?.fromAttribute === void 0 ? v : e.converter;
 			this._$Em = r;
 			let a = i.fromAttribute(t, e.type);
 			this[r] = a ?? this._$Ej?.get(r) ?? a, this._$Em = null;
@@ -187,7 +187,7 @@ var S = class extends HTMLElement {
 	requestUpdate(e, t, n, r = !1, i) {
 		if (e !== void 0) {
 			let a = this.constructor;
-			if (!1 === r && (i = this[e]), n ??= a.getPropertyOptions(e), !((n.hasChanged ?? b)(i, t) || n.useDefault && n.reflect && i === this._$Ej?.get(e) && !this.hasAttribute(a._$Eu(e, n)))) return;
+			if (!1 === r && (i = this[e]), n ??= a.getPropertyOptions(e), !((n.hasChanged ?? y)(i, t) || n.useDefault && n.reflect && i === this._$Ej?.get(e) && !this.hasAttribute(a._$Eu(e, n)))) return;
 			this.C(e, t, n);
 		}
 		!1 === this.isUpdatePending && (this._$ES = this._$EP());
@@ -251,25 +251,25 @@ var S = class extends HTMLElement {
 	updated(e) {}
 	firstUpdated(e) {}
 };
-S.elementStyles = [], S.shadowRootOptions = { mode: "open" }, S[v("elementProperties")] = /* @__PURE__ */ new Map(), S[v("finalized")] = /* @__PURE__ */ new Map(), _?.({ ReactiveElement: S }), (m.reactiveElementVersions ??= []).push("2.1.2");
+x.elementStyles = [], x.shadowRootOptions = { mode: "open" }, x[_("elementProperties")] = /* @__PURE__ */ new Map(), x[_("finalized")] = /* @__PURE__ */ new Map(), g?.({ ReactiveElement: x }), (p.reactiveElementVersions ??= []).push("2.1.2");
 //#endregion
 //#region node_modules/lit-html/lit-html.js
-var C = globalThis, w = (e) => e, T = C.trustedTypes, te = T ? T.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, ne = "$lit$", E = `lit$${Math.random().toFixed(9).slice(2)}$`, D = "?" + E, re = `<${D}>`, O = document, k = () => O.createComment(""), A = (e) => e === null || typeof e != "object" && typeof e != "function", j = Array.isArray, ie = (e) => j(e) || typeof e?.[Symbol.iterator] == "function", M = "[ 	\n\f\r]", N = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, ae = /-->/g, oe = />/g, P = RegExp(`>|${M}(?:([^\\s"'>=/]+)(${M}*=${M}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), F = /'/g, I = /"/g, se = /^(?:script|style|textarea|title)$/i, L = ((e) => (t, ...n) => ({
+var S = globalThis, C = (e) => e, w = S.trustedTypes, T = w ? w.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, E = "$lit$", D = `lit$${Math.random().toFixed(9).slice(2)}$`, O = "?" + D, ne = `<${O}>`, k = document, A = () => k.createComment(""), j = (e) => e === null || typeof e != "object" && typeof e != "function", M = Array.isArray, re = (e) => M(e) || typeof e?.[Symbol.iterator] == "function", N = "[ 	\n\f\r]", P = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, ie = /-->/g, ae = />/g, F = RegExp(`>|${N}(?:([^\\s"'>=/]+)(${N}*=${N}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), I = /'/g, oe = /"/g, se = /^(?:script|style|textarea|title)$/i, L = ((e) => (t, ...n) => ({
 	_$litType$: e,
 	strings: t,
 	values: n
-}))(1), R = Symbol.for("lit-noChange"), z = Symbol.for("lit-nothing"), ce = /* @__PURE__ */ new WeakMap(), B = O.createTreeWalker(O, 129);
+}))(1), R = Symbol.for("lit-noChange"), z = Symbol.for("lit-nothing"), ce = /* @__PURE__ */ new WeakMap(), B = k.createTreeWalker(k, 129);
 function le(e, t) {
-	if (!j(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
-	return te === void 0 ? t : te.createHTML(t);
+	if (!M(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
+	return T === void 0 ? t : T.createHTML(t);
 }
 var ue = (e, t) => {
-	let n = e.length - 1, r = [], i, a = t === 2 ? "<svg>" : t === 3 ? "<math>" : "", o = N;
+	let n = e.length - 1, r = [], i, a = t === 2 ? "<svg>" : t === 3 ? "<math>" : "", o = P;
 	for (let t = 0; t < n; t++) {
 		let n = e[t], s, c, l = -1, u = 0;
-		for (; u < n.length && (o.lastIndex = u, c = o.exec(n), c !== null);) u = o.lastIndex, o === N ? c[1] === "!--" ? o = ae : c[1] === void 0 ? c[2] === void 0 ? c[3] !== void 0 && (o = P) : (se.test(c[2]) && (i = RegExp("</" + c[2], "g")), o = P) : o = oe : o === P ? c[0] === ">" ? (o = i ?? N, l = -1) : c[1] === void 0 ? l = -2 : (l = o.lastIndex - c[2].length, s = c[1], o = c[3] === void 0 ? P : c[3] === "\"" ? I : F) : o === I || o === F ? o = P : o === ae || o === oe ? o = N : (o = P, i = void 0);
-		let d = o === P && e[t + 1].startsWith("/>") ? " " : "";
-		a += o === N ? n + re : l >= 0 ? (r.push(s), n.slice(0, l) + ne + n.slice(l) + E + d) : n + E + (l === -2 ? t : d);
+		for (; u < n.length && (o.lastIndex = u, c = o.exec(n), c !== null);) u = o.lastIndex, o === P ? c[1] === "!--" ? o = ie : c[1] === void 0 ? c[2] === void 0 ? c[3] !== void 0 && (o = F) : (se.test(c[2]) && (i = RegExp("</" + c[2], "g")), o = F) : o = ae : o === F ? c[0] === ">" ? (o = i ?? P, l = -1) : c[1] === void 0 ? l = -2 : (l = o.lastIndex - c[2].length, s = c[1], o = c[3] === void 0 ? F : c[3] === "\"" ? oe : I) : o === oe || o === I ? o = F : o === ie || o === ae ? o = P : (o = F, i = void 0);
+		let d = o === F && e[t + 1].startsWith("/>") ? " " : "";
+		a += o === P ? n + ne : l >= 0 ? (r.push(s), n.slice(0, l) + E + n.slice(l) + D + d) : n + D + (l === -2 ? t : d);
 	}
 	return [le(e, a + (e[n] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), r];
 }, V = class e {
@@ -283,8 +283,8 @@ var ue = (e, t) => {
 		}
 		for (; (i = B.nextNode()) !== null && c.length < s;) {
 			if (i.nodeType === 1) {
-				if (i.hasAttributes()) for (let e of i.getAttributeNames()) if (e.endsWith(ne)) {
-					let t = u[o++], n = i.getAttribute(e).split(E), r = /([.?@])?(.*)/.exec(t);
+				if (i.hasAttributes()) for (let e of i.getAttributeNames()) if (e.endsWith(E)) {
+					let t = u[o++], n = i.getAttribute(e).split(D), r = /([.?@])?(.*)/.exec(t);
 					c.push({
 						type: 1,
 						index: a,
@@ -292,43 +292,43 @@ var ue = (e, t) => {
 						strings: n,
 						ctor: r[1] === "." ? fe : r[1] === "?" ? pe : r[1] === "@" ? me : W
 					}), i.removeAttribute(e);
-				} else e.startsWith(E) && (c.push({
+				} else e.startsWith(D) && (c.push({
 					type: 6,
 					index: a
 				}), i.removeAttribute(e));
 				if (se.test(i.tagName)) {
-					let e = i.textContent.split(E), t = e.length - 1;
+					let e = i.textContent.split(D), t = e.length - 1;
 					if (t > 0) {
-						i.textContent = T ? T.emptyScript : "";
-						for (let n = 0; n < t; n++) i.append(e[n], k()), B.nextNode(), c.push({
+						i.textContent = w ? w.emptyScript : "";
+						for (let n = 0; n < t; n++) i.append(e[n], A()), B.nextNode(), c.push({
 							type: 2,
 							index: ++a
 						});
-						i.append(e[t], k());
+						i.append(e[t], A());
 					}
 				}
-			} else if (i.nodeType === 8) if (i.data === D) c.push({
+			} else if (i.nodeType === 8) if (i.data === O) c.push({
 				type: 2,
 				index: a
 			});
 			else {
 				let e = -1;
-				for (; (e = i.data.indexOf(E, e + 1)) !== -1;) c.push({
+				for (; (e = i.data.indexOf(D, e + 1)) !== -1;) c.push({
 					type: 7,
 					index: a
-				}), e += E.length - 1;
+				}), e += D.length - 1;
 			}
 			a++;
 		}
 	}
 	static createElement(e, t) {
-		let n = O.createElement("template");
+		let n = k.createElement("template");
 		return n.innerHTML = e, n;
 	}
 };
 function H(e, t, n = e, r) {
 	if (t === R) return t;
-	let i = r === void 0 ? n._$Cl : n._$Co?.[r], a = A(t) ? void 0 : t._$litDirective$;
+	let i = r === void 0 ? n._$Cl : n._$Co?.[r], a = j(t) ? void 0 : t._$litDirective$;
 	return i?.constructor !== a && (i?._$AO?.(!1), a === void 0 ? i = void 0 : (i = new a(e), i._$AT(e, n, r)), r === void 0 ? n._$Cl = i : (n._$Co ??= [])[r] = i), i !== void 0 && (t = H(e, i._$AS(e, t.values), i, r)), t;
 }
 var de = class {
@@ -342,7 +342,7 @@ var de = class {
 		return this._$AM._$AU;
 	}
 	u(e) {
-		let { el: { content: t }, parts: n } = this._$AD, r = (e?.creationScope ?? O).importNode(t, !0);
+		let { el: { content: t }, parts: n } = this._$AD, r = (e?.creationScope ?? k).importNode(t, !0);
 		B.currentNode = r;
 		let i = B.nextNode(), a = 0, o = 0, s = n[0];
 		for (; s !== void 0;) {
@@ -352,7 +352,7 @@ var de = class {
 			}
 			a !== s?.index && (i = B.nextNode(), a++);
 		}
-		return B.currentNode = O, r;
+		return B.currentNode = k, r;
 	}
 	p(e) {
 		let t = 0;
@@ -376,7 +376,7 @@ var de = class {
 		return this._$AB;
 	}
 	_$AI(e, t = this) {
-		e = H(this, e, t), A(e) ? e === z || e == null || e === "" ? (this._$AH !== z && this._$AR(), this._$AH = z) : e !== this._$AH && e !== R && this._(e) : e._$litType$ === void 0 ? e.nodeType === void 0 ? ie(e) ? this.k(e) : this._(e) : this.T(e) : this.$(e);
+		e = H(this, e, t), j(e) ? e === z || e == null || e === "" ? (this._$AH !== z && this._$AR(), this._$AH = z) : e !== this._$AH && e !== R && this._(e) : e._$litType$ === void 0 ? e.nodeType === void 0 ? re(e) ? this.k(e) : this._(e) : this.T(e) : this.$(e);
 	}
 	O(e) {
 		return this._$AA.parentNode.insertBefore(e, this._$AB);
@@ -385,7 +385,7 @@ var de = class {
 		this._$AH !== e && (this._$AR(), this._$AH = this.O(e));
 	}
 	_(e) {
-		this._$AH !== z && A(this._$AH) ? this._$AA.nextSibling.data = e : this.T(O.createTextNode(e)), this._$AH = e;
+		this._$AH !== z && j(this._$AH) ? this._$AA.nextSibling.data = e : this.T(k.createTextNode(e)), this._$AH = e;
 	}
 	$(e) {
 		let { values: t, _$litType$: n } = e, r = typeof n == "number" ? this._$AC(e) : (n.el === void 0 && (n.el = V.createElement(le(n.h, n.h[0]), this.options)), n);
@@ -400,15 +400,15 @@ var de = class {
 		return t === void 0 && ce.set(e.strings, t = new V(e)), t;
 	}
 	k(t) {
-		j(this._$AH) || (this._$AH = [], this._$AR());
+		M(this._$AH) || (this._$AH = [], this._$AR());
 		let n = this._$AH, r, i = 0;
-		for (let a of t) i === n.length ? n.push(r = new e(this.O(k()), this.O(k()), this, this.options)) : r = n[i], r._$AI(a), i++;
+		for (let a of t) i === n.length ? n.push(r = new e(this.O(A()), this.O(A()), this, this.options)) : r = n[i], r._$AI(a), i++;
 		i < n.length && (this._$AR(r && r._$AB.nextSibling, i), n.length = i);
 	}
 	_$AR(e = this._$AA.nextSibling, t) {
 		for (this._$AP?.(!1, !0, t); e !== this._$AB;) {
-			let t = w(e).nextSibling;
-			w(e).remove(), e = t;
+			let t = C(e).nextSibling;
+			C(e).remove(), e = t;
 		}
 	}
 	setConnected(e) {
@@ -426,10 +426,10 @@ var de = class {
 	}
 	_$AI(e, t = this, n, r) {
 		let i = this.strings, a = !1;
-		if (i === void 0) e = H(this, e, t, 0), a = !A(e) || e !== this._$AH && e !== R, a && (this._$AH = e);
+		if (i === void 0) e = H(this, e, t, 0), a = !j(e) || e !== this._$AH && e !== R, a && (this._$AH = e);
 		else {
 			let r = e, o, s;
-			for (e = i[0], o = 0; o < i.length - 1; o++) s = H(this, r[n + o], t, o), s === R && (s = this._$AH[o]), a ||= !A(s) || s !== this._$AH[o], s === z ? e = z : e !== z && (e += (s ?? "") + i[o + 1]), this._$AH[o] = s;
+			for (e = i[0], o = 0; o < i.length - 1; o++) s = H(this, r[n + o], t, o), s === R && (s = this._$AH[o]), a ||= !j(s) || s !== this._$AH[o], s === z ? e = z : e !== z && (e += (s ?? "") + i[o + 1]), this._$AH[o] = s;
 		}
 		a && !r && this.j(e);
 	}
@@ -472,16 +472,16 @@ var de = class {
 	_$AI(e) {
 		H(this, e);
 	}
-}, ge = C.litHtmlPolyfillSupport;
-ge?.(V, U), (C.litHtmlVersions ??= []).push("3.3.3");
+}, ge = S.litHtmlPolyfillSupport;
+ge?.(V, U), (S.litHtmlVersions ??= []).push("3.3.3");
 var _e = (e, t, n) => {
 	let r = n?.renderBefore ?? t, i = r._$litPart$;
 	if (i === void 0) {
 		let e = n?.renderBefore ?? null;
-		r._$litPart$ = i = new U(t.insertBefore(k(), e), e, void 0, n ?? {});
+		r._$litPart$ = i = new U(t.insertBefore(A(), e), e, void 0, n ?? {});
 	}
 	return i._$AI(e), i;
-}, G = globalThis, K = class extends S {
+}, G = globalThis, K = class extends x {
 	constructor() {
 		super(...arguments), this.renderOptions = { host: this }, this._$Do = void 0;
 	}
@@ -515,9 +515,9 @@ var ye = (e) => (t, n) => {
 }, be = {
 	attribute: !0,
 	type: String,
-	converter: y,
+	converter: v,
 	reflect: !1,
-	hasChanged: b
+	hasChanged: y
 }, xe = (e = be, t, n) => {
 	let { kind: r, metadata: i } = n, a = globalThis.litPropertyMetadata.get(i);
 	if (a === void 0 && globalThis.litPropertyMetadata.set(i, a = /* @__PURE__ */ new Map()), r === "setter" && ((e = Object.create(e)).wrapped = !0), a.set(n.name, e), r === "accessor") {
@@ -1235,7 +1235,7 @@ function Re(e) {
 }
 //#endregion
 //#region src/index.ts
-var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_batteriezyklen", Ve = "sensor.luba_va8tp48r_aktueller_standort", He = "sensor.luba_va8tp48r_fortschritt", Ue = "sensor.luba_va8tp48r_verbleibende_zeit", We = "sensor.luba_va8tp48r_gesamtzeit", Ge = "sensor.luba_va8tp48r_letzte_fehlermeldung", Ke = "sensor.luba_va8tp48r_letzter_fehlerzeitpunkt", qe = "sensor.luba_va8tp48r_letzter_fehlercode", Je = "sensor.luba_va8tp48r_aktivitatsmodus", Ye = {
+var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_batteriezyklen", Ve = "sensor.luba_va8tp48r_aktueller_standort", He = "sensor.luba_va8tp48r_fortschritt", Ue = "sensor.luba_va8tp48r_verbleibende_zeit", We = "sensor.luba_va8tp48r_gesamtzeit", Ge = "sensor.luba_va8tp48r_letzte_fehlermeldung", Ke = "sensor.luba_va8tp48r_letzter_fehlerzeitpunkt", qe = "sensor.luba_va8tp48r_letzter_fehlercode", Je = "sensor.luba_va8tp48r_aktivitatsmodus", Ye = "sensor.luba_va8tp48r_messerverschleiss_warnzeit", Xe = "sensor.luba_va8tp48r_aufgabendauer", Ze = "sensor.luba_va8tp48r_gesamtkilometerstand", Qe = "update.luba_va8tp48r_firmware", $e = {
 	mowing: "Mäht",
 	docked: "Im Dock",
 	returning: "Rückkehr zur Ladestation",
@@ -1847,6 +1847,20 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_batteriezyk
 		let r = typeof n.attributes.unit_of_measurement == "string" ? n.attributes.unit_of_measurement : t;
 		return r ? `${n.state} ${r}` : n.state;
 	}
+	getAttributeString(e, t, n = "—") {
+		let r = this.getState(e)?.attributes[t];
+		return r == null || r === "" ? n : String(r);
+	}
+	getAttributeBoolean(e, t) {
+		let n = this.getState(e)?.attributes[t];
+		return n === !0 || n === "true" || n === "on";
+	}
+	getAttributeNumber(e, t) {
+		let n = this.getState(e)?.attributes[t];
+		if (n == null) return null;
+		let r = typeof n == "number" ? n : Number.parseFloat(String(n).replace(",", "."));
+		return Number.isFinite(r) ? r : null;
+	}
 	clampPercentage(e) {
 		return e === null ? 0 : Math.min(100, Math.max(0, e));
 	}
@@ -2116,38 +2130,143 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_batteriezyk
     `;
 	}
 	renderUpdateView(e) {
-		return L`
+		if (e.firmwareUpdateInProgress) {
+			let t = e.firmwareUpdatePercentage ?? 0;
+			return L`
+        <section class="overview">
+          <div class="overview-heading">
+            <ha-icon
+              class="overview-icon"
+              icon="mdi:update"
+            ></ha-icon>
+
+            <h3 class="overview-title">
+              Software-Update wird installiert
+            </h3>
+
+            <div class="overview-description">
+              <span>
+                ${e.name} wird gerade aktualisiert.
+              </span>
+
+              <span>
+                Bitte den Mäher währenddessen
+                nicht ausschalten.
+              </span>
+            </div>
+          </div>
+
+          <div class="glass-panel progress-panel">
+            <div
+              class="progress-ring"
+              style=${J({ "--progress-angle": `${t * 3.6}deg` })}
+            >
+              <div class="ring-content">
+                <span class="ring-value">
+                  ${e.firmwareUpdatePercentageLabel}
+                </span>
+
+                <span class="ring-label">
+                  Update
+                </span>
+              </div>
+            </div>
+
+            <div class="metric-list">
+              ${this.renderMetricRow("mdi:package-down", "Installierte Version", e.firmwareInstalledVersionLabel)}
+
+              ${this.renderMetricRow("mdi:package-up", "Neue Version", e.firmwareLatestVersionLabel)}
+
+              ${this.renderMetricRow("mdi:progress-clock", "Fortschritt", e.firmwareUpdatePercentageLabel)}
+
+              ${this.renderMetricRow("mdi:battery", "Akkustand", e.batteryLabel)}
+            </div>
+          </div>
+        </section>
+      `;
+		}
+		return e.firmwareUpdateAvailable ? L`
+        <section class="overview">
+          <div class="overview-heading">
+            <ha-icon
+              class="overview-icon"
+              icon="mdi:cloud-download-outline"
+            ></ha-icon>
+
+            <h3 class="overview-title">
+              Firmware-Update verfügbar
+            </h3>
+
+            <div class="overview-description">
+              <span>
+                Für ${e.name} steht eine neue
+                Firmware-Version bereit.
+              </span>
+
+              <span>
+                Das Update kann über Home Assistant
+                gestartet werden.
+              </span>
+            </div>
+          </div>
+
+          <div class="glass-panel state-panel">
+            <div class="state-symbol">
+              <ha-icon
+                icon="mdi:download"
+              ></ha-icon>
+            </div>
+
+            <div class="metric-list">
+              ${this.renderMetricRow("mdi:package-down", "Installierte Version", e.firmwareInstalledVersionLabel)}
+
+              ${this.renderMetricRow("mdi:package-up", "Neue Version", e.firmwareLatestVersionLabel)}
+
+              ${this.renderMetricRow("mdi:text-box-outline", "Release-Information", e.firmwareReleaseSummaryLabel)}
+
+              ${this.renderMetricRow("mdi:update-auto", "Automatische Updates", e.firmwareAutoUpdateLabel)}
+            </div>
+          </div>
+        </section>
+      ` : L`
       <section class="overview">
         <div class="overview-heading">
           <ha-icon
             class="overview-icon"
-            icon="mdi:update"
+            icon="mdi:check-decagram-outline"
           ></ha-icon>
 
           <h3 class="overview-title">
-            Software-Update wird verarbeitet
+            Firmware ist aktuell
           </h3>
 
           <div class="overview-description">
-            <span>${e.name} wird aktualisiert.</span>
-            <span>Bitte Gerät währenddessen nicht ausschalten.</span>
+            <span>
+              ${e.name} verwendet bereits
+              die neueste Firmware.
+            </span>
+
+            <span>
+              Es ist momentan kein Update erforderlich.
+            </span>
           </div>
         </div>
 
         <div class="glass-panel state-panel">
           <div class="state-symbol">
             <ha-icon
-              icon="mdi:download"
+              icon="mdi:check"
             ></ha-icon>
           </div>
 
-          <div class="state-message">
-            Der Mäher ist während des Updates
-            vorübergehend nicht einsatzbereit.
-          </div>
+          <div class="metric-list">
+            ${this.renderMetricRow("mdi:package-check", "Installierte Version", e.firmwareInstalledVersionLabel)}
 
-          <div class="state-detail">
-            Akkustand: ${e.batteryLabel}
+            ${this.renderMetricRow("mdi:package-variant-closed-check", "Neueste Version", e.firmwareLatestVersionLabel)}
+
+            ${this.renderMetricRow("mdi:check-circle-outline", "Firmwarestatus", "Aktuell")}
+
+            ${this.renderMetricRow("mdi:update-auto", "Automatische Updates", e.firmwareAutoUpdateLabel)}
           </div>
         </div>
       </section>
@@ -2163,24 +2282,30 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_batteriezyk
           ></ha-icon>
 
           <h3 class="overview-title">
-            Wartungsmodus ist aktiv
+            Wartungsübersicht
           </h3>
 
           <div class="overview-description">
-            <span>Automatische Aufgaben sind pausiert.</span>
-            <span>${e.name} kann sicher gewartet werden.</span>
+            <span>
+              Die wichtigsten Wartungs- und
+              Laufzeitdaten von ${e.name}.
+            </span>
+
+            <span>
+              Messer und Mähwerk regelmäßig prüfen.
+            </span>
           </div>
         </div>
 
         <div class="glass-panel">
           <div class="metric-list">
-            ${this.renderMetricRow("mdi:map-marker-outline", "Aktueller Standort", e.locationLabel)}
+            ${this.renderMetricRow("mdi:blade", "Messerverschleiß-Warnzeit", e.bladeWearWarningTimeLabel)}
 
-            ${this.renderMetricRow("mdi:battery", "Akkustand", e.batteryLabel)}
+            ${this.renderMetricRow("mdi:timer-outline", "Aufgabendauer gesamt", e.taskDurationLabel)}
 
-            ${this.renderMetricRow("mdi:timer-outline", "Gesamtzeit", e.totalTimeLabel)}
+            ${this.renderMetricRow("mdi:map-marker-distance", "Gesamtkilometerstand", e.totalMileageLabel)}
 
-            ${this.renderMetricRow("mdi:pause-circle-outline", "Automatik", "Pausiert")}
+            ${this.renderMetricRow("mdi:robot-mower-outline", "Aktivitätsmodus", e.activityModeLabel)}
           </div>
         </div>
       </section>
@@ -2239,7 +2364,7 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_batteriezyk
 	}
 	render() {
 		if (!this.config) return z;
-		let e = this.mowerState, t = this.config.name ?? "Luba", n = this.config.model ?? "Luba 3 AWD LiDAR", r = this.config.battery_entity ?? ze, i = this.config.battery_cycles_entity ?? Be, a = this.config.location_entity ?? Ve, o = this.config.progress_entity ?? He, s = this.config.remaining_time_entity ?? Ue, c = this.config.total_time_entity ?? We, l = this.config.last_error_message_entity ?? Ge, u = this.config.last_error_time_entity ?? Ke, d = this.config.last_error_code_entity ?? qe, ee = this.config.activity_mode_entity ?? Je, f = Le(n), p = Ne(f), m = Ae(f);
+		let e = this.mowerState, t = this.config.name ?? "Luba", n = this.config.model ?? "Luba 3 AWD LiDAR", r = this.config.battery_entity ?? ze, i = this.config.battery_cycles_entity ?? Be, a = this.config.location_entity ?? Ve, o = this.config.progress_entity ?? He, s = this.config.remaining_time_entity ?? Ue, c = this.config.total_time_entity ?? We, l = this.config.last_error_message_entity ?? Ge, u = this.config.last_error_time_entity ?? Ke, d = this.config.last_error_code_entity ?? qe, ee = this.config.activity_mode_entity ?? Je, f = this.config.blade_wear_warning_time_entity ?? Ye, te = this.config.task_duration_entity ?? Xe, p = this.config.total_mileage_entity ?? Ze, m = this.config.firmware_update_entity ?? Qe, h = Le(n), g = Ne(h), _ = Ae(h);
 		if (!e) {
 			let e = Z.states.error;
 			return L`
@@ -2263,23 +2388,23 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_batteriezyk
         </ha-card>
       `;
 		}
-		let h = Re(e.state), g = Z.states[h], _ = Ie(h), v = Pe(f), y = {
-			..._,
+		let v = Re(e.state), y = Z.states[v], b = Ie(v), x = Pe(h), S = {
+			...b,
 			front: {
-				..._.front,
-				asset: v.front
+				...b.front,
+				asset: x.front
 			},
 			side: {
-				..._.side,
-				asset: v.side
+				...b.side,
+				asset: x.side
 			}
-		}, b = this.getNumericValue(o), x = this.clampPercentage(b), S = b === null ? "—" : `${Math.round(x)} %`, C = this.getNumericValue(r), w = this.clampPercentage(C), T = {
+		}, C = this.getNumericValue(o), w = this.clampPercentage(C), T = C === null ? "—" : `${Math.round(w)} %`, E = this.getNumericValue(r), D = this.clampPercentage(E), O = this.getState(m)?.state === "on", ne = this.getAttributeBoolean(m, "in_progress"), k = this.getAttributeNumber(m, "update_percentage"), A = k === null ? null : this.clampPercentage(k), j = this.getAttributeBoolean(m, "auto_update"), M = {
 			name: t,
-			novaState: h,
+			novaState: v,
 			rawState: e.state,
-			progress: x,
-			progressLabel: S,
-			battery: w,
+			progress: w,
+			progressLabel: T,
+			battery: D,
 			batteryLabel: this.formatEntityValue(r, "%"),
 			batteryCyclesLabel: this.formatEntityValue(i),
 			locationLabel: this.formatEntityValue(a),
@@ -2288,23 +2413,34 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_batteriezyk
 			lastErrorMessageLabel: this.formatEntityValue(l),
 			lastErrorTimeLabel: this.formatEntityValue(u),
 			lastErrorCodeLabel: this.formatEntityValue(d),
-			activityModeLabel: this.formatEntityValue(ee)
+			activityModeLabel: this.formatEntityValue(ee),
+			bladeWearWarningTimeLabel: this.formatEntityValue(f),
+			taskDurationLabel: this.formatEntityValue(te),
+			totalMileageLabel: this.formatEntityValue(p),
+			firmwareInstalledVersionLabel: this.getAttributeString(m, "installed_version"),
+			firmwareLatestVersionLabel: this.getAttributeString(m, "latest_version"),
+			firmwareAutoUpdateLabel: j ? "Aktiviert" : "Deaktiviert",
+			firmwareReleaseSummaryLabel: this.getAttributeString(m, "release_summary", "Keine Angaben"),
+			firmwareUpdateAvailable: O,
+			firmwareUpdateInProgress: ne,
+			firmwareUpdatePercentage: A,
+			firmwareUpdatePercentageLabel: A === null ? "—" : `${Math.round(A)} %`
 		};
 		return L`
       <ha-card style=${J({
-			"--nova-state-color": g.color,
-			"--nova-state-soft": g.soft,
-			"--nova-state-glow": g.glow,
-			"--robot-desktop-scale": String(m.desktop.scale),
-			"--robot-desktop-x": `${m.desktop.translateX}px`,
-			"--robot-desktop-y": `${m.desktop.translateY}px`,
-			"--robot-desktop-max-width": `${m.desktop.maxWidth}px`,
-			"--robot-desktop-max-height": `${m.desktop.maxHeight}px`,
-			"--robot-mobile-scale": String(m.mobile.scale),
-			"--robot-mobile-x": `${m.mobile.translateX}px`,
-			"--robot-mobile-y": `${m.mobile.translateY}px`,
-			"--robot-mobile-max-width": `${m.mobile.maxWidth}px`,
-			"--robot-mobile-max-height": `${m.mobile.maxHeight}px`
+			"--nova-state-color": y.color,
+			"--nova-state-soft": y.soft,
+			"--nova-state-glow": y.glow,
+			"--robot-desktop-scale": String(_.desktop.scale),
+			"--robot-desktop-x": `${_.desktop.translateX}px`,
+			"--robot-desktop-y": `${_.desktop.translateY}px`,
+			"--robot-desktop-max-width": `${_.desktop.maxWidth}px`,
+			"--robot-desktop-max-height": `${_.desktop.maxHeight}px`,
+			"--robot-mobile-scale": String(_.mobile.scale),
+			"--robot-mobile-x": `${_.mobile.translateX}px`,
+			"--robot-mobile-y": `${_.mobile.translateY}px`,
+			"--robot-mobile-max-width": `${_.mobile.maxWidth}px`,
+			"--robot-mobile-max-height": `${_.mobile.maxHeight}px`
 		})}>
         <div class="card-layout">
           <header class="header">
@@ -2333,14 +2469,14 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_batteriezyk
               <div class="robot-stage">
                 <img
                   class="robot-image"
-                  src=${p}
+                  src=${g}
                   alt=${n}
                   loading="eager"
                   @error=${this.handleImageError}
                 />
 
                 <mower-lighting
-                  .lighting=${y}
+                  .lighting=${S}
                 ></mower-lighting>
 
                 <div
@@ -2356,13 +2492,13 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_batteriezyk
                   </div>
 
                   <div class="robot-fallback-path">
-                    ${p}
+                    ${g}
                   </div>
                 </div>
               </div>
             </section>
 
-            ${this.renderStateContent(T)}
+            ${this.renderStateContent(M)}
           </main>
 
           <footer class="footer">
@@ -2371,7 +2507,7 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_batteriezyk
                 <span class="dot"></span>
 
                 <span>
-                  ${Ye[h]}
+                  ${$e[v]}
                 </span>
               </div>
 
@@ -2381,7 +2517,7 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_batteriezyk
             </div>
 
             <div class="layout-note">
-              ${f}
+              ${h}
             </div>
           </footer>
         </div>
@@ -2406,7 +2542,11 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_batteriezyk
 			last_error_message_entity: Ge,
 			last_error_time_entity: Ke,
 			last_error_code_entity: qe,
-			activity_mode_entity: Je
+			activity_mode_entity: Je,
+			blade_wear_warning_time_entity: Ye,
+			task_duration_entity: Xe,
+			total_mileage_entity: Ze,
+			firmware_update_entity: Qe
 		};
 	}
 };
