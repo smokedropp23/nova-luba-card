@@ -75,6 +75,11 @@ interface NovaLubaCardConfig {
 
   cancel_current_task_entity?: string;
   undock_entity?: string;
+
+  ble_rssi_entity?: string;
+  mobile_rssi_entity?: string;
+  wifi_rssi_entity?: string;
+  connection_type_entity?: string;
 }
 
 interface MowerViewData {
@@ -108,6 +113,11 @@ interface MowerViewData {
 
   cancelCurrentTaskEntity: string;
   undockEntity: string;
+
+  bleRssiEntity: string;
+  mobileRssiEntity: string;
+  wifiRssiEntity: string;
+  connectionTypeEntity: string;
 
   progress: number;
   progressLabel: string;
@@ -205,6 +215,18 @@ const DEFAULT_CANCEL_CURRENT_TASK_ENTITY =
 const DEFAULT_UNDOCK_ENTITY =
   "button.luba_va8tp48r_abdocken";
 
+const DEFAULT_BLE_RSSI_ENTITY =
+  "sensor.luba_va8tp48r_ble_rssi";
+
+const DEFAULT_MOBILE_RSSI_ENTITY =
+  "sensor.luba_va8tp48r_mobilfunk_rssi";
+
+const DEFAULT_WIFI_RSSI_ENTITY =
+  "sensor.luba_va8tp48r_wi_fi_rssi";
+
+const DEFAULT_CONNECTION_TYPE_ENTITY =
+  "sensor.luba_va8tp48r_verbindungsart";
+
 const stateLabels: Record<NovaMowerState, string> = {
   mowing: "Mäht",
   paused: "Pausiert",
@@ -268,10 +290,82 @@ export class NovaLubaCard extends LitElement {
     }
 
     .header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      align-items: start;
       gap: ${unsafeCSS(theme.spacing.md)};
+    }
+
+    .connectivity-bar {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(82px, 1fr));
+      gap: 8px;
+      align-self: start;
+      justify-self: center;
+      width: min(100%, 470px);
+    }
+
+    .connectivity-item {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      grid-template-areas:
+        "icon label"
+        "icon value";
+      column-gap: 7px;
+      align-items: center;
+      min-width: 0;
+      padding: 8px 10px;
+      border: 1px solid ${unsafeCSS(theme.colors.borderSoft)};
+      border-radius: 14px;
+      color: ${unsafeCSS(theme.colors.textSecondary)};
+      background: rgba(255, 255, 255, 0.035);
+      backdrop-filter: blur(12px);
+      cursor: pointer;
+      transition:
+        border-color ${unsafeCSS(theme.animation.fast)} ease,
+        background ${unsafeCSS(theme.animation.fast)} ease,
+        transform ${unsafeCSS(theme.animation.fast)} ease;
+    }
+
+    .connectivity-item:hover {
+      transform: translateY(-1px);
+      border-color: var(--connection-color);
+      background: rgba(255, 255, 255, 0.065);
+    }
+
+    .connectivity-item.active {
+      border-color: var(--connection-color);
+      box-shadow: 0 0 14px color-mix(in srgb, var(--connection-color) 35%, transparent);
+    }
+
+    .connectivity-icon {
+      grid-area: icon;
+      color: var(--connection-color);
+      --mdc-icon-size: 20px;
+    }
+
+    .connectivity-label {
+      grid-area: label;
+      overflow: hidden;
+      color: ${unsafeCSS(theme.colors.textSecondary)};
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      line-height: 1.1;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .connectivity-value {
+      grid-area: value;
+      overflow: hidden;
+      color: ${unsafeCSS(theme.colors.text)};
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.2;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .brand {
@@ -888,6 +982,11 @@ export class NovaLubaCard extends LitElement {
         height: 44px;
       }
 
+      .connectivity-bar {
+        width: 100%;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
       .robot-stage {
         min-height: 260px;
       }
@@ -946,6 +1045,17 @@ export class NovaLubaCard extends LitElement {
 
       .metric-value {
         max-width: 160px;
+      }
+
+      .header {
+        grid-template-columns: minmax(0, 1fr) auto;
+      }
+
+      .connectivity-bar {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        width: 100%;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
   `;
@@ -1212,6 +1322,154 @@ export class NovaLubaCard extends LitElement {
         error,
       );
     }
+  }
+
+  private getRssiPresentation(entityId: string): {
+    value: string;
+    quality: "excellent" | "good" | "weak" | "poor" | "unknown";
+    color: string;
+  } {
+    const rawValue = this.getNumericValue(entityId);
+
+    if (rawValue === null) {
+      return {
+        value: "—",
+        quality: "unknown",
+        color: "var(--secondary-text-color, #8b94a7)",
+      };
+    }
+
+    const value = `${Math.round(rawValue)} dBm`;
+
+    if (rawValue >= -60) {
+      return { value, quality: "excellent", color: "#42d392" };
+    }
+
+    if (rawValue >= -70) {
+      return { value, quality: "good", color: "#8bd450" };
+    }
+
+    if (rawValue >= -80) {
+      return { value, quality: "weak", color: "#f2c94c" };
+    }
+
+    return { value, quality: "poor", color: "#ff6b6b" };
+  }
+
+  private getConnectionTypeLabel(entityId: string): string {
+    const entity = this.getState(entityId);
+
+    if (
+      !entity ||
+      entity.state === "unknown" ||
+      entity.state === "unavailable"
+    ) {
+      return "Unbekannt";
+    }
+
+    const raw = entity.state.trim();
+    const normalized = raw.toLowerCase();
+
+    if (normalized.includes("wifi") || normalized.includes("wi-fi") || normalized.includes("wlan")) {
+      return "WLAN";
+    }
+
+    if (normalized.includes("ble") || normalized.includes("bluetooth")) {
+      return "Bluetooth";
+    }
+
+    if (normalized.includes("4g") || normalized.includes("lte") || normalized.includes("cell") || normalized.includes("mobil")) {
+      return "Mobilfunk";
+    }
+
+    return raw;
+  }
+
+  private isConnectionActive(connectionType: string, type: "ble" | "mobile" | "wifi"): boolean {
+    const normalized = connectionType.toLowerCase();
+
+    if (type === "wifi") {
+      return normalized.includes("wifi") || normalized.includes("wi-fi") || normalized.includes("wlan");
+    }
+
+    if (type === "ble") {
+      return normalized.includes("ble") || normalized.includes("bluetooth");
+    }
+
+    return normalized.includes("4g") || normalized.includes("lte") || normalized.includes("cell") || normalized.includes("mobil");
+  }
+
+  private renderConnectivityItem(
+    entityId: string,
+    icon: string,
+    label: string,
+    value: string,
+    color: string,
+    active = false,
+  ) {
+    return html`
+      <div
+        class=${`connectivity-item${active ? " active" : ""}`}
+        style=${styleMap({ "--connection-color": color })}
+        role="button"
+        tabindex="0"
+        title=${`${label}: ${value}`}
+        @click=${() => this.openMoreInfo(entityId)}
+        @keydown=${(event: KeyboardEvent) =>
+          this.handleEntityKeydown(event, entityId)}
+      >
+        <ha-icon
+          class="connectivity-icon"
+          icon=${icon}
+        ></ha-icon>
+        <span class="connectivity-label">${label}</span>
+        <span class="connectivity-value">${value}</span>
+      </div>
+    `;
+  }
+
+  private renderConnectivityBar(data: MowerViewData) {
+    const ble = this.getRssiPresentation(data.bleRssiEntity);
+    const mobile = this.getRssiPresentation(data.mobileRssiEntity);
+    const wifi = this.getRssiPresentation(data.wifiRssiEntity);
+    const connectionType = this.getConnectionTypeLabel(data.connectionTypeEntity);
+
+    return html`
+      <div class="connectivity-bar" aria-label="Verbindungsstatus">
+        ${this.renderConnectivityItem(
+          data.bleRssiEntity,
+          "mdi:bluetooth",
+          "Bluetooth",
+          ble.value,
+          ble.color,
+          this.isConnectionActive(connectionType, "ble"),
+        )}
+        ${this.renderConnectivityItem(
+          data.mobileRssiEntity,
+          "mdi:signal-cellular-3",
+          "Mobilfunk",
+          mobile.value,
+          mobile.color,
+          this.isConnectionActive(connectionType, "mobile"),
+        )}
+        ${this.renderConnectivityItem(
+          data.wifiRssiEntity,
+          "mdi:wifi",
+          "WLAN",
+          wifi.value,
+          wifi.color,
+          this.isConnectionActive(connectionType, "wifi"),
+        )}
+        ${this.renderConnectivityItem(
+          data.connectionTypeEntity,
+          "mdi:access-point-network",
+          "Verbindung",
+          connectionType,
+          "var(--nova-state-color)",
+          true,
+        )}
+      </div>
+    `;
   }
 
   private renderMowerServiceButton(
@@ -2477,6 +2735,22 @@ export class NovaLubaCard extends LitElement {
       this.config.undock_entity ??
       DEFAULT_UNDOCK_ENTITY;
 
+    const bleRssiEntity =
+      this.config.ble_rssi_entity ??
+      DEFAULT_BLE_RSSI_ENTITY;
+
+    const mobileRssiEntity =
+      this.config.mobile_rssi_entity ??
+      DEFAULT_MOBILE_RSSI_ENTITY;
+
+    const wifiRssiEntity =
+      this.config.wifi_rssi_entity ??
+      DEFAULT_WIFI_RSSI_ENTITY;
+
+    const connectionTypeEntity =
+      this.config.connection_type_entity ??
+      DEFAULT_CONNECTION_TYPE_ENTITY;
+
     const resolvedModel =
       resolveMowerModel(model);
 
@@ -2625,6 +2899,11 @@ export class NovaLubaCard extends LitElement {
 
       cancelCurrentTaskEntity,
       undockEntity,
+
+      bleRssiEntity,
+      mobileRssiEntity,
+      wifiRssiEntity,
+      connectionTypeEntity,
 
       progress,
       progressLabel,
@@ -2793,6 +3072,8 @@ export class NovaLubaCard extends LitElement {
               <span class="led-core"></span>
             </div>
           </header>
+
+          ${this.renderConnectivityBar(viewData)}
 
           <main class="content-grid">
             <section class="hero">
