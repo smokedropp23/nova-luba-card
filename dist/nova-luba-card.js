@@ -29,11 +29,11 @@ var e = globalThis, t = e.ShadowRoot && (e.ShadyCSS === void 0 || e.ShadyCSS.nat
 	let t = "";
 	for (let n of e.cssRules) t += n.cssText;
 	return a(t);
-})(e) : e, { is: l, defineProperty: u, getOwnPropertyDescriptor: d, getOwnPropertyNames: ee, getOwnPropertySymbols: te, getPrototypeOf: ne } = Object, f = globalThis, p = f.trustedTypes, re = p ? p.emptyScript : "", ie = f.reactiveElementPolyfillSupport, m = (e, t) => e, h = {
+})(e) : e, { is: l, defineProperty: u, getOwnPropertyDescriptor: d, getOwnPropertyNames: f, getOwnPropertySymbols: p, getPrototypeOf: m } = Object, h = globalThis, g = h.trustedTypes, _ = g ? g.emptyScript : "", ee = h.reactiveElementPolyfillSupport, v = (e, t) => e, y = {
 	toAttribute(e, t) {
 		switch (t) {
 			case Boolean:
-				e = e ? re : null;
+				e = e ? _ : null;
 				break;
 			case Object:
 			case Array: e = e == null ? e : JSON.stringify(e);
@@ -58,23 +58,23 @@ var e = globalThis, t = e.ShadowRoot && (e.ShadyCSS === void 0 || e.ShadyCSS.nat
 		}
 		return n;
 	}
-}, g = (e, t) => !l(e, t), _ = {
+}, b = (e, t) => !l(e, t), x = {
 	attribute: !0,
 	type: String,
-	converter: h,
+	converter: y,
 	reflect: !1,
 	useDefault: !1,
-	hasChanged: g
+	hasChanged: b
 };
-Symbol.metadata ??= Symbol("metadata"), f.litPropertyMetadata ??= /* @__PURE__ */ new WeakMap();
-var v = class extends HTMLElement {
+Symbol.metadata ??= Symbol("metadata"), h.litPropertyMetadata ??= /* @__PURE__ */ new WeakMap();
+var S = class extends HTMLElement {
 	static addInitializer(e) {
 		this._$Ei(), (this.l ??= []).push(e);
 	}
 	static get observedAttributes() {
 		return this.finalize(), this._$Eh && [...this._$Eh.keys()];
 	}
-	static createProperty(e, t = _) {
+	static createProperty(e, t = x) {
 		if (t.state && (t.attribute = !1), this._$Ei(), this.prototype.hasOwnProperty(e) && ((t = Object.create(t)).wrapped = !0), this.elementProperties.set(e, t), !t.noAccessor) {
 			let n = Symbol(), r = this.getPropertyDescriptor(e, n, t);
 			r !== void 0 && u(this.prototype, e, r);
@@ -100,17 +100,17 @@ var v = class extends HTMLElement {
 		};
 	}
 	static getPropertyOptions(e) {
-		return this.elementProperties.get(e) ?? _;
+		return this.elementProperties.get(e) ?? x;
 	}
 	static _$Ei() {
-		if (this.hasOwnProperty(m("elementProperties"))) return;
-		let e = ne(this);
+		if (this.hasOwnProperty(v("elementProperties"))) return;
+		let e = m(this);
 		e.finalize(), e.l !== void 0 && (this.l = [...e.l]), this.elementProperties = new Map(e.elementProperties);
 	}
 	static finalize() {
-		if (this.hasOwnProperty(m("finalized"))) return;
-		if (this.finalized = !0, this._$Ei(), this.hasOwnProperty(m("properties"))) {
-			let e = this.properties, t = [...ee(e), ...te(e)];
+		if (this.hasOwnProperty(v("finalized"))) return;
+		if (this.finalized = !0, this._$Ei(), this.hasOwnProperty(v("properties"))) {
+			let e = this.properties, t = [...f(e), ...p(e)];
 			for (let n of t) this.createProperty(n, e[n]);
 		}
 		let e = this[Symbol.metadata];
@@ -171,14 +171,14 @@ var v = class extends HTMLElement {
 	_$ET(e, t) {
 		let n = this.constructor.elementProperties.get(e), r = this.constructor._$Eu(e, n);
 		if (r !== void 0 && !0 === n.reflect) {
-			let i = (n.converter?.toAttribute === void 0 ? h : n.converter).toAttribute(t, n.type);
+			let i = (n.converter?.toAttribute === void 0 ? y : n.converter).toAttribute(t, n.type);
 			this._$Em = e, i == null ? this.removeAttribute(r) : this.setAttribute(r, i), this._$Em = null;
 		}
 	}
 	_$AK(e, t) {
 		let n = this.constructor, r = n._$Eh.get(e);
 		if (r !== void 0 && this._$Em !== r) {
-			let e = n.getPropertyOptions(r), i = typeof e.converter == "function" ? { fromAttribute: e.converter } : e.converter?.fromAttribute === void 0 ? h : e.converter;
+			let e = n.getPropertyOptions(r), i = typeof e.converter == "function" ? { fromAttribute: e.converter } : e.converter?.fromAttribute === void 0 ? y : e.converter;
 			this._$Em = r;
 			let a = i.fromAttribute(t, e.type);
 			this[r] = a ?? this._$Ej?.get(r) ?? a, this._$Em = null;
@@ -187,7 +187,7 @@ var v = class extends HTMLElement {
 	requestUpdate(e, t, n, r = !1, i) {
 		if (e !== void 0) {
 			let a = this.constructor;
-			if (!1 === r && (i = this[e]), n ??= a.getPropertyOptions(e), !((n.hasChanged ?? g)(i, t) || n.useDefault && n.reflect && i === this._$Ej?.get(e) && !this.hasAttribute(a._$Eu(e, n)))) return;
+			if (!1 === r && (i = this[e]), n ??= a.getPropertyOptions(e), !((n.hasChanged ?? b)(i, t) || n.useDefault && n.reflect && i === this._$Ej?.get(e) && !this.hasAttribute(a._$Eu(e, n)))) return;
 			this.C(e, t, n);
 		}
 		!1 === this.isUpdatePending && (this._$ES = this._$EP());
@@ -251,87 +251,87 @@ var v = class extends HTMLElement {
 	updated(e) {}
 	firstUpdated(e) {}
 };
-v.elementStyles = [], v.shadowRootOptions = { mode: "open" }, v[m("elementProperties")] = /* @__PURE__ */ new Map(), v[m("finalized")] = /* @__PURE__ */ new Map(), ie?.({ ReactiveElement: v }), (f.reactiveElementVersions ??= []).push("2.1.2");
+S.elementStyles = [], S.shadowRootOptions = { mode: "open" }, S[v("elementProperties")] = /* @__PURE__ */ new Map(), S[v("finalized")] = /* @__PURE__ */ new Map(), ee?.({ ReactiveElement: S }), (h.reactiveElementVersions ??= []).push("2.1.2");
 //#endregion
 //#region node_modules/lit-html/lit-html.js
-var y = globalThis, b = (e) => e, x = y.trustedTypes, S = x ? x.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, ae = "$lit$", C = `lit$${Math.random().toFixed(9).slice(2)}$`, w = "?" + C, oe = `<${w}>`, T = document, E = () => T.createComment(""), D = (e) => e === null || typeof e != "object" && typeof e != "function", O = Array.isArray, se = (e) => O(e) || typeof e?.[Symbol.iterator] == "function", k = "[ 	\n\f\r]", A = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, j = /-->/g, ce = />/g, M = RegExp(`>|${k}(?:([^\\s"'>=/]+)(${k}*=${k}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), le = /'/g, ue = /"/g, N = /^(?:script|style|textarea|title)$/i, P = ((e) => (t, ...n) => ({
+var C = globalThis, w = (e) => e, T = C.trustedTypes, te = T ? T.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, ne = "$lit$", E = `lit$${Math.random().toFixed(9).slice(2)}$`, D = "?" + E, re = `<${D}>`, O = document, k = () => O.createComment(""), A = (e) => e === null || typeof e != "object" && typeof e != "function", j = Array.isArray, ie = (e) => j(e) || typeof e?.[Symbol.iterator] == "function", M = "[ 	\n\f\r]", N = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, ae = /-->/g, oe = />/g, P = RegExp(`>|${M}(?:([^\\s"'>=/]+)(${M}*=${M}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), se = /'/g, F = /"/g, I = /^(?:script|style|textarea|title)$/i, L = ((e) => (t, ...n) => ({
 	_$litType$: e,
 	strings: t,
 	values: n
-}))(1), F = Symbol.for("lit-noChange"), I = Symbol.for("lit-nothing"), L = /* @__PURE__ */ new WeakMap(), R = T.createTreeWalker(T, 129);
-function z(e, t) {
-	if (!O(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
-	return S === void 0 ? t : S.createHTML(t);
+}))(1), R = Symbol.for("lit-noChange"), z = Symbol.for("lit-nothing"), ce = /* @__PURE__ */ new WeakMap(), B = O.createTreeWalker(O, 129);
+function le(e, t) {
+	if (!j(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
+	return te === void 0 ? t : te.createHTML(t);
 }
-var de = (e, t) => {
-	let n = e.length - 1, r = [], i, a = t === 2 ? "<svg>" : t === 3 ? "<math>" : "", o = A;
+var ue = (e, t) => {
+	let n = e.length - 1, r = [], i, a = t === 2 ? "<svg>" : t === 3 ? "<math>" : "", o = N;
 	for (let t = 0; t < n; t++) {
 		let n = e[t], s, c, l = -1, u = 0;
-		for (; u < n.length && (o.lastIndex = u, c = o.exec(n), c !== null);) u = o.lastIndex, o === A ? c[1] === "!--" ? o = j : c[1] === void 0 ? c[2] === void 0 ? c[3] !== void 0 && (o = M) : (N.test(c[2]) && (i = RegExp("</" + c[2], "g")), o = M) : o = ce : o === M ? c[0] === ">" ? (o = i ?? A, l = -1) : c[1] === void 0 ? l = -2 : (l = o.lastIndex - c[2].length, s = c[1], o = c[3] === void 0 ? M : c[3] === "\"" ? ue : le) : o === ue || o === le ? o = M : o === j || o === ce ? o = A : (o = M, i = void 0);
-		let d = o === M && e[t + 1].startsWith("/>") ? " " : "";
-		a += o === A ? n + oe : l >= 0 ? (r.push(s), n.slice(0, l) + ae + n.slice(l) + C + d) : n + C + (l === -2 ? t : d);
+		for (; u < n.length && (o.lastIndex = u, c = o.exec(n), c !== null);) u = o.lastIndex, o === N ? c[1] === "!--" ? o = ae : c[1] === void 0 ? c[2] === void 0 ? c[3] !== void 0 && (o = P) : (I.test(c[2]) && (i = RegExp("</" + c[2], "g")), o = P) : o = oe : o === P ? c[0] === ">" ? (o = i ?? N, l = -1) : c[1] === void 0 ? l = -2 : (l = o.lastIndex - c[2].length, s = c[1], o = c[3] === void 0 ? P : c[3] === "\"" ? F : se) : o === F || o === se ? o = P : o === ae || o === oe ? o = N : (o = P, i = void 0);
+		let d = o === P && e[t + 1].startsWith("/>") ? " " : "";
+		a += o === N ? n + re : l >= 0 ? (r.push(s), n.slice(0, l) + ne + n.slice(l) + E + d) : n + E + (l === -2 ? t : d);
 	}
-	return [z(e, a + (e[n] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), r];
-}, B = class e {
+	return [le(e, a + (e[n] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), r];
+}, V = class e {
 	constructor({ strings: t, _$litType$: n }, r) {
 		let i;
 		this.parts = [];
-		let a = 0, o = 0, s = t.length - 1, c = this.parts, [l, u] = de(t, n);
-		if (this.el = e.createElement(l, r), R.currentNode = this.el.content, n === 2 || n === 3) {
+		let a = 0, o = 0, s = t.length - 1, c = this.parts, [l, u] = ue(t, n);
+		if (this.el = e.createElement(l, r), B.currentNode = this.el.content, n === 2 || n === 3) {
 			let e = this.el.content.firstChild;
 			e.replaceWith(...e.childNodes);
 		}
-		for (; (i = R.nextNode()) !== null && c.length < s;) {
+		for (; (i = B.nextNode()) !== null && c.length < s;) {
 			if (i.nodeType === 1) {
-				if (i.hasAttributes()) for (let e of i.getAttributeNames()) if (e.endsWith(ae)) {
-					let t = u[o++], n = i.getAttribute(e).split(C), r = /([.?@])?(.*)/.exec(t);
+				if (i.hasAttributes()) for (let e of i.getAttributeNames()) if (e.endsWith(ne)) {
+					let t = u[o++], n = i.getAttribute(e).split(E), r = /([.?@])?(.*)/.exec(t);
 					c.push({
 						type: 1,
 						index: a,
 						name: r[2],
 						strings: n,
-						ctor: r[1] === "." ? pe : r[1] === "?" ? me : r[1] === "@" ? he : U
+						ctor: r[1] === "." ? fe : r[1] === "?" ? pe : r[1] === "@" ? me : W
 					}), i.removeAttribute(e);
-				} else e.startsWith(C) && (c.push({
+				} else e.startsWith(E) && (c.push({
 					type: 6,
 					index: a
 				}), i.removeAttribute(e));
-				if (N.test(i.tagName)) {
-					let e = i.textContent.split(C), t = e.length - 1;
+				if (I.test(i.tagName)) {
+					let e = i.textContent.split(E), t = e.length - 1;
 					if (t > 0) {
-						i.textContent = x ? x.emptyScript : "";
-						for (let n = 0; n < t; n++) i.append(e[n], E()), R.nextNode(), c.push({
+						i.textContent = T ? T.emptyScript : "";
+						for (let n = 0; n < t; n++) i.append(e[n], k()), B.nextNode(), c.push({
 							type: 2,
 							index: ++a
 						});
-						i.append(e[t], E());
+						i.append(e[t], k());
 					}
 				}
-			} else if (i.nodeType === 8) if (i.data === w) c.push({
+			} else if (i.nodeType === 8) if (i.data === D) c.push({
 				type: 2,
 				index: a
 			});
 			else {
 				let e = -1;
-				for (; (e = i.data.indexOf(C, e + 1)) !== -1;) c.push({
+				for (; (e = i.data.indexOf(E, e + 1)) !== -1;) c.push({
 					type: 7,
 					index: a
-				}), e += C.length - 1;
+				}), e += E.length - 1;
 			}
 			a++;
 		}
 	}
 	static createElement(e, t) {
-		let n = T.createElement("template");
+		let n = O.createElement("template");
 		return n.innerHTML = e, n;
 	}
 };
-function V(e, t, n = e, r) {
-	if (t === F) return t;
-	let i = r === void 0 ? n._$Cl : n._$Co?.[r], a = D(t) ? void 0 : t._$litDirective$;
-	return i?.constructor !== a && (i?._$AO?.(!1), a === void 0 ? i = void 0 : (i = new a(e), i._$AT(e, n, r)), r === void 0 ? n._$Cl = i : (n._$Co ??= [])[r] = i), i !== void 0 && (t = V(e, i._$AS(e, t.values), i, r)), t;
+function H(e, t, n = e, r) {
+	if (t === R) return t;
+	let i = r === void 0 ? n._$Cl : n._$Co?.[r], a = A(t) ? void 0 : t._$litDirective$;
+	return i?.constructor !== a && (i?._$AO?.(!1), a === void 0 ? i = void 0 : (i = new a(e), i._$AT(e, n, r)), r === void 0 ? n._$Cl = i : (n._$Co ??= [])[r] = i), i !== void 0 && (t = H(e, i._$AS(e, t.values), i, r)), t;
 }
-var fe = class {
+var de = class {
 	constructor(e, t) {
 		this._$AV = [], this._$AN = void 0, this._$AD = e, this._$AM = t;
 	}
@@ -342,28 +342,28 @@ var fe = class {
 		return this._$AM._$AU;
 	}
 	u(e) {
-		let { el: { content: t }, parts: n } = this._$AD, r = (e?.creationScope ?? T).importNode(t, !0);
-		R.currentNode = r;
-		let i = R.nextNode(), a = 0, o = 0, s = n[0];
+		let { el: { content: t }, parts: n } = this._$AD, r = (e?.creationScope ?? O).importNode(t, !0);
+		B.currentNode = r;
+		let i = B.nextNode(), a = 0, o = 0, s = n[0];
 		for (; s !== void 0;) {
 			if (a === s.index) {
 				let t;
-				s.type === 2 ? t = new H(i, i.nextSibling, this, e) : s.type === 1 ? t = new s.ctor(i, s.name, s.strings, this, e) : s.type === 6 && (t = new ge(i, this, e)), this._$AV.push(t), s = n[++o];
+				s.type === 2 ? t = new U(i, i.nextSibling, this, e) : s.type === 1 ? t = new s.ctor(i, s.name, s.strings, this, e) : s.type === 6 && (t = new he(i, this, e)), this._$AV.push(t), s = n[++o];
 			}
-			a !== s?.index && (i = R.nextNode(), a++);
+			a !== s?.index && (i = B.nextNode(), a++);
 		}
-		return R.currentNode = T, r;
+		return B.currentNode = O, r;
 	}
 	p(e) {
 		let t = 0;
 		for (let n of this._$AV) n !== void 0 && (n.strings === void 0 ? n._$AI(e[t]) : (n._$AI(e, n, t), t += n.strings.length - 2)), t++;
 	}
-}, H = class e {
+}, U = class e {
 	get _$AU() {
 		return this._$AM?._$AU ?? this._$Cv;
 	}
 	constructor(e, t, n, r) {
-		this.type = 2, this._$AH = I, this._$AN = void 0, this._$AA = e, this._$AB = t, this._$AM = n, this.options = r, this._$Cv = r?.isConnected ?? !0;
+		this.type = 2, this._$AH = z, this._$AN = void 0, this._$AA = e, this._$AB = t, this._$AM = n, this.options = r, this._$Cv = r?.isConnected ?? !0;
 	}
 	get parentNode() {
 		let e = this._$AA.parentNode, t = this._$AM;
@@ -376,7 +376,7 @@ var fe = class {
 		return this._$AB;
 	}
 	_$AI(e, t = this) {
-		e = V(this, e, t), D(e) ? e === I || e == null || e === "" ? (this._$AH !== I && this._$AR(), this._$AH = I) : e !== this._$AH && e !== F && this._(e) : e._$litType$ === void 0 ? e.nodeType === void 0 ? se(e) ? this.k(e) : this._(e) : this.T(e) : this.$(e);
+		e = H(this, e, t), A(e) ? e === z || e == null || e === "" ? (this._$AH !== z && this._$AR(), this._$AH = z) : e !== this._$AH && e !== R && this._(e) : e._$litType$ === void 0 ? e.nodeType === void 0 ? ie(e) ? this.k(e) : this._(e) : this.T(e) : this.$(e);
 	}
 	O(e) {
 		return this._$AA.parentNode.insertBefore(e, this._$AB);
@@ -385,36 +385,36 @@ var fe = class {
 		this._$AH !== e && (this._$AR(), this._$AH = this.O(e));
 	}
 	_(e) {
-		this._$AH !== I && D(this._$AH) ? this._$AA.nextSibling.data = e : this.T(T.createTextNode(e)), this._$AH = e;
+		this._$AH !== z && A(this._$AH) ? this._$AA.nextSibling.data = e : this.T(O.createTextNode(e)), this._$AH = e;
 	}
 	$(e) {
-		let { values: t, _$litType$: n } = e, r = typeof n == "number" ? this._$AC(e) : (n.el === void 0 && (n.el = B.createElement(z(n.h, n.h[0]), this.options)), n);
+		let { values: t, _$litType$: n } = e, r = typeof n == "number" ? this._$AC(e) : (n.el === void 0 && (n.el = V.createElement(le(n.h, n.h[0]), this.options)), n);
 		if (this._$AH?._$AD === r) this._$AH.p(t);
 		else {
-			let e = new fe(r, this), n = e.u(this.options);
+			let e = new de(r, this), n = e.u(this.options);
 			e.p(t), this.T(n), this._$AH = e;
 		}
 	}
 	_$AC(e) {
-		let t = L.get(e.strings);
-		return t === void 0 && L.set(e.strings, t = new B(e)), t;
+		let t = ce.get(e.strings);
+		return t === void 0 && ce.set(e.strings, t = new V(e)), t;
 	}
 	k(t) {
-		O(this._$AH) || (this._$AH = [], this._$AR());
+		j(this._$AH) || (this._$AH = [], this._$AR());
 		let n = this._$AH, r, i = 0;
-		for (let a of t) i === n.length ? n.push(r = new e(this.O(E()), this.O(E()), this, this.options)) : r = n[i], r._$AI(a), i++;
+		for (let a of t) i === n.length ? n.push(r = new e(this.O(k()), this.O(k()), this, this.options)) : r = n[i], r._$AI(a), i++;
 		i < n.length && (this._$AR(r && r._$AB.nextSibling, i), n.length = i);
 	}
 	_$AR(e = this._$AA.nextSibling, t) {
 		for (this._$AP?.(!1, !0, t); e !== this._$AB;) {
-			let t = b(e).nextSibling;
-			b(e).remove(), e = t;
+			let t = w(e).nextSibling;
+			w(e).remove(), e = t;
 		}
 	}
 	setConnected(e) {
 		this._$AM === void 0 && (this._$Cv = e, this._$AP?.(e));
 	}
-}, U = class {
+}, W = class {
 	get tagName() {
 		return this.element.tagName;
 	}
@@ -422,47 +422,47 @@ var fe = class {
 		return this._$AM._$AU;
 	}
 	constructor(e, t, n, r, i) {
-		this.type = 1, this._$AH = I, this._$AN = void 0, this.element = e, this.name = t, this._$AM = r, this.options = i, n.length > 2 || n[0] !== "" || n[1] !== "" ? (this._$AH = Array(n.length - 1).fill(/* @__PURE__ */ new String()), this.strings = n) : this._$AH = I;
+		this.type = 1, this._$AH = z, this._$AN = void 0, this.element = e, this.name = t, this._$AM = r, this.options = i, n.length > 2 || n[0] !== "" || n[1] !== "" ? (this._$AH = Array(n.length - 1).fill(/* @__PURE__ */ new String()), this.strings = n) : this._$AH = z;
 	}
 	_$AI(e, t = this, n, r) {
 		let i = this.strings, a = !1;
-		if (i === void 0) e = V(this, e, t, 0), a = !D(e) || e !== this._$AH && e !== F, a && (this._$AH = e);
+		if (i === void 0) e = H(this, e, t, 0), a = !A(e) || e !== this._$AH && e !== R, a && (this._$AH = e);
 		else {
 			let r = e, o, s;
-			for (e = i[0], o = 0; o < i.length - 1; o++) s = V(this, r[n + o], t, o), s === F && (s = this._$AH[o]), a ||= !D(s) || s !== this._$AH[o], s === I ? e = I : e !== I && (e += (s ?? "") + i[o + 1]), this._$AH[o] = s;
+			for (e = i[0], o = 0; o < i.length - 1; o++) s = H(this, r[n + o], t, o), s === R && (s = this._$AH[o]), a ||= !A(s) || s !== this._$AH[o], s === z ? e = z : e !== z && (e += (s ?? "") + i[o + 1]), this._$AH[o] = s;
 		}
 		a && !r && this.j(e);
 	}
 	j(e) {
-		e === I ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, e ?? "");
+		e === z ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, e ?? "");
 	}
-}, pe = class extends U {
+}, fe = class extends W {
 	constructor() {
 		super(...arguments), this.type = 3;
 	}
 	j(e) {
-		this.element[this.name] = e === I ? void 0 : e;
+		this.element[this.name] = e === z ? void 0 : e;
 	}
-}, me = class extends U {
+}, pe = class extends W {
 	constructor() {
 		super(...arguments), this.type = 4;
 	}
 	j(e) {
-		this.element.toggleAttribute(this.name, !!e && e !== I);
+		this.element.toggleAttribute(this.name, !!e && e !== z);
 	}
-}, he = class extends U {
+}, me = class extends W {
 	constructor(e, t, n, r, i) {
 		super(e, t, n, r, i), this.type = 5;
 	}
 	_$AI(e, t = this) {
-		if ((e = V(this, e, t, 0) ?? I) === F) return;
-		let n = this._$AH, r = e === I && n !== I || e.capture !== n.capture || e.once !== n.once || e.passive !== n.passive, i = e !== I && (n === I || r);
+		if ((e = H(this, e, t, 0) ?? z) === R) return;
+		let n = this._$AH, r = e === z && n !== z || e.capture !== n.capture || e.once !== n.once || e.passive !== n.passive, i = e !== z && (n === z || r);
 		r && this.element.removeEventListener(this.name, this, n), i && this.element.addEventListener(this.name, this, e), this._$AH = e;
 	}
 	handleEvent(e) {
 		typeof this._$AH == "function" ? this._$AH.call(this.options?.host ?? this.element, e) : this._$AH.handleEvent(e);
 	}
-}, ge = class {
+}, he = class {
 	constructor(e, t, n) {
 		this.element = e, this.type = 6, this._$AN = void 0, this._$AM = t, this.options = n;
 	}
@@ -470,18 +470,18 @@ var fe = class {
 		return this._$AM._$AU;
 	}
 	_$AI(e) {
-		V(this, e);
+		H(this, e);
 	}
-}, _e = y.litHtmlPolyfillSupport;
-_e?.(B, H), (y.litHtmlVersions ??= []).push("3.3.3");
-var ve = (e, t, n) => {
+}, ge = C.litHtmlPolyfillSupport;
+ge?.(V, U), (C.litHtmlVersions ??= []).push("3.3.3");
+var _e = (e, t, n) => {
 	let r = n?.renderBefore ?? t, i = r._$litPart$;
 	if (i === void 0) {
 		let e = n?.renderBefore ?? null;
-		r._$litPart$ = i = new H(t.insertBefore(E(), e), e, void 0, n ?? {});
+		r._$litPart$ = i = new U(t.insertBefore(k(), e), e, void 0, n ?? {});
 	}
 	return i._$AI(e), i;
-}, W = globalThis, G = class extends v {
+}, G = globalThis, K = class extends S {
 	constructor() {
 		super(...arguments), this.renderOptions = { host: this }, this._$Do = void 0;
 	}
@@ -491,7 +491,7 @@ var ve = (e, t, n) => {
 	}
 	update(e) {
 		let t = this.render();
-		this.hasUpdated || (this.renderOptions.isConnected = this.isConnected), super.update(e), this._$Do = ve(t, this.renderRoot, this.renderOptions);
+		this.hasUpdated || (this.renderOptions.isConnected = this.isConnected), super.update(e), this._$Do = _e(t, this.renderRoot, this.renderOptions);
 	}
 	connectedCallback() {
 		super.connectedCallback(), this._$Do?.setConnected(!0);
@@ -500,24 +500,24 @@ var ve = (e, t, n) => {
 		super.disconnectedCallback(), this._$Do?.setConnected(!1);
 	}
 	render() {
-		return F;
+		return R;
 	}
 };
-G._$litElement$ = !0, G.finalized = !0, W.litElementHydrateSupport?.({ LitElement: G });
-var ye = W.litElementPolyfillSupport;
-ye?.({ LitElement: G }), (W.litElementVersions ??= []).push("4.2.2");
+K._$litElement$ = !0, K.finalized = !0, G.litElementHydrateSupport?.({ LitElement: K });
+var ve = G.litElementPolyfillSupport;
+ve?.({ LitElement: K }), (G.litElementVersions ??= []).push("4.2.2");
 //#endregion
 //#region node_modules/@lit/reactive-element/decorators/custom-element.js
-var K = (e) => (t, n) => {
+var ye = (e) => (t, n) => {
 	n === void 0 ? customElements.define(e, t) : n.addInitializer(() => {
 		customElements.define(e, t);
 	});
 }, be = {
 	attribute: !0,
 	type: String,
-	converter: h,
+	converter: y,
 	reflect: !1,
-	hasChanged: g
+	hasChanged: b
 }, xe = (e = be, t, n) => {
 	let { kind: r, metadata: i } = n, a = globalThis.litPropertyMetadata.get(i);
 	if (a === void 0 && globalThis.litPropertyMetadata.set(i, a = /* @__PURE__ */ new Map()), r === "setter" && ((e = Object.create(e)).wrapped = !0), a.set(n.name, e), r === "accessor") {
@@ -604,7 +604,7 @@ var Ce = {
 				e.includes("-") || t ? n.setProperty(e, t ? r.slice(0, -11) : r, t ? Ee : "") : n[e] = r;
 			}
 		}
-		return F;
+		return R;
 	}
 });
 //#endregion
@@ -617,7 +617,7 @@ function Y(e, t, n, r) {
 }
 //#endregion
 //#region src/components/mower-lighting.ts
-var X = class extends G {
+var X = class extends K {
 	static {
 		this.styles = o`
     :host {
@@ -782,7 +782,7 @@ var X = class extends G {
   `;
 	}
 	renderOverlay(e, t) {
-		return !e.asset || !e.visible || e.brightness <= 0 ? I : P`
+		return !e.asset || !e.visible || e.brightness <= 0 ? z : L`
       <div
         class=${[
 			"overlay",
@@ -799,14 +799,14 @@ var X = class extends G {
     `;
 	}
 	render() {
-		return this.lighting ? P`
+		return this.lighting ? L`
       ${this.renderOverlay(this.lighting.front, "front")}
 
       ${this.renderOverlay(this.lighting.side, "side")}
-    ` : I;
+    ` : z;
 	}
 };
-Y([q({ attribute: !1 })], X.prototype, "lighting", void 0), X = Y([K("mower-lighting")], X);
+Y([q({ attribute: !1 })], X.prototype, "lighting", void 0), X = Y([ye("mower-lighting")], X);
 //#endregion
 //#region src/constants/mower-presentation.ts
 var Oe = {
@@ -1235,7 +1235,7 @@ function Re(e) {
 }
 //#endregion
 //#region src/index.ts
-var ze = {
+var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_aktueller_standort", Ve = "sensor.luba_va8tp48r_fortschritt", He = "sensor.luba_va8tp48r_verbleibende_zeit", Ue = "sensor.luba_va8tp48r_gesamtzeit", We = {
 	mowing: "Mäht",
 	docked: "Im Dock",
 	returning: "Rückkehr zur Ladestation",
@@ -1244,7 +1244,25 @@ var ze = {
 	update: "Update verfügbar",
 	offline: "Offline",
 	unknown: "Unbekannt"
-}, $ = class extends G {
+}, Ge = {
+	mowing: "mäht",
+	docked: "ist in der Ladestation",
+	returning: "fährt zur Basis",
+	error: "benötigt Aufmerksamkeit",
+	maintenance: "ist im Wartungsmodus",
+	update: "wird aktualisiert",
+	offline: "ist offline",
+	unknown: "hat einen unbekannten Status"
+}, Ke = {
+	mowing: ["Mähvorgang läuft.", "Der Mäher arbeitet autonom."],
+	docked: ["Der Mäher befindet sich in der Basis.", "Er ist bereit für die nächste Aufgabe."],
+	returning: ["Der Mäher kehrt zur Ladestation zurück.", "Die aktuelle Aufgabe wird beendet."],
+	error: ["Der Mäher meldet eine Störung.", "Bitte Status und Umgebung prüfen."],
+	maintenance: ["Der Wartungsmodus ist aktiv.", "Automatische Aufgaben sind pausiert."],
+	update: ["Eine Aktualisierung wird verarbeitet.", "Der Mäher steht vorübergehend nicht bereit."],
+	offline: ["Der Mäher ist momentan nicht erreichbar.", "Es werden keine aktuellen Daten übertragen."],
+	unknown: ["Der Zustand konnte nicht erkannt werden.", "Bitte die Verbindung und Entität prüfen."]
+}, $ = class extends K {
 	static {
 		this.styles = o`
     :host {
@@ -1253,6 +1271,7 @@ var ze = {
 
     ha-card {
       position: relative;
+      container-type: inline-size;
       overflow: hidden;
       min-height: 520px;
       padding: ${a(Z.spacing.lg)};
@@ -1283,7 +1302,7 @@ var ze = {
       position: relative;
       z-index: 1;
       display: grid;
-      grid-template-rows: auto 1fr auto;
+      gap: ${a(Z.spacing.lg)};
       min-height: 520px;
     }
 
@@ -1339,13 +1358,17 @@ var ze = {
       box-shadow: 0 0 14px var(--nova-state-glow);
     }
 
+    .content-grid {
+      display: grid;
+      gap: ${a(Z.spacing.lg)};
+      align-items: stretch;
+    }
+
     .hero {
       display: grid;
+      min-width: 0;
       align-items: center;
       justify-items: center;
-      padding:
-        ${a(Z.spacing.lg)}
-        0;
     }
 
     .robot-stage {
@@ -1439,6 +1462,194 @@ var ze = {
       line-height: 1.5;
     }
 
+    /*
+     * Neuer zentraler Statusbereich
+     */
+
+    .overview {
+      display: grid;
+      min-width: 0;
+      gap: ${a(Z.spacing.md)};
+      align-content: center;
+    }
+
+    .overview-heading {
+      display: grid;
+      gap: 8px;
+      justify-items: center;
+      padding:
+        ${a(Z.spacing.sm)}
+        ${a(Z.spacing.md)};
+      text-align: center;
+    }
+
+    .overview-icon {
+      color: var(--nova-state-color);
+      filter: drop-shadow(
+        0 0 10px
+        var(--nova-state-glow)
+      );
+      --mdc-icon-size: 46px;
+    }
+
+    .overview-title {
+      margin: 0;
+      font-size: clamp(23px, 4vw, 32px);
+      line-height: 1.15;
+    }
+
+    .overview-description {
+      display: grid;
+      gap: 3px;
+      color: ${a(Z.colors.textSecondary)};
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .progress-panel {
+      display: grid;
+      grid-template-columns:
+        minmax(130px, 0.75fr)
+        minmax(0, 1.25fr);
+      gap: ${a(Z.spacing.md)};
+      align-items: center;
+      padding: ${a(Z.spacing.md)};
+      border: 1px solid ${a(Z.colors.borderSoft)};
+      border-radius: ${a(Z.radius.medium)};
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.045),
+          rgba(255, 255, 255, 0.015)
+        );
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.035),
+        0 12px 35px rgba(0, 0, 0, 0.22);
+      backdrop-filter: blur(12px);
+    }
+
+    .progress-ring {
+      position: relative;
+      display: grid;
+      width: min(160px, 100%);
+      aspect-ratio: 1;
+      place-items: center;
+      justify-self: center;
+      border-radius: 50%;
+      background:
+        conic-gradient(
+          var(--nova-state-color)
+          0deg
+          var(--progress-angle),
+          rgba(255, 255, 255, 0.09)
+          var(--progress-angle)
+          360deg
+        );
+      box-shadow:
+        0 0 18px var(--nova-state-glow),
+        inset 0 0 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .progress-ring::before {
+      position: absolute;
+      inset: 12px;
+      border-radius: 50%;
+      background:
+        radial-gradient(
+          circle at 50% 35%,
+          rgba(255, 255, 255, 0.06),
+          transparent 52%
+        ),
+        ${a(Z.colors.backgroundDeep)};
+      box-shadow:
+        inset 0 0 18px rgba(0, 0, 0, 0.45);
+      content: "";
+    }
+
+    .progress-ring-content {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 2px;
+      justify-items: center;
+      text-align: center;
+    }
+
+    .progress-value {
+      font-size: clamp(30px, 6vw, 46px);
+      font-weight: 750;
+      line-height: 1;
+    }
+
+    .progress-label {
+      color: ${a(Z.colors.textSecondary)};
+      font-size: 13px;
+    }
+
+    .metric-list {
+      display: grid;
+      min-width: 0;
+    }
+
+    .metric-row {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      min-height: 49px;
+      padding: 8px 0;
+      border-bottom: 1px solid ${a(Z.colors.borderSoft)};
+    }
+
+    .metric-row:last-child {
+      border-bottom: 0;
+    }
+
+    .metric-icon {
+      color: var(--nova-state-color);
+      filter: drop-shadow(
+        0 0 7px
+        var(--nova-state-glow)
+      );
+      --mdc-icon-size: 24px;
+    }
+
+    .metric-label {
+      min-width: 0;
+      color: ${a(Z.colors.textSecondary)};
+      font-size: 13px;
+    }
+
+    .metric-value {
+      max-width: 180px;
+      overflow: hidden;
+      color: ${a(Z.colors.text)};
+      font-size: 14px;
+      font-weight: 650;
+      text-align: right;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .battery-track {
+      grid-column: 2 / -1;
+      height: 4px;
+      margin-top: -4px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .battery-fill {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--nova-state-color);
+      box-shadow: 0 0 8px var(--nova-state-glow);
+      transition:
+        width ${a(Z.animation.normal)} ease;
+    }
+
     .footer {
       display: flex;
       align-items: flex-end;
@@ -1499,14 +1710,38 @@ var ze = {
       text-align: center;
     }
 
-    @media (max-width: 600px) {
+    /*
+     * Breite Lovelace-Karte:
+     * Mäher links, Statusbereich rechts.
+     */
+
+    @container (min-width: 760px) {
+      .content-grid {
+        grid-template-columns:
+          minmax(0, 1.15fr)
+          minmax(340px, 0.85fr);
+      }
+
+      .robot-stage {
+        min-height: 390px;
+      }
+
+      .overview-heading {
+        justify-items: center;
+      }
+    }
+
+    /*
+     * Mobile beziehungsweise schmale Karte.
+     */
+
+    @container (max-width: 759px) {
       ha-card {
-        min-height: 440px;
         padding: ${a(Z.spacing.md)};
       }
 
       .card-layout {
-        min-height: 440px;
+        gap: ${a(Z.spacing.md)};
       }
 
       .led-placeholder {
@@ -1534,6 +1769,25 @@ var ze = {
           scale(calc(var(--robot-mobile-scale) + 0.03));
       }
 
+      .progress-panel {
+        grid-template-columns:
+          minmax(115px, 0.7fr)
+          minmax(0, 1.3fr);
+        padding: 14px;
+      }
+
+      .metric-row {
+        grid-template-columns:
+          29px
+          minmax(0, 1fr)
+          auto;
+        gap: 8px;
+      }
+
+      .metric-value {
+        max-width: 130px;
+      }
+
       .footer {
         align-items: flex-start;
         flex-direction: column;
@@ -1541,6 +1795,20 @@ var ze = {
 
       .layout-note {
         text-align: left;
+      }
+    }
+
+    @container (max-width: 430px) {
+      .progress-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .progress-ring {
+        width: 145px;
+      }
+
+      .metric-value {
+        max-width: 160px;
       }
     }
   `;
@@ -1553,6 +1821,24 @@ var ze = {
 	get mowerState() {
 		if (!(!this.hass || !this.config)) return this.hass.states[this.config.entity];
 	}
+	getState(e) {
+		if (!(!this.hass || !e)) return this.hass.states[e];
+	}
+	getNumericValue(e) {
+		let t = this.getState(e);
+		if (!t) return null;
+		let n = t.state.trim().replace(",", "."), r = Number.parseFloat(n);
+		return Number.isFinite(r) ? r : null;
+	}
+	formatEntityValue(e, t = "") {
+		let n = this.getState(e);
+		if (!n || n.state === "unknown" || n.state === "unavailable") return "—";
+		let r = typeof n.attributes.unit_of_measurement == "string" ? n.attributes.unit_of_measurement : t;
+		return r ? `${n.state} ${r}` : n.state;
+	}
+	clampPercentage(e) {
+		return e === null ? 0 : Math.min(100, Math.max(0, e));
+	}
 	handleImageError(e) {
 		let t = e.currentTarget;
 		t.style.display = "none";
@@ -1560,11 +1846,11 @@ var ze = {
 		n && (n.hidden = !1);
 	}
 	render() {
-		if (!this.config) return I;
-		let e = this.mowerState, t = this.config.name ?? "Luba", n = this.config.model ?? "Luba 3 AWD LiDAR", r = Le(n), i = Ne(r), a = Ae(r);
+		if (!this.config) return z;
+		let e = this.mowerState, t = this.config.name ?? "Luba", n = this.config.model ?? "Luba 3 AWD LiDAR", r = this.config.battery_entity ?? ze, i = this.config.location_entity ?? Be, a = this.config.progress_entity ?? Ve, o = this.config.remaining_time_entity ?? He, s = this.config.total_time_entity ?? Ue, c = Le(n), l = Ne(c), u = Ae(c);
 		if (!e) {
 			let e = Z.states.error;
-			return P`
+			return L`
         <ha-card
           style=${J({
 				"--nova-state-color": e.color,
@@ -1574,7 +1860,9 @@ var ze = {
         >
           <div class="entity-error">
             <div>
-              <strong>Entität nicht gefunden</strong>
+              <strong>
+                Entität nicht gefunden
+              </strong>
 
               <p>
                 „${this.config.entity}“ ist in
@@ -1585,32 +1873,32 @@ var ze = {
         </ha-card>
       `;
 		}
-		let o = Re(e.state), s = Z.states[o], c = Ie(o), l = Pe(r), u = {
-			...c,
+		let d = Re(e.state), f = Z.states[d], p = Ie(d), m = Pe(c), h = {
+			...p,
 			front: {
-				...c.front,
-				asset: l.front
+				...p.front,
+				asset: m.front
 			},
 			side: {
-				...c.side,
-				asset: l.side
+				...p.side,
+				asset: m.side
 			}
-		};
-		return P`
+		}, g = this.getNumericValue(a), _ = this.clampPercentage(g), ee = g === null ? "—" : `${Math.round(_)} %`, v = this.getNumericValue(r), y = this.clampPercentage(v), b = this.formatEntityValue(r, "%"), x = this.formatEntityValue(i), S = this.formatEntityValue(o), C = this.formatEntityValue(s), [w, T] = Ke[d];
+		return L`
       <ha-card style=${J({
-			"--nova-state-color": s.color,
-			"--nova-state-soft": s.soft,
-			"--nova-state-glow": s.glow,
-			"--robot-desktop-scale": String(a.desktop.scale),
-			"--robot-desktop-x": `${a.desktop.translateX}px`,
-			"--robot-desktop-y": `${a.desktop.translateY}px`,
-			"--robot-desktop-max-width": `${a.desktop.maxWidth}px`,
-			"--robot-desktop-max-height": `${a.desktop.maxHeight}px`,
-			"--robot-mobile-scale": String(a.mobile.scale),
-			"--robot-mobile-x": `${a.mobile.translateX}px`,
-			"--robot-mobile-y": `${a.mobile.translateY}px`,
-			"--robot-mobile-max-width": `${a.mobile.maxWidth}px`,
-			"--robot-mobile-max-height": `${a.mobile.maxHeight}px`
+			"--nova-state-color": f.color,
+			"--nova-state-soft": f.soft,
+			"--nova-state-glow": f.glow,
+			"--robot-desktop-scale": String(u.desktop.scale),
+			"--robot-desktop-x": `${u.desktop.translateX}px`,
+			"--robot-desktop-y": `${u.desktop.translateY}px`,
+			"--robot-desktop-max-width": `${u.desktop.maxWidth}px`,
+			"--robot-desktop-max-height": `${u.desktop.maxHeight}px`,
+			"--robot-mobile-scale": String(u.mobile.scale),
+			"--robot-mobile-x": `${u.mobile.translateX}px`,
+			"--robot-mobile-y": `${u.mobile.translateY}px`,
+			"--robot-mobile-max-width": `${u.mobile.maxWidth}px`,
+			"--robot-mobile-max-height": `${u.mobile.maxHeight}px`
 		})}>
         <div class="card-layout">
           <header class="header">
@@ -1634,37 +1922,181 @@ var ze = {
             </div>
           </header>
 
-          <main class="hero">
-            <div class="robot-stage">
-              <img
-                class="robot-image"
-                src=${i}
-                alt=${n}
-                loading="eager"
-                @error=${this.handleImageError}
-              />
+          <main class="content-grid">
+            <section class="hero">
+              <div class="robot-stage">
+                <img
+                  class="robot-image"
+                  src=${l}
+                  alt=${n}
+                  loading="eager"
+                  @error=${this.handleImageError}
+                />
 
-              <mower-lighting
-                .lighting=${u}
-              ></mower-lighting>
+                <mower-lighting
+                  .lighting=${h}
+                ></mower-lighting>
 
-              <div
-                class="robot-fallback"
-                hidden
-              >
-                <div class="robot-fallback-symbol">
-                  ◆
-                </div>
+                <div
+                  class="robot-fallback"
+                  hidden
+                >
+                  <div
+                    class="robot-fallback-symbol"
+                  >
+                    ◆
+                  </div>
 
-                <div class="robot-fallback-title">
-                  Gerätebild konnte nicht geladen werden
-                </div>
+                  <div
+                    class="robot-fallback-title"
+                  >
+                    Gerätebild konnte nicht
+                    geladen werden
+                  </div>
 
-                <div class="robot-fallback-path">
-                  ${i}
+                  <div
+                    class="robot-fallback-path"
+                  >
+                    ${l}
+                  </div>
                 </div>
               </div>
-            </div>
+            </section>
+
+            <section class="overview">
+              <div class="overview-heading">
+                <ha-icon
+                  class="overview-icon"
+                  icon="mdi:grass"
+                ></ha-icon>
+
+                <h3 class="overview-title">
+                  ${t}
+                  ${Ge[d]}
+                </h3>
+
+                <div
+                  class="overview-description"
+                >
+                  <span>
+                    ${w}
+                  </span>
+
+                  <span>
+                    ${T}
+                  </span>
+                </div>
+              </div>
+
+              <div class="progress-panel">
+                <div
+                  class="progress-ring"
+                  style=${J({ "--progress-angle": `${_ * 3.6}deg` })}
+                >
+                  <div
+                    class="progress-ring-content"
+                  >
+                    <span
+                      class="progress-value"
+                    >
+                      ${ee}
+                    </span>
+
+                    <span
+                      class="progress-label"
+                    >
+                      Fortschritt
+                    </span>
+                  </div>
+                </div>
+
+                <div class="metric-list">
+                  <div class="metric-row">
+                    <ha-icon
+                      class="metric-icon"
+                      icon="mdi:clock-outline"
+                    ></ha-icon>
+
+                    <span
+                      class="metric-label"
+                    >
+                      Verbleibende Zeit
+                    </span>
+
+                    <span
+                      class="metric-value"
+                    >
+                      ${S}
+                    </span>
+                  </div>
+
+                  <div class="metric-row">
+                    <ha-icon
+                      class="metric-icon"
+                      icon="mdi:map-marker-outline"
+                    ></ha-icon>
+
+                    <span
+                      class="metric-label"
+                    >
+                      Aktuelle Zone
+                    </span>
+
+                    <span
+                      class="metric-value"
+                      title=${x}
+                    >
+                      ${x}
+                    </span>
+                  </div>
+
+                  <div class="metric-row">
+                    <ha-icon
+                      class="metric-icon"
+                      icon="mdi:timer-outline"
+                    ></ha-icon>
+
+                    <span
+                      class="metric-label"
+                    >
+                      Gesamtzeit
+                    </span>
+
+                    <span
+                      class="metric-value"
+                    >
+                      ${C}
+                    </span>
+                  </div>
+
+                  <div class="metric-row">
+                    <ha-icon
+                      class="metric-icon"
+                      icon="mdi:battery"
+                    ></ha-icon>
+
+                    <span
+                      class="metric-label"
+                    >
+                      Akkustand
+                    </span>
+
+                    <span
+                      class="metric-value"
+                    >
+                      ${b}
+                    </span>
+
+                    <div class="battery-track">
+                      <span
+                        class="battery-fill"
+                        style=${J({ width: `${y}%` })}
+                      ></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
           </main>
 
           <footer class="footer">
@@ -1673,7 +2105,7 @@ var ze = {
                 <span class="dot"></span>
 
                 <span>
-                  ${ze[o]}
+                  ${We[d]}
                 </span>
               </div>
 
@@ -1683,7 +2115,7 @@ var ze = {
             </div>
 
             <div class="layout-note">
-              ${r}
+              ${c}
             </div>
           </footer>
         </div>
@@ -1691,18 +2123,23 @@ var ze = {
     `;
 	}
 	getCardSize() {
-		return 7;
+		return 10;
 	}
 	static getStubConfig() {
 		return {
 			type: "custom:nova-luba-card",
 			entity: "lawn_mower.luba_va8tp48r",
 			name: "Luba",
-			model: "Luba 3 AWD LiDAR"
+			model: "Luba 3 AWD LiDAR",
+			battery_entity: ze,
+			location_entity: Be,
+			progress_entity: Ve,
+			remaining_time_entity: He,
+			total_time_entity: Ue
 		};
 	}
 };
-Y([q({ attribute: !1 })], $.prototype, "hass", void 0), Y([Se()], $.prototype, "config", void 0), $ = Y([K("nova-luba-card")], $), window.customCards = window.customCards || [], window.customCards.push({
+Y([q({ attribute: !1 })], $.prototype, "hass", void 0), Y([Se()], $.prototype, "config", void 0), $ = Y([ye("nova-luba-card")], $), window.customCards = window.customCards || [], window.customCards.push({
 	type: "nova-luba-card",
 	name: "Nova UI - Luba Card",
 	description: "A dynamic Mammotion mower card for Home Assistant.",
