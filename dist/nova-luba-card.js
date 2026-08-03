@@ -629,13 +629,6 @@ var X = class extends G {
       pointer-events: none;
     }
 
-    /*
-     * Die Lichtdateien und die Mäherbilder besitzen eine
-     * quadratische Arbeitsfläche.
-     *
-     * Deshalb muss auch die Maske quadratisch bleiben.
-     * Die Höhe des Mäherbildes bestimmt dabei die Größe.
-     */
     .overlay {
       position: absolute;
       z-index: 3;
@@ -647,15 +640,19 @@ var X = class extends G {
       max-width: 100%;
       max-height: 100%;
 
-      background: transparent;
+      background-color: var(--light-color);
 
-background-image: var(--light-asset);
+      -webkit-mask-image: var(--light-asset);
+      mask-image: var(--light-asset);
 
-background-repeat: no-repeat;
-background-position: center;
-background-size: contain;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
 
+      -webkit-mask-position: center;
+      mask-position: center;
 
+      -webkit-mask-size: contain;
+      mask-size: contain;
 
       opacity: var(--light-brightness);
 
@@ -671,13 +668,9 @@ background-size: contain;
         filter 220ms ease;
     }
 
-    /*
-     * Frontscheinwerfer:
-     * weiß, kompakt und sehr hell.
-     */
     .overlay.front {
       filter:
-        brightness(2.2)
+        brightness(1.6)
         drop-shadow(
           0 0 7px
           var(--light-color)
@@ -688,13 +681,9 @@ background-size: contain;
         );
     }
 
-    /*
-     * Seitenlicht:
-     * kräftiger und dominanter als das Frontlicht.
-     */
     .overlay.side {
       filter:
-        brightness(2)
+        brightness(1.45)
         drop-shadow(
           0 0 9px
           var(--light-color)
