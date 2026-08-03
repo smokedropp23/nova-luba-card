@@ -72,6 +72,9 @@ interface NovaLubaCardConfig {
 
   relocate_charging_station_entity?: string;
   restart_mower_entity?: string;
+
+  cancel_current_task_entity?: string;
+  undock_entity?: string;
 }
 
 interface MowerViewData {
@@ -102,6 +105,9 @@ interface MowerViewData {
 
   relocateChargingStationEntity: string;
   restartMowerEntity: string;
+
+  cancelCurrentTaskEntity: string;
+  undockEntity: string;
 
   progress: number;
   progressLabel: string;
@@ -193,8 +199,15 @@ const DEFAULT_RELOCATE_CHARGING_STATION_ENTITY =
 const DEFAULT_RESTART_MOWER_ENTITY =
   "button.luba_va8tp48r_restart_mower";
 
+const DEFAULT_CANCEL_CURRENT_TASK_ENTITY =
+  "button.luba_va8tp48r_aktuelle_aufgabe_abbrechen";
+
+const DEFAULT_UNDOCK_ENTITY =
+  "button.luba_va8tp48r_abdocken";
+
 const stateLabels: Record<NovaMowerState, string> = {
   mowing: "Mäht",
+  paused: "Pausiert",
   docked: "Im Dock",
   returning: "Rückkehr zur Ladestation",
   error: "Fehler",
@@ -1157,6 +1170,66 @@ export class NovaLubaCard extends LitElement {
     }
   }
 
+  private async callMowerService(
+    service: "start_mowing" | "pause" | "dock",
+    entityId: string,
+  ): Promise<void> {
+    if (!this.hass) {
+      return;
+    }
+
+    try {
+      await this.hass.callService(
+        "lawn_mower",
+        service,
+        {
+          entity_id: entityId,
+        },
+      );
+    } catch (error) {
+      console.error(
+        `Nova UI: lawn_mower.${service} konnte nicht ausgeführt werden.`,
+        error,
+      );
+    }
+  }
+
+  private renderMowerServiceButton(
+    entityId: string,
+    service: "start_mowing" | "pause" | "dock",
+    icon: string,
+    label: string,
+    className = "",
+  ) {
+    const mower = this.getState(entityId);
+
+    const available = Boolean(
+      mower &&
+      mower.state !== "unknown" &&
+      mower.state !== "unavailable" &&
+      mower.state !== "offline",
+    );
+
+    return html`
+      <button
+        class=${`action-button ${className}`.trim()}
+        type="button"
+        ?disabled=${!available}
+        title=${available
+          ? label
+          : `${label} ist momentan nicht verfügbar`}
+        @click=${() =>
+          this.callMowerService(
+            service,
+            entityId,
+          )}
+      >
+        <ha-icon icon=${icon}></ha-icon>
+        <span>${label}</span>
+      </button>
+    `;
+  }
+
   private renderActionButton(
     entityId: string,
     icon: string,
@@ -1355,6 +1428,36 @@ export class NovaLubaCard extends LitElement {
               </div>
             </div>
           </div>
+
+          <div class="action-section">
+            <div class="action-heading">
+              Steuerung
+            </div>
+
+            <div class="action-grid">
+              ${this.renderMowerServiceButton(
+                data.mowerEntity,
+                "pause",
+                "mdi:pause",
+                "Pause",
+              )}
+
+              ${this.renderMowerServiceButton(
+                data.mowerEntity,
+                "dock",
+                "mdi:home-import-outline",
+                "Zur Ladestation",
+              )}
+
+              ${this.renderActionButton(
+                data.cancelCurrentTaskEntity,
+                "mdi:stop-circle-outline",
+                "Aufgabe abbrechen",
+                "danger",
+                "Soll die aktuelle Aufgabe wirklich abgebrochen werden?",
+              )}
+            </div>
+          </div>
         </div>
       </section>
     `;
@@ -1443,6 +1546,27 @@ export class NovaLubaCard extends LitElement {
               "Bereit",
             )}
           </div>
+
+          <div class="action-section">
+            <div class="action-heading">
+              Steuerung
+            </div>
+
+            <div class="action-grid">
+              ${this.renderMowerServiceButton(
+                data.mowerEntity,
+                "start_mowing",
+                "mdi:play",
+                "Mähen starten",
+              )}
+
+              ${this.renderActionButton(
+                data.undockEntity,
+                "mdi:exit-run",
+                "Abdocken",
+              )}
+            </div>
+          </div>
         </div>
       </section>
     `;
@@ -1529,6 +1653,140 @@ export class NovaLubaCard extends LitElement {
               "Ziel",
               "Ladestation",
             )}
+          </div>
+
+          <div class="action-section">
+            <div class="action-heading">
+              Steuerung
+            </div>
+
+            <div class="action-grid">
+              ${this.renderMowerServiceButton(
+                data.mowerEntity,
+                "start_mowing",
+                "mdi:play",
+                "Mähen fortsetzen",
+              )}
+
+              ${this.renderActionButton(
+                data.cancelCurrentTaskEntity,
+                "mdi:stop-circle-outline",
+                "Aufgabe abbrechen",
+                "danger",
+                "Soll die aktuelle Aufgabe wirklich abgebrochen werden?",
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  private renderPausedView(
+    data: MowerViewData,
+  ) {
+    return html`
+      <section class="overview">
+        <div class="overview-heading">
+          <ha-icon
+            class="overview-icon"
+            icon="mdi:pause-circle-outline"
+          ></ha-icon>
+
+          <h3 class="overview-title">
+            ${data.name} ist pausiert
+          </h3>
+
+          <div class="overview-description">
+            <span>Die aktuelle Aufgabe wurde angehalten.</span>
+            <span>Der Mäher wartet auf einen neuen Befehl.</span>
+          </div>
+        </div>
+
+        <div class="glass-panel progress-panel">
+          <div
+            class="progress-ring clickable"
+            role="button"
+            tabindex="0"
+            title="Fortschritt öffnen"
+            style=${styleMap({
+              "--progress-angle":
+                `${data.progress * 3.6}deg`,
+            })}
+            @click=${() =>
+              this.openMoreInfo(
+                data.progressEntity,
+              )}
+            @keydown=${(
+              event: KeyboardEvent,
+            ) =>
+              this.handleEntityKeydown(
+                event,
+                data.progressEntity,
+              )}
+          >
+            <div class="ring-content">
+              <span class="ring-value">
+                ${data.progressLabel}
+              </span>
+
+              <span class="ring-label">
+                Fortschritt
+              </span>
+            </div>
+          </div>
+
+          <div class="metric-list">
+            ${this.renderMetricRow(
+              "mdi:map-marker-outline",
+              "Aktueller Standort",
+              data.locationLabel,
+              data.locationEntity,
+            )}
+
+            ${this.renderMetricRow(
+              "mdi:battery",
+              "Akkustand",
+              data.batteryLabel,
+              data.batteryEntity,
+            )}
+
+            ${this.renderMetricRow(
+              "mdi:robot-mower-outline",
+              "Aktivitätsmodus",
+              data.activityModeLabel,
+              data.activityModeEntity,
+            )}
+          </div>
+
+          <div class="action-section">
+            <div class="action-heading">
+              Steuerung
+            </div>
+
+            <div class="action-grid">
+              ${this.renderMowerServiceButton(
+                data.mowerEntity,
+                "start_mowing",
+                "mdi:play",
+                "Fortsetzen",
+              )}
+
+              ${this.renderMowerServiceButton(
+                data.mowerEntity,
+                "dock",
+                "mdi:home-import-outline",
+                "Zur Ladestation",
+              )}
+
+              ${this.renderActionButton(
+                data.cancelCurrentTaskEntity,
+                "mdi:stop-circle-outline",
+                "Aufgabe abbrechen",
+                "danger",
+                "Soll die aktuelle Aufgabe wirklich abgebrochen werden?",
+              )}
+            </div>
           </div>
         </div>
       </section>
@@ -2056,6 +2314,9 @@ export class NovaLubaCard extends LitElement {
       case "mowing":
         return this.renderMowingView(data);
 
+      case "paused":
+        return this.renderPausedView(data);
+
       case "docked":
         return this.renderDockedView(data);
 
@@ -2188,6 +2449,14 @@ export class NovaLubaCard extends LitElement {
       this.config.restart_mower_entity ??
       DEFAULT_RESTART_MOWER_ENTITY;
 
+    const cancelCurrentTaskEntity =
+      this.config.cancel_current_task_entity ??
+      DEFAULT_CANCEL_CURRENT_TASK_ENTITY;
+
+    const undockEntity =
+      this.config.undock_entity ??
+      DEFAULT_UNDOCK_ENTITY;
+
     const resolvedModel =
       resolveMowerModel(model);
 
@@ -2226,10 +2495,14 @@ export class NovaLubaCard extends LitElement {
       resolveMowerState(mower.state);
 
     const stateTheme =
-      theme.states[novaState];
+      novaState === "paused"
+        ? theme.states.returning
+        : theme.states[novaState];
 
     const lighting =
-      resolveMowerLighting(novaState);
+      novaState === "paused"
+        ? resolveMowerLighting("returning")
+        : resolveMowerLighting(novaState);
 
     const lightingAssets =
       getMowerLightingAssets(resolvedModel);
@@ -2324,6 +2597,9 @@ export class NovaLubaCard extends LitElement {
 
       relocateChargingStationEntity,
       restartMowerEntity,
+
+      cancelCurrentTaskEntity,
+      undockEntity,
 
       progress,
       progressLabel,
@@ -2628,6 +2904,12 @@ export class NovaLubaCard extends LitElement {
 
       restart_mower_entity:
         DEFAULT_RESTART_MOWER_ENTITY,
+
+      cancel_current_task_entity:
+        DEFAULT_CANCEL_CURRENT_TASK_ENTITY,
+
+      undock_entity:
+        DEFAULT_UNDOCK_ENTITY,
     };
   }
 }

@@ -1,5 +1,6 @@
 export type NovaMowerState =
   | "mowing"
+  | "paused"
   | "docked"
   | "returning"
   | "error"

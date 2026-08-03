@@ -25,6 +25,14 @@ export function resolveMowerState(
   }
 
   if (
+    state === "paused" ||
+    state === "pause" ||
+    state === "pausing"
+  ) {
+    return "paused";
+  }
+
+  if (
     state === "docked" ||
     state === "charging" ||
     state === "idle"
@@ -44,6 +52,20 @@ export function resolveMowerState(
     state === "blocked"
   ) {
     return "error";
+  }
+
+  if (
+    state === "maintenance" ||
+    state === "maintenance_mode"
+  ) {
+    return "maintenance";
+  }
+
+  if (
+    state === "update" ||
+    state === "updating"
+  ) {
+    return "update";
   }
 
   return "unknown";
