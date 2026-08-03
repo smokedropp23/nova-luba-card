@@ -2036,7 +2036,7 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_batteriezyk
 
           <h3 class="overview-title">
             ${e.name}
-            fährt zur Basis
+            fährt zur Ladestation
           </h3>
 
           <div class="overview-description">
@@ -2046,19 +2046,37 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_batteriezyk
             </span>
 
             <span>
-              Der Mäher kehrt zur
-              Ladestation zurück.
+              Der Mäher kehrt
+              selbstständig zur Basis
+              zurück.
             </span>
           </div>
         </div>
 
-        <div class="glass-panel">
+        <div
+          class="glass-panel progress-panel"
+        >
+          <div
+            class="battery-ring"
+            style=${J({ "--battery-angle": `${e.battery * 3.6}deg` })}
+          >
+            <div class="ring-content">
+              <span class="ring-value">
+                ${e.batteryLabel}
+              </span>
+
+              <span class="ring-label">
+                Akkustand
+              </span>
+            </div>
+          </div>
+
           <div class="metric-list">
             ${this.renderMetricRow("mdi:map-marker-outline", "Aktueller Standort", e.locationLabel)}
 
             ${this.renderMetricRow("mdi:clock-outline", "Verbleibende Zeit", e.remainingTimeLabel)}
 
-            ${this.renderMetricRow("mdi:battery", "Akkustand", e.batteryLabel)}
+            ${this.renderMetricRow("mdi:progress-clock", "Aufgabenfortschritt", e.progressLabel)}
 
             ${this.renderMetricRow("mdi:home-outline", "Ziel", "Ladestation")}
           </div>
@@ -2288,8 +2306,10 @@ var ze = "sensor.luba_va8tp48r_batterie", Be = "sensor.luba_va8tp48r_batteriezyk
 		}
 	}
 	handleImageError(e) {
-		let t = e.currentTarget.parentElement?.querySelector(".robot-fallback");
-		t && (t.hidden = !1);
+		let t = e.currentTarget;
+		t.style.display = "none";
+		let n = t.parentElement?.querySelector(".robot-fallback");
+		n && (n.hidden = !1);
 	}
 	render() {
 		if (!this.config) return z;

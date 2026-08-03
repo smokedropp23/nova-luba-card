@@ -1022,7 +1022,7 @@ export class NovaLubaCard extends LitElement {
 
           <h3 class="overview-title">
             ${data.name}
-            fährt zur Basis
+            fährt zur Ladestation
           </h3>
 
           <div class="overview-description">
@@ -1032,13 +1032,34 @@ export class NovaLubaCard extends LitElement {
             </span>
 
             <span>
-              Der Mäher kehrt zur
-              Ladestation zurück.
+              Der Mäher kehrt
+              selbstständig zur Basis
+              zurück.
             </span>
           </div>
         </div>
 
-        <div class="glass-panel">
+        <div
+          class="glass-panel progress-panel"
+        >
+          <div
+            class="battery-ring"
+            style=${styleMap({
+              "--battery-angle":
+                `${data.battery * 3.6}deg`,
+            })}
+          >
+            <div class="ring-content">
+              <span class="ring-value">
+                ${data.batteryLabel}
+              </span>
+
+              <span class="ring-label">
+                Akkustand
+              </span>
+            </div>
+          </div>
+
           <div class="metric-list">
             ${this.renderMetricRow(
               "mdi:map-marker-outline",
@@ -1053,9 +1074,9 @@ export class NovaLubaCard extends LitElement {
             )}
 
             ${this.renderMetricRow(
-              "mdi:battery",
-              "Akkustand",
-              data.batteryLabel,
+              "mdi:progress-clock",
+              "Aufgabenfortschritt",
+              data.progressLabel,
             )}
 
             ${this.renderMetricRow(
@@ -1372,26 +1393,26 @@ export class NovaLubaCard extends LitElement {
     }
   }
 
-private handleImageError(
-  event: Event,
-): void {
-  const image =
-    event.currentTarget as HTMLImageElement;
+  private handleImageError(
+    event: Event,
+  ): void {
+    const image =
+      event.currentTarget as HTMLImageElement;
 
+    image.style.display = "none";
 
+    const stage =
+      image.parentElement;
 
-  const stage =
-    image.parentElement;
+    const fallback =
+      stage?.querySelector<HTMLElement>(
+        ".robot-fallback",
+      );
 
-  const fallback =
-    stage?.querySelector<HTMLElement>(
-      ".robot-fallback",
-    );
-
-  if (fallback) {
-    fallback.hidden = false;
+    if (fallback) {
+      fallback.hidden = false;
+    }
   }
-}
 
   protected render() {
     if (!this.config) {
