@@ -630,30 +630,22 @@ var X = class extends G {
 
     .overlay {
       position: absolute;
-      top: 50%;
-      left: 50%;
+      inset: 0;
       z-index: 3;
       display: block;
       width: 100%;
       max-width: var(--robot-desktop-max-width);
       max-height: var(--robot-desktop-max-height);
+      margin: auto;
       object-fit: contain;
-      opacity: 0;
 
       transform:
-        translate(-50%, -50%)
         translateX(var(--robot-desktop-x))
         translateY(var(--robot-desktop-y))
         scale(var(--robot-desktop-scale));
 
       transform-origin: center center;
 
-      transition:
-        opacity 220ms ease,
-        filter 220ms ease;
-    }
-
-    .overlay.visible {
       opacity: var(--light-brightness);
 
       filter:
@@ -667,6 +659,10 @@ var X = class extends G {
           0 0 12px
           var(--light-color)
         );
+
+      transition:
+        opacity 220ms ease,
+        filter 220ms ease;
     }
 
     .pulse {
@@ -729,7 +725,6 @@ var X = class extends G {
         max-height: var(--robot-mobile-max-height);
 
         transform:
-          translate(-50%, -50%)
           translateX(var(--robot-mobile-x))
           translateY(var(--robot-mobile-y))
           scale(var(--robot-mobile-scale));
@@ -738,12 +733,11 @@ var X = class extends G {
   `;
 	}
 	renderOverlay(e, t) {
-		return e.asset ? P`
+		return !e.asset || !e.visible || e.brightness <= 0 ? I : P`
       <img
         class=${[
 			"overlay",
 			t,
-			e.visible ? "visible" : "",
 			e.animation === "none" ? "" : e.animation
 		].filter(Boolean).join(" ")}
         src=${e.asset}
@@ -754,7 +748,7 @@ var X = class extends G {
 			"--light-brightness": String(e.brightness)
 		})}
       />
-    ` : I;
+    `;
 	}
 	render() {
 		return this.lighting ? P`

@@ -33,30 +33,22 @@ export class MowerLightingComponent extends LitElement {
 
     .overlay {
       position: absolute;
-      top: 50%;
-      left: 50%;
+      inset: 0;
       z-index: 3;
       display: block;
       width: 100%;
       max-width: var(--robot-desktop-max-width);
       max-height: var(--robot-desktop-max-height);
+      margin: auto;
       object-fit: contain;
-      opacity: 0;
 
       transform:
-        translate(-50%, -50%)
         translateX(var(--robot-desktop-x))
         translateY(var(--robot-desktop-y))
         scale(var(--robot-desktop-scale));
 
       transform-origin: center center;
 
-      transition:
-        opacity 220ms ease,
-        filter 220ms ease;
-    }
-
-    .overlay.visible {
       opacity: var(--light-brightness);
 
       filter:
@@ -70,6 +62,10 @@ export class MowerLightingComponent extends LitElement {
           0 0 12px
           var(--light-color)
         );
+
+      transition:
+        opacity 220ms ease,
+        filter 220ms ease;
     }
 
     .pulse {
@@ -132,7 +128,6 @@ export class MowerLightingComponent extends LitElement {
         max-height: var(--robot-mobile-max-height);
 
         transform:
-          translate(-50%, -50%)
           translateX(var(--robot-mobile-x))
           translateY(var(--robot-mobile-y))
           scale(var(--robot-mobile-scale));
@@ -144,14 +139,22 @@ export class MowerLightingComponent extends LitElement {
     layer: MowerLightLayer,
     className: string,
   ) {
-    if (!layer.asset) {
+    /*
+     * Wichtig:
+     * Ein ausgeschaltetes Licht wird gar nicht erst
+     * als Bild in die Karte eingefügt.
+     */
+    if (
+      !layer.asset ||
+      !layer.visible ||
+      layer.brightness <= 0
+    ) {
       return nothing;
     }
 
     const classes = [
       "overlay",
       className,
-      layer.visible ? "visible" : "",
       layer.animation !== "none"
         ? layer.animation
         : "",
