@@ -40,7 +40,6 @@ interface NovaLubaCardConfig {
   entity: string;
   name?: string;
   model?: string;
-  debugLighting?: "off" | "front" | "side" | "all";
 }
 
 const stateLabels: Record<NovaMowerState, string> = {
@@ -451,66 +450,26 @@ export class NovaLubaCard extends LitElement {
     const lightingAssets =
       getMowerLightingAssets(resolvedModel);
 
-    const debugLighting =
-      this.config.debugLighting ?? "off";
-
-    const debugFront =
-      debugLighting === "front" ||
-      debugLighting === "all";
-
-    const debugSide =
-      debugLighting === "side" ||
-      debugLighting === "all";
-
-const lightingWithAssets = {
-  ...lighting,
-
-  front: {
-    ...lighting.front,
-    asset: lightingAssets.front,
-
-    visible: debugFront
-      ? Boolean(lightingAssets.front)
-      : lighting.front.visible,
-
-    color: debugFront
-      ? "#ffffff"
-      : lighting.front.color,
-
-    brightness: debugFront
-      ? 1
-      : lighting.front.brightness,
-
-    animation: debugFront
-      ? ("none" as const)
-      : lighting.front.animation,
-  },
-
-  side: {
-    ...lighting.side,
-    asset: lightingAssets.side,
-
-    visible: debugSide
-      ? Boolean(lightingAssets.side)
-      : lighting.side.visible,
-
     /*
-     * Grüne Testfarbe, damit wir eindeutig sehen,
-     * ob das Seitenlicht wirklich eingefärbt wird.
+     * Hier werden ausschließlich die zustandsabhängigen
+     * Lichtwerte mit den passenden PNG-Dateien verbunden.
+     *
+     * Es gibt keine Debug-Überschreibung und keine
+     * fest eingetragene Testfarbe mehr.
      */
-    color: debugSide
-      ? "#22c55e"
-      : lighting.side.color,
+    const lightingWithAssets = {
+      ...lighting,
 
-    brightness: debugSide
-      ? 1
-      : lighting.side.brightness,
+      front: {
+        ...lighting.front,
+        asset: lightingAssets.front,
+      },
 
-    animation: debugSide
-      ? ("none" as const)
-      : lighting.side.animation,
-  },
-};
+      side: {
+        ...lighting.side,
+        asset: lightingAssets.side,
+      },
+    };
 
     const dynamicStyles = {
       "--nova-state-color": stateTheme.color,
@@ -566,7 +525,7 @@ const lightingWithAssets = {
 
             <div
               class="led-placeholder"
-              title="LED-Platzhalter"
+              title="Statusanzeige"
             >
               <span class="led-core"></span>
             </div>
@@ -639,7 +598,6 @@ const lightingWithAssets = {
       entity: "lawn_mower.luba_va8tp48r",
       name: "Luba",
       model: "Luba 3 AWD LiDAR",
-      debugLighting: "off",
     };
   }
 }
