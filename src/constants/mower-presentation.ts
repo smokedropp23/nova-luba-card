@@ -69,11 +69,11 @@ const presentations: Record<string, MowerPresentation> = {
 
   luba3: {
     desktop: {
-      scale: 1.43,
-      translateX: 10,
-      translateY: 30,
-      maxWidth: 530,
-      maxHeight: 340,
+      scale: 1.78,
+      translateX: 34,
+      translateY: 18,
+      maxWidth: 610,
+      maxHeight: 390,
     },
     mobile: {
       scale: 1.4,
