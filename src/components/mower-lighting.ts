@@ -32,16 +32,12 @@ export class MowerLightingComponent extends LitElement {
     }
 
     /*
-     * Beide Ebenen verwenden dasselbe freigestellte
-     * Licht-Asset als Maske.
-     *
-     * Dadurch können wir die eigentliche Lichtfläche
-     * über background einfärben.
+     * Gemeinsame Basis für die scharfe Lichtquelle
+     * und den weichen Glow.
      */
     .light-layer {
       position: absolute;
       inset: 0;
-      z-index: 3;
       display: block;
       width: 100%;
       max-width: var(--robot-desktop-max-width);
@@ -53,11 +49,11 @@ export class MowerLightingComponent extends LitElement {
       -webkit-mask-image: var(--light-asset);
       mask-image: var(--light-asset);
 
-      -webkit-mask-position: center;
-      mask-position: center;
-
       -webkit-mask-repeat: no-repeat;
       mask-repeat: no-repeat;
+
+      -webkit-mask-position: center;
+      mask-position: center;
 
       -webkit-mask-size: contain;
       mask-size: contain;
@@ -76,7 +72,7 @@ export class MowerLightingComponent extends LitElement {
     }
 
     /*
-     * Weicher Lichtschein hinter der eigentlichen LED.
+     * Weicher Lichtschein hinter der eigentlichen Lampe.
      */
     .light-glow {
       z-index: 3;
@@ -110,7 +106,7 @@ export class MowerLightingComponent extends LitElement {
     }
 
     /*
-     * Helle, scharf abgegrenzte eigentliche Lichtquelle.
+     * Scharfe und sehr helle eigentliche Lichtquelle.
      */
     .light-core {
       z-index: 4;
@@ -128,47 +124,47 @@ export class MowerLightingComponent extends LitElement {
     }
 
     /*
-     * Das Seitenlicht soll kräftiger und dominanter
-     * erscheinen als die kleinen Frontscheinwerfer.
+     * Standardwerte.
+     */
+    .light-layer {
+      --glow-strength: 0.95;
+      --glow-blur: 8px;
+      --glow-radius: 18px;
+      --glow-scale: 1.02;
+      --core-brightness: 1.75;
+      --core-glow-radius: 10px;
+    }
+
+    /*
+     * Seitenlicht:
+     * bewusst sehr kräftig und dominant.
      */
     .side.light-glow {
       --glow-strength: 1;
-      --glow-blur: 10px;
+      --glow-blur: 12px;
+      --glow-radius: 28px;
+      --glow-scale: 1.035;
+    }
+
+    .side.light-core {
+      --core-brightness: 2;
+      --core-glow-radius: 14px;
+    }
+
+    /*
+     * Frontlicht:
+     * kleiner, aber sehr hell und klar.
+     */
+    .front.light-glow {
+      --glow-strength: 0.95;
+      --glow-blur: 8px;
       --glow-radius: 22px;
       --glow-scale: 1.025;
     }
 
-    .side.light-core {
-      --core-brightness: 1.65;
-      --core-glow-radius: 12px;
-    }
-
-    /*
-     * Die Frontscheinwerfer bleiben kleiner,
-     * dürfen aber sehr hell und klar wirken.
-     */
-    .front.light-glow {
-      --glow-strength: 0.9;
-      --glow-blur: 7px;
-      --glow-radius: 18px;
-      --glow-scale: 1.018;
-    }
-
     .front.light-core {
-      --core-brightness: 1.9;
-      --core-glow-radius: 9px;
-    }
-
-    /*
-     * Standardwerte als Fallback.
-     */
-    .light-layer {
-      --glow-strength: 0.9;
-      --glow-blur: 8px;
-      --glow-radius: 18px;
-      --glow-scale: 1.02;
-      --core-brightness: 1.6;
-      --core-glow-radius: 10px;
+      --core-brightness: 2.25;
+      --core-glow-radius: 11px;
     }
 
     .pulse {
@@ -201,7 +197,7 @@ export class MowerLightingComponent extends LitElement {
         opacity:
           calc(
             var(--layer-opacity)
-            * 0.72
+            * 0.7
           );
       }
 
@@ -228,7 +224,7 @@ export class MowerLightingComponent extends LitElement {
         opacity:
           calc(
             var(--layer-opacity)
-            * 0.78
+            * 0.76
           );
       }
 
@@ -261,13 +257,13 @@ export class MowerLightingComponent extends LitElement {
       }
 
       .side.light-glow {
-        --glow-blur: 8px;
-        --glow-radius: 18px;
+        --glow-blur: 9px;
+        --glow-radius: 22px;
       }
 
       .front.light-glow {
         --glow-blur: 6px;
-        --glow-radius: 14px;
+        --glow-radius: 17px;
       }
     }
 
@@ -285,8 +281,9 @@ export class MowerLightingComponent extends LitElement {
     className: "front" | "side",
   ) {
     /*
-     * Ausgeschaltete Lichter werden überhaupt nicht
-     * in den HTML-Baum eingefügt.
+     * Ausgeschaltete Lichter werden gar nicht gerendert.
+     * Dadurch kann bei debugLighting: "off" kein Overlay
+     * die Karte beeinflussen.
      */
     if (
       !layer.asset ||
@@ -304,10 +301,8 @@ export class MowerLightingComponent extends LitElement {
     const sharedStyles = {
       "--light-asset":
         `url("${layer.asset}")`,
-
       "--light-color":
         layer.color,
-
       "--layer-opacity":
         String(layer.brightness),
     };
