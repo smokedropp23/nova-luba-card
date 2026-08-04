@@ -1,5 +1,9 @@
 Nova UI – Luba Card
 
+### Desktop Overview
+
+![Desktop Overview](screenshots/desktop-overview.png)
+
 A modern, responsive Home Assistant card for Mammotion robotic mowers.
 
 Nova UI – Luba Card combines a status-based interface, live mower data, connection information and direct mower controls in one polished Lovelace card. The layout automatically adapts to the current mower state and works on both desktop and mobile dashboards.
